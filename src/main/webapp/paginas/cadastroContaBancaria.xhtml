@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<h:panelGrid id="panel" columns="3" cellpadding="4">
+				<p:outputLabel value="Nome: " />
+				<p:inputText id="nome" required="true"
+					requiredMessage="Campo Obrigatório"
+					value="#{contaBancariaController.conta.nome}">
+				</p:inputText>
+				<p:message for="nome" />
+				<p:outputLabel value="Data: " />
+				<p:calendar id="dt" pattern="dd/MM/yyyy" mask="true"
+					value="#{contaBancariaController.saldo.data}"
+					showOn="button" required="true" requiredMessage="Campo Obrigatório"/>
+				<p:message for="dt" />
+				<p:outputLabel value="Valor: " />
+				<p:inputText id="valor" required="true"
+					requiredMessage="Campo Obrigatório"
+					value="#{contaBancariaController.saldo.valor}">
+				</p:inputText>
+				<p:message for="nome" />
+				<p:commandButton value="Salvar"
+					oncomplete="if(!args.validationFailed) PF('cd').show()"
+					icon="ui-icon-check" validateClient="true" update="panel">
+				</p:commandButton>
+				<p:commandButton value="Voltar" actionListener="#{contaBancariaController.voltar}"
+					immediate="true" action="paginaInicial?faces-redirect=true">
+				</p:commandButton>
+			</h:panelGrid>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o funcionário?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{contaBancariaController.confirmaGravacao}"
+					action="#{contaBancariaController.salvar}" icon="ui-icon-check"
+					process="@this" update="message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

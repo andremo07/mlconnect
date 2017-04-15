@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="1" cellpadding="4" id="grid">
+				<p:commandButton value="Incluir" immediate="true"
+					action="#{contaReceberController.incluir}" />
+				<p:dataTable var="contaReceber"
+					value="#{contaReceberController.model}" paginator="true" rows="10"
+					rowKey="#{contaReceber.id}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					paginatorPosition="bottom" rowsPerPageTemplate="5,10,15"
+					selectionMode="single"
+					selection="#{contaReceberController.contaReceber}"
+					id="dtContasReceber" lazy="true" style="width:900px;">
+
+					<p:column headerText="Pagador" filterBy="#{contaPagar.nrTransacao}"
+						filterMatchMode="equals">
+						<p:commandLink id="ajax" immediate="true" title="Editar"
+							action="#{contaReceberController.editar}">
+							<h:outputText value="#{contaReceber.pagador.nome}" />
+							<br />
+							<h:outputText
+								value="N° da transação: #{contaReceber.nrTransacao}" />
+							<f:setPropertyActionListener value="#{contaReceber}"
+								target="#{contaReceberController.contaReceber}" />
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Data Emissão"
+						style="width:100px;text-align: center">
+						<h:outputText value="#{contaReceber.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data Vencimento"
+						style="width:100px;text-align: center">
+						<h:outputText value="#{contaReceber.dataVencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Valor" style="width:80px;text-align: center">
+						<h:outputText value="#{contaReceber.valor}">
+							<f:convertNumber currencySymbol="R$" type="currency" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Visão Rápida"
+						style="width:65px;text-align: center">
+						<p:commandButton update=":form:detalhesConta"
+							oncomplete="PF('detalhesConta').show()" icon="ui-icon-search"
+							title="Visualizar" immediate="true"
+							actionListener="#{contaReceberController.visualizar(contaReceber)}">
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Status" style="width:60px;text-align: center">
+						<h:outputText value="#{contaReceber.status}" />
+					</p:column>
+					<p:column style="width:75px;text-align: center">
+						<p:menuButton value="Ações">
+							<p:menuitem value="Duplicar" icon="ui-icon-copy" />
+							<p:menuitem value="Baixar"
+								rendered="#{empty contaReceber.dataBaixa}" icon="ui-icon-check"
+								actionListener="#{contaReceberController.visualizar(contaReceber)}"
+								oncomplete="PF('baixarConta').show()" immediate="true" />
+							<p:menuitem value="Reverter Baixar"
+								rendered="#{!empty contaReceber.dataBaixa}" icon="fa fa-undo"
+								update="dtContasReceber" immediate="true"
+								actionListener="#{contaReceberController.reverterBaixar(contaReceber)}" />
+							<p:menuitem value="Excluir" icon="ui-icon-trash"
+								oncomplete="PF('cd').show()" process="@this">
+								<f:setPropertyActionListener value="#{contaReceber}"
+									target="#{contaReceberController.contaReceber}" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+
+			<p:dialog header="Baixar Conta" widgetVar="baixarConta" width="800"
+				height="100" modal="true" showEffect="fade" hideEffect="fade"
+				resizable="false">
+				<p:outputPanel id="baixarConta" style="text-align:center;"
+					layout="inline">
+					<h:panelGrid columns="3" width="320"
+						style="text-align:left;margin-bottom:20px;">
+						<p:outputLabel value="Data da Baixa: "
+							style="font-size: 20px;font-weight:100" />
+						<p:calendar id="dataBaixa" showOn="button" required="true"
+							size="10" requiredMessage="Campo Obrigatório"
+							value="#{contaReceberController.contaReceber.dataBaixa}">
+							<f:ajax event="change" execute="@this" />
+						</p:calendar>
+						<p:message for="dataBaixa" />
+					</h:panelGrid>
+					<h:panelGroup>
+						<p:commandButton value="Baixar"
+							oncomplete="PF('baixarConta').hide()"
+							actionListener="#{contaReceberController.baixar}"
+							update="dtContasReceber" icon="ui-icon-check"
+							process="baixarConta" />
+						<p:commandButton value="Não" oncomplete="PF('baixarConta').hide()"
+							icon="ui-icon-close" immediate="true" />
+					</h:panelGroup>
+				</p:outputPanel>
+			</p:dialog>
+
+
+
+			<p:dialog header="Conta a receber" widgetVar="detalhesConta"
+				width="800" height="165" modal="true" showEffect="fade"
+				hideEffect="fade" resizable="false">
+				<p:outputPanel id="detalhesConta" style="text-align:center;"
+					layout="inline">
+					<p:outputLabel style="font-size: 20px;font-weight:100"
+						value="NºDoc. #{contaReceberController.contaReceber.nrTransacao}" />
+					<p:separator style="height:1px" />
+					<h:panelGrid columns="3" width="750" style="text-align:left;">
+						<p:outputLabel value="Pagador"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Categoria"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Status"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaReceberController.contaReceber.pagador.nome}" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaReceberController.contaReceber.categoria.nome}" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaReceberController.contaReceber.status}" />
+						<p:outputLabel value="Emissão"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Vencimento"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Valor"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaReceberController.contaReceber.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaReceberController.contaReceber.dataVencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+						<p:outputLabel
+							value="R$ #{contaReceberController.contaReceber.valor}"
+							style="font-size: 18px;font-weight:200" />
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja remover essa conta?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{contaReceberController.remover}"
+					icon="ui-icon-check" process="@this"
+					update="dtContasReceber message" />
+				<p:commandButton value="Não" onclick="PF('cd').hide()" type="button"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

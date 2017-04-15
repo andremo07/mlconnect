@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Incluir"
+					action="#{funcionarioController.incluir}" />
+				<p:dataTable var="funcionario"
+					value="#{funcionarioController.model}" paginator="true" rows="10"
+					rowKey="#{funcionario.id}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					paginatorPosition="bottom" rowsPerPageTemplate="5,10,15"
+					selectionMode="single"
+					selection="#{funcionarioController.funcionario}"
+					id="tabFuncionarios" lazy="true">
+
+					<p:column headerText="Nome">
+						<h:outputText value="#{funcionario.nome}" />
+					</p:column>
+					<p:column headerText="Data Nascimento">
+						<h:outputText value="#{funcionario.dtNascimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Cargo">
+						<h:outputText value="#{funcionario.cargo.tipo}" />
+					</p:column>
+
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-pencil" title="Editar"
+							action="#{funcionarioController.editar}">
+							<f:setPropertyActionListener value="#{funcionario}"
+								target="#{funcionarioController.funcionario}" />
+						</p:commandButton>
+					</p:column>
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-trash" title="Remover"
+							oncomplete="PF('cd').show()">
+							<f:setPropertyActionListener value="#{funcionario}"
+								target="#{funcionarioController.funcionario}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<p:confirmDialog header="Confirmação"
+				message="Deseja remover o funcionário?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{funcionarioController.remover}"
+					icon="ui-icon-check"
+					process="@this" update="tabFuncionarios message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					type="button" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

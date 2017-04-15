@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<h:panelGrid id="panel" columns="3" cellpadding="4">
+				<p:outputLabel value="Nome: " />
+				<p:inputText id="nome" required="true"
+					requiredMessage="Campo Obrigatório"
+					value="#{produtoController.produto.nome}" size="70">
+				</p:inputText>
+				<p:message for="nome" />
+				<p:outputLabel value="SKU: " />
+				<p:inputText id="sku" required="true"
+					value="#{produtoController.produto.sku}"
+					requiredMessage="Campo Obrigatório" />
+				<p:message for="sku" />
+				<p:outputLabel value="Quantidade: " />
+				<p:spinner id="qtd"
+					value="#{produtoController.produto.quantidadeDisponivel}" />
+				<p:message for="qtd" />
+			</h:panelGrid>
+			<h:panelGrid id="panel2" columns="2" cellpadding="4">
+				<p:outputLabel value="NCM: " />
+				<p:inputText id="ncm" value="#{produtoController.produto.ncm}" />
+				<p:outputLabel value="Codigo de Barras: " />
+				<p:inputText id="codBarras" value="#{produtoController.produto.codBarras}" />
+			</h:panelGrid>
+			<br />
+			<h:panelGrid columns="3" cellpadding="3">
+				<p:outputLabel value="Anuncios: " />
+				<p:selectOneMenu id="anuncios"
+					value="#{produtoController.anuncioSelecionado}"
+					style="width:400px;" converter="#{anuncioConverter}" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione um anuncio" itemValue="" />
+					<f:selectItems value="#{produtoController.anuncios}" var="anuncio"
+						itemValue="#{anuncio}" itemLabel="#{anuncio.titulo}" />
+					<f:ajax event="change" execute="anuncios" />
+				</p:selectOneMenu>
+				<p:commandButton title="Adicionar" icon="ui-icon-plus"
+					immediate="true" update="dtAnuncios"
+					action="#{produtoController.adicionaAnuncio}">
+				</p:commandButton>
+			</h:panelGrid>
+			<br />
+			<h:panelGroup>
+				<p:dataTable var="anuncio" style="width:510px;"
+					value="#{produtoController.produto.anuncios}" rows="10"
+					rowKey="#{anuncio.id}"
+					selection="#{produtoController.anuncioSelecionado}" id="dtAnuncios"
+					lazy="true">
+
+					<p:column headerText="Titulo">
+						<h:outputText value="#{anuncio.titulo}" />
+					</p:column>
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-close" title="Remover"
+							action="#{produtoController.removerAnuncio}" immediate="true"
+							update="dtAnuncios">
+							<f:setPropertyActionListener value="#{anuncio}"
+								target="#{produtoController.anuncioSelecionado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:commandButton value="Salvar"
+					oncomplete="if(!args.validationFailed) PF('cd').show()"
+					icon="ui-icon-check" validateClient="true" update="panel panel2">
+				</p:commandButton>
+				<p:commandButton value="Voltar"
+					actionListener="#{produtoController.voltar}" immediate="true"
+					action="listaProdutos?faces-redirect=true">
+				</p:commandButton>
+			</h:panelGroup>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o produto?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{produtoController.confirmaGravacao}"
+					action="#{produtoController.salvar}" icon="ui-icon-check"
+					process="@this" update="message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

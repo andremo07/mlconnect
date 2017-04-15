@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:dataTable var="venda" value="#{envioController.vendas}"
+					scrollable="true" scrollHeight="430" id="tabvendas"
+					style="width:1220px;" selectionMode="single"
+					selection="#{envioController.vendaSelecionada}"
+					rowKey="#{venda.id}">
+					<p:ajax event="rowSelect" oncomplete="PF('msgsVend').show()"
+						listener="#{envioController.recuperaMensagensVenda}"
+						update=":form:msgsDetail" />
+					<p:column style="width:30px;">
+						<p:selectBooleanCheckbox>
+							<p:ajax listener="#{envioController.adicionarVenda(venda)}" />
+						</p:selectBooleanCheckbox>
+					</p:column>
+					<p:column headerText="Codigo" style="width:80px;">
+						<h:outputText value="#{venda.id}" />
+					</p:column>
+					<p:column headerText="Comprador" style="width:150px;">
+						<h:outputText value="#{venda.cliente.apelido}" />
+					</p:column>
+					<p:column headerText="Anuncio" style="width:400px;">
+						<h:outputText value="#{venda.detalhesVenda[0].anuncio.titulo}" />
+					</p:column>
+					<p:column headerText="Produto" style="width:430px;">
+						<p:selectOneMenu id="produtos"
+							rendered="#{venda.detalhesVenda[0].anuncio.produtos.size() > 1}"
+							value="#{venda.detalhesVenda[0].produto}" style="width:390px;"
+							converter="#{produtoConverter}">
+							<f:selectItem itemLabel="Selecione um anuncio" itemValue="" />
+							<f:selectItems value="#{venda.detalhesVenda[0].anuncio.produtos}"
+								var="produto" itemValue="#{produto}" itemLabel="#{produto.nome}" />
+						</p:selectOneMenu>
+						<p:selectOneMenu
+							rendered="#{venda.detalhesVenda[0].anuncio.produtos.size() == 1}"
+							value="#{venda.detalhesVenda[0].produto}" style="width:390px;"
+							converter="#{produtoConverter}">
+							<f:selectItem
+								itemLabel="#{venda.detalhesVenda[0].anuncio.produtos.toArray()[0].nome}"
+								itemValue="#{venda.detalhesVenda[0].anuncio.produtos.toArray()[0]}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<p:dialog header="Mensagens" widgetVar="msgsVend" modal="true"
+				showEffect="fade" hideEffect="fade" resizable="false"
+				draggable="false" position="center" width="800">
+
+				<p:tabView id="msgsDetail">
+					<p:tab title="Mensagens" >
+						<p:outputPanel style="text-align:center;border:none;">
+							<ui:repeat value="#{envioController.msgsVenda}" var="msg">
+								<h:outputText value="#{msg.remetente}: #{msg.texto}"
+									style="display:block" />
+							</ui:repeat>
+							<h:outputText value="Venda sem mensagens"
+								rendered="#{empty envioController.msgsVenda}" />
+						</p:outputPanel>
+					</p:tab>
+					<p:tab title="Perguntas">
+						<p:outputPanel style="text-align:center;border:none;">
+							<ui:repeat value="#{envioController.perguntasVenda}" var="pergunta">
+								<h:outputText value="Pergunta: #{pergunta.textoPergunta}"
+									style="display:block" />
+								<h:outputText value="Resposta: #{pergunta.textoResposta}"
+									style="display:block" />
+							</ui:repeat>
+							<h:outputText value="Venda sem perguntas"
+								rendered="#{empty envioController.perguntasVenda}" />
+						</p:outputPanel>
+					</p:tab>
+				</p:tabView>
+			</p:dialog>
+			<p:dialog widgetVar="statusDialog" draggable="false" closable="false"
+				resizable="false" showHeader="false">
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			</p:dialog>
+			<p:commandButton value="Gerar Planilha" ajax="false"
+				actionListener="#{envioController.gerarPlanilha}"
+				onclick="PrimeFaces.monitorDownload(start, stop);">
+				<p:fileDownload value="#{envioController.exportFile}"
+					contentDisposition="attachment" />
+			</p:commandButton>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

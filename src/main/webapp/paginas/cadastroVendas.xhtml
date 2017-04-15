@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<h:panelGroup id="panel">
+				<h:panelGrid columns="3" cellpadding="4">
+					<p:outputLabel value="Data da Venda: " />
+					<p:calendar id="dtVenda" showOn="button" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.data}" />
+					<p:message for="dtVenda" />
+				</h:panelGrid>
+				<p:outputLabel value="Cliente"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid columns="9" cellpadding="3">
+					<p:outputLabel value="Nome: " />
+					<p:inputText id="nomeCliente" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.cliente.nome}" size="50" />
+					<p:message for="nomeCliente" />
+					<p:outputLabel value="Email: " />
+					<p:inputText id="emailCliente"
+						value="#{vendaController.venda.cliente.email}" size="30" />
+					<p:message for="emailCliente" />
+					<p:outputLabel value="Telefone: " />
+					<p:inputText id="telCliente"
+						value="#{vendaController.venda.cliente.telefone}" size="20" />
+					<p:message for="telCliente" />
+					<p:outputLabel value="Tipo: " />
+					<p:selectOneMenu id="tiposPessoa" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.cliente.tipo}" style="width:200px;">
+						<f:selectItem itemLabel="Selecione o tipo de pessoa" itemValue="" />
+						<f:selectItems value="#{vendaController.tiposPessoa}"
+							var="tipoPessoa" itemValue="#{tipoPessoa}"
+							itemLabel="#{tipoPessoa}" />
+					</p:selectOneMenu>
+					<p:message for="tiposPessoa" />
+					<p:outputLabel value="CPF/CNPJ: " />
+					<p:inputText id="nrDocumento" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.cliente.nrDocumento}" size="20" />
+					<p:message for="nrDocumento" />
+				</h:panelGrid>
+				<p:outputLabel value="Anúncio/Produto"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid columns="6" cellpadding="3">
+					<p:outputLabel value="Anuncio: " />
+					<p:selectOneMenu id="anuncios" converter="#{anuncioConverter}"
+						filter="true" filterMatchMode="contains" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.detalheVenda.anuncio}"
+						style="width:390px;">
+						<f:selectItem itemLabel="Selecione o anuncio" itemValue="" />
+						<f:selectItems value="#{vendaController.anuncios}" var="anuncio"
+							itemValue="#{anuncio}" itemLabel="#{anuncio.titulo}" />
+						<p:ajax event="change" update="produtos" />
+					</p:selectOneMenu>
+					<p:message for="anuncios" />
+					<p:outputLabel value="Quantidade: " />
+					<p:spinner id="qtdVendida" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.detalheVenda.quantidade}" size="5" />
+					<p:message for="qtdVendida" />
+					<p:outputLabel value="Produtos: " />
+					<p:selectOneMenu id="produtos" converter="#{produtoConverter}"
+						value="#{vendaController.produto}" style="width:390px;"
+						filter="true" filterMatchMode="contains" required="true"
+						disabled="#{empty vendaController.detalheVenda.anuncio}"
+						requiredMessage="Campo Obrigatório">
+						<f:selectItem itemLabel="Selecione o produto" itemValue="" />
+						<f:selectItems
+							value="#{vendaController.detalheVenda.anuncio.produtos}"
+							var="produto" itemValue="#{produto}" itemLabel="#{produto.nome}" />
+					</p:selectOneMenu>
+					<p:message for="produtos" />
+				</h:panelGrid>
+				<p:outputLabel value="Envio"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid columns="6" cellpadding="3">
+					<p:outputLabel value="Data Envio: " />
+					<p:calendar id="dtEnvio" showOn="button" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.envio.data}" />
+					<p:message for="dtEnvio" />
+					<p:outputLabel value="Metodo Envio: " />
+					<p:selectOneMenu id="metodosEnvios" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.envio.metodo}" style="width:190px;">
+						<f:selectItem itemLabel="Selecione o metodo de envio" itemValue="" />
+						<f:selectItems value="#{vendaController.metodosEnvios}"
+							var="metodoEnvio" itemValue="#{metodoEnvio}"
+							itemLabel="#{metodoEnvio}" />
+					</p:selectOneMenu>
+					<p:message for="metodosEnvios" />
+					<p:outputLabel value="Custo Envio: " />
+					<p:inputText id="custoEnvio" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.envio.custo}" size="10" />
+					<p:message for="custoEnvio" />
+					<p:outputLabel value="Modo Envio: " />
+					<p:selectOneMenu id="modosEnvios" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.venda.envio.modo}" style="width:190px;">
+						<f:selectItem itemLabel="Selecione o modo de envio" itemValue="" />
+						<f:selectItems value="#{vendaController.modosEnvios}"
+							var="modoEnvio" itemValue="#{modoEnvio}" itemLabel="#{modoEnvio}" />
+					</p:selectOneMenu>
+					<p:message for="modosEnvios" />
+				</h:panelGrid>
+				<p:outputLabel value="Pagamento"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid columns="9" cellpadding="3">
+					<p:outputLabel value="Valor Pagamento: " />
+					<p:inputNumber id="valorPag" required="true"
+						requiredMessage="Campo Obrigatório" symbol="R$"
+						value="#{vendaController.pagamento.valorTransacao}"
+						decimalSeparator="," thousandSeparator="." />
+					<p:message for="valorPag" />
+					<p:outputLabel value="Tipo Pagamento: " />
+					<p:selectOneMenu id="tiposPagamento" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.pagamento.tipo}" style="width:200px;">
+						<f:selectItem itemLabel="Selecione o tipo de pagamento"
+							itemValue="" />
+						<f:selectItems value="#{vendaController.tiposPagamento}"
+							var="tiposPagamento" itemValue="#{tiposPagamento}"
+							itemLabel="#{tiposPagamento}" />
+						<p:ajax event="change" update="numParcelas" />
+					</p:selectOneMenu>
+					<p:message for="tiposPagamento" />
+					<p:outputLabel value="Numero Parcelas: " />
+					<p:spinner id="numParcelas" required="true"
+						disabled="#{vendaController.habilitaCampoParcelas()}"
+						requiredMessage="Campo Obrigatório"
+						value="#{vendaController.pagamento.numeroParcelas}" size="5" />
+					<p:message for="numParcelas" />
+				</h:panelGrid>
+				<br />
+				<h:panelGroup>
+					<p:commandButton value="Salvar"
+						oncomplete="if(!args.validationFailed) PF('cd').show()"
+						icon="ui-icon-check" validateClient="true" update="panel">
+					</p:commandButton>
+					<p:commandButton value="Voltar"
+						actionListener="#{vendaController.voltar}" immediate="true"
+						action="listaProdutos?faces-redirect=true">
+					</p:commandButton>
+				</h:panelGroup>
+			</h:panelGroup>
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o produto?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{vendaController.confirmaGravacao}"
+					action="#{vendaController.salvar}" icon="ui-icon-check"
+					process="@this" update="message @form" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<p:panelGrid id="panel" styleClass="ui-panelgrid-blank">
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Nome: " />
+						<p:inputText id="titulo" required="true"
+							requiredMessage="Campo Obrigatório"
+							value="#{anuncioController.anuncioMl.titulo}" size="70">
+						</p:inputText>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Valor: " />
+						<p:inputText id="valor" required="true"
+							requiredMessage="Campo Obrigatório"
+							value="#{anuncioController.anuncioMl.valor}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Categoria: " />
+						<p:inputText id="categoria" required="true"
+							style="margin-right:5px;" requiredMessage="Campo Obrigatório"
+							disabled="true"
+							value="#{anuncioController.anuncioMl.idCategoria}" size="30">
+						</p:inputText>
+						<p:commandButton update=":form:categorias form:pathCateg"
+							oncomplete="PF('diagCategorias').show()" icon="ui-icon-search"
+							immediate="true"
+							actionListener="#{anuncioController.carregarCategorias}">
+						</p:commandButton>
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Quantidade: " />
+						<p:spinner id="qtdVendida" required="true"
+							requiredMessage="Campo Obrigatório"
+							value="#{anuncioController.anuncioMl.quantidade}" size="5" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Tipo: " />
+						<p:selectOneMenu id="tipo" required="true"
+							requiredMessage="Campo Obrigatório"
+							value="#{anuncioController.anuncioMl.tipo}" style="width:100px;"
+							converter="#{tipoAnuncioConverter}">
+							<f:selectItem itemLabel="Selecione o tipo do anúncio"
+								itemValue="" />
+							<f:selectItems value="#{anuncioController.tiposAnuncio}"
+								var="tipoAnuncio" itemValue="#{tipoAnuncio}"
+								itemLabel="#{tipoAnuncio.nome}" />
+						</p:selectOneMenu>
+					</p:column>
+				</p:row>
+			</p:panelGrid>
+			<div style="padding-bottom: 20px; padding-left: 8px;">
+				<p:selectBooleanCheckbox value="#{anuncioController.possuiVariacao}">
+					<p:ajax update="variacoes imagens"
+						listener="#{anuncioController.habilitarVariacoes}" />
+				</p:selectBooleanCheckbox>
+				<p:outputLabel value=" Possui Variação" />
+			</div>
+			<h:panelGroup id="imagens">
+				<p:outputPanel rendered="#{!anuncioController.possuiVariacao}">
+					<p:outputLabel value="Imagens"
+						style="font-size:medium;color: steelblue;margin-top:20px;" />
+					<p:separator style="height:1px" />
+					<p:fileUpload
+						style="width:505px;padding-left:20px;padding-bottom: 20px;"
+						fileUploadListener="#{anuncioController.handleFileUpload}"
+						mode="advanced" dragDropSupport="false" fileLimit="6"
+						allowTypes="/(\.|\/)(gif|jpeg|png)$/" update="images" />
+					<p:outputPanel id="images">
+						<h:panelGrid style="padding-left:20px;" columns="6">
+							<ui:repeat value="#{anuncioController.anuncioMl.pictures}"
+								varStatus="status">
+								<p:commandLink
+									actionListener="#{anuncioController.removerImagem(status.index)}"
+									immediate="true" update="form:images">
+									<p:graphicImage value="#{anuncioController.imagem}"
+										height="100" width="100" stream="false" />
+								</p:commandLink>
+							</ui:repeat>
+						</h:panelGrid>
+					</p:outputPanel>
+				</p:outputPanel>
+			</h:panelGroup>
+			<h:panelGroup id="variacoes">
+				<p:outputPanel id="pnVariacao"
+					rendered="#{anuncioController.possuiVariacao}">
+					<p:outputLabel value="Variações"
+						style="font-size:medium;color: steelblue;margin-top:20px;" />
+					<p:separator style="height:1px" />
+					<p:outputPanel style="padding-left: 20px;">
+						<p:outputLabel value="Nome Variação: " />
+						<p:inputText id="nmVariacao" required="true"
+							requiredMessage="Campo Obrigatório"
+							value="#{anuncioController.nomeVariacao}" size="30" />
+						<br />
+						<p:commandButton value="Inserir"
+							style="margin-top: 15px;margin-bottom: 15px"
+							actionListener="#{anuncioController.adicionaVariaveis}"
+							update="nmVariacao combinacoes" process="pnVariacao" />
+					</p:outputPanel>
+					<h:panelGroup id="combinacoes">
+						<p:panel
+							style="width:650px;margin-left: 20px;border:none;background-color:white;">
+							<ui:repeat id="repeatVariacoes" var="variacao" varStatus="status"
+								value="#{anuncioController.anuncioMl.variacoes}">
+								<p:outputLabel value="Variação #{status.index+1}"
+									style="font-size:14px;color: steelblue;margin-top:20px;" />
+								<p:separator style="height:1px" />
+								<p:outputPanel>
+									<h:panelGrid columns="2">
+										<p:outputLabel value="Nome Variavel: " />
+										<p:inputText required="true"
+											value="#{variacao.valores.get(0).nome}"
+											requiredMessage="Campo Obrigatório" size="30" />
+										<p:outputLabel value="Quantidade: " />
+										<p:spinner required="true" value="#{variacao.qtdDisponivel}"
+											requiredMessage="Campo Obrigatório" size="10" />
+										<p:outputLabel value="SKU: " />
+										<p:inputText value="#{variacao.codRefProduto}" size="20" />
+									</h:panelGrid>
+								</p:outputPanel>
+								<br />
+								<p:fileUpload style="width:505px;padding-bottom: 20px;"
+									fileUploadListener="#{anuncioController.handleFileUploadVariacoes}"
+									mode="advanced" dragDropSupport="false" fileLimit="6"
+									allowTypes="/(\.|\/)(gif|jpeg|png)$/" update="imagesVariacoes">
+									<f:attribute name="index" value="#{status.index}" />
+								</p:fileUpload>
+								<p:outputPanel id="imagesVariacoes">
+									<h:panelGrid columns="6" style="padding-bottom: 15px;">
+										<ui:repeat value="#{variacao.pictures}"
+											varStatus="imageStatus">
+											<p:commandLink
+												actionListener="#{anuncioController.removerImagemVariacao(status.index,imageStatus.index)}"
+												immediate="true"
+												update=":form:repeatVariacoes:imagesVariacoes">
+												<p:graphicImage value="#{anuncioController.imagemVariacao}"
+													height="100" width="100" stream="false" />
+											</p:commandLink>
+										</ui:repeat>
+									</h:panelGrid>
+								</p:outputPanel>
+								<p:commandButton value="Excluir" style="margin-bottom: 20px;"
+									actionListener="#{anuncioController.removerVariavel(variacao)}"
+									update=":form:combinacoes" immediate="true">
+								</p:commandButton>
+								<br />
+							</ui:repeat>
+						</p:panel>
+					</h:panelGroup>
+				</p:outputPanel>
+			</h:panelGroup>
+			<br />
+			<p:outputLabel value="Forma de entrega"
+				style="font-size:medium;color: steelblue" />
+			<p:separator style="height:1px" />
+			<p:panel style="width: 500px;margin-left: 20px;">
+				<p:selectOneRadio id="tipoFrete"
+					value="#{anuncioController.tipoFrete}" layout="grid" columns="1">
+					<f:selectItem itemLabel="Frete por conta do comprador"
+						itemValue="tf1" />
+					<f:selectItem itemLabel="Envio por minha conta para todo o país"
+						itemValue="tf2" />
+					<f:selectItem
+						itemLabel="Envio por minha conta para todo o país, menos Norte e Nordeste."
+						itemValue="tf3" />
+				</p:selectOneRadio>
+			</p:panel>
+			<br />
+			<div style="margin-bottom: 10px;">
+				<p:selectBooleanCheckbox value="#{anuncioController.retirarEmMaos}"
+					style="padding-left: 20px;" />
+				<p:outputLabel value=" Também pode ser retirado pessoalmente" />
+			</div>
+			<h:panelGrid columns="3" cellpadding="3">
+				<p:outputLabel value="Produtos: " />
+				<p:selectOneMenu id="produtos"
+					value="#{anuncioController.produtoSelecionado}"
+					style="width:400px;" converter="#{produtoConverter}" filter="true"
+					filterMatchMode="contains">
+					<f:selectItem itemLabel="Selecione um produto" itemValue="" />
+					<f:selectItems value="#{anuncioController.produtos}" var="produto"
+						itemValue="#{produto}" itemLabel="#{produto.nome}" />
+					<f:ajax event="change" execute="produtos" />
+				</p:selectOneMenu>
+				<p:commandButton title="Adicionar" icon="ui-icon-plus"
+					immediate="true" update="dtProdutos"
+					action="#{anuncioController.adicionaProduto}">
+				</p:commandButton>
+			</h:panelGrid>
+			<br />
+			<h:panelGroup>
+				<p:dataTable var="produto" style="width:510px;"
+					value="#{anuncioController.anuncio.produtos}" rows="10"
+					rowKey="#{anuncio.idMl}"
+					selection="#{anuncioController.produtoSelecionado}" id="dtProdutos"
+					lazy="true">
+
+					<p:column headerText="Titulo">
+						<h:outputText value="#{produto.nome}" />
+					</p:column>
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-close" title="Remover"
+							action="#{anuncioController.removerProduto}" immediate="true"
+							update="dtProdutos">
+							<f:setPropertyActionListener value="#{produto}"
+								target="#{anuncioController.produtoSelecionado}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+				<br />
+				<p:commandButton value="Salvar"
+					oncomplete="if(!args.validationFailed) PF('cd').show()"
+					icon="ui-icon-check" validateClient="true" update="panel">
+				</p:commandButton>
+				<p:commandButton value="Voltar"
+					actionListener="#{anuncioController.voltar}" immediate="true"
+					action="listaAnuncios?faces-redirect=true">
+				</p:commandButton>
+			</h:panelGroup>
+
+			<p:dialog header="Categorias" widgetVar="diagCategorias" width="950"
+				height="250" modal="true" showEffect="fade" hideEffect="fade"
+				resizable="false">
+				<p:outputLabel id="pathCateg" style="margin:15px;"
+					value="#{anuncioController.pathCategorias}" />
+				<p:panelGrid id="categorias" styleClass="ui-noborder">
+					<p:row>
+						<ui:repeat value="#{anuncioController.hierarquiaCategorias}"
+							var="categorias" varStatus="categStatus">
+							<p:column rendered="#{not empty categorias}">
+								<p:orderList value="#{categorias}" var="categoria"
+									controlsLocation="none" itemValue="#{categoria}"
+									responsive="true" converter="#{categoriaMLConverter}"
+									style="width:200px;border-style: solid;border-width: 1px; border-color: PowderBlue;">
+									<p:ajax event="select"
+										listener="#{anuncioController.carregarSubCategorias}"
+										update="form:categorias form:pathCateg">
+									</p:ajax>
+									<p:column>
+										<h:outputText value="#{categoria.name}" />
+									</p:column>
+								</p:orderList>
+							</p:column>
+							<p:column rendered="#{empty categorias}">
+								<p:outputPanel>
+									<p:commandButton value="Selecionar" update="form:categoria"
+										oncomplete="PF('diagCategorias').hide()" immediate="true"
+										process="@this" />
+								</p:outputPanel>
+							</p:column>
+						</ui:repeat>
+					</p:row>
+				</p:panelGrid>
+			</p:dialog>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o anuncio?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{anuncioController.confirmaGravacao}"
+					action="#{anuncioController.salvar}" icon="ui-icon-check"
+					process="@this" update="message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

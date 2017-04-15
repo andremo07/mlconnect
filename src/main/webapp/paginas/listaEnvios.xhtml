@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="5" cellpadding="4">
+				<p:outputLabel for="dtInicio" value="Data Inicio:" />
+				<p:calendar id="dtInicio" showOn="button"
+					value="#{listaEnviosController.dtInicio}" />
+				<p:outputLabel for="dtFim" value="Data Fim:" />
+				<p:calendar id="dtFim" showOn="button"
+					value="#{listaEnviosController.dtFim}" />
+				<p:commandButton value="Listar"
+					actionListener="#{listaEnviosController.listarEnvios}"
+					update="panelTabelaEnvios" />
+			</h:panelGrid>
+			<br />
+			<h:panelGroup id="panelTabelaEnvios">
+				<p:dataTable var="envio"
+					value="#{listaEnviosController.enviosRealizados}" id="tabenvios"
+					style="width:420px;">
+
+					<p:column headerText="Id" style="width:100px;">
+						<h:outputText value="#{envio.idMl}" />
+					</p:column>
+					<p:column headerText="Data" style="width:100px;">
+						<h:outputText value="#{envio.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Custo" style="width:80px;">
+						<h:outputText value="#{envio.custo}" />
+					</p:column>
+					<p:summaryRow>
+						<p:column colspan="2" style="text-align:right">
+							<h:outputText value="Total:" />
+						</p:column>
+						<p:column>
+							<h:outputText value="10" />
+						</p:column>
+					</p:summaryRow>
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column colspan="2" style="text-align:right"
+								footerText="Total:" />
+							<p:column footerText="#{listaEnviosController.totalRegistros}" />
+						</p:row>
+					</p:columnGroup>
+				</p:dataTable>
+			</h:panelGroup>
+			<br />
+			<p:commandButton value="Voltar" immediate="true"
+				action="paginaInicial?faces-redirect=true">
+			</p:commandButton>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

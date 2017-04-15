@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<h:panelGroup id="panel">
+				<p:outputLabel value="Identificação"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid id="panelPessoas" columns="3" cellpadding="4">
+					<p:outputLabel value="Beneficiário: " />
+					<p:selectOneMenu id="pessoas"
+						value="#{contaPagarController.contaPagar.beneficiario}"
+						style="width:400px;" converter="#{pessoaConverter}" filter="true"
+						filterMatchMode="contains">
+						<f:selectItem itemLabel="Selecione o beneficiário" itemValue="" />
+						<f:selectItems value="#{contaPagarController.pessoas}"
+							var="pessoa" itemValue="#{pessoa}"
+							itemLabel="#{pessoa.nome} | #{pessoa.nrDocumento}" />
+					</p:selectOneMenu>
+					<p:message for="pessoas" />
+				</h:panelGrid>
+				<h:panelGrid id="panelCategorias" columns="4" cellpadding="4">
+					<p:outputLabel value="Categoria: " />
+					<p:selectOneMenu id="categorias" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{contaPagarController.contaPagar.categoria}"
+						style="width:400px;" converter="#{categoriaPagarConverter}"
+						filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel="Selecione a categoria" itemValue="" />
+						<f:selectItems value="#{contaPagarController.categorias}"
+							var="categoria" itemValue="#{categoria}"
+							itemLabel="#{categoria.nome}" />
+					</p:selectOneMenu>
+					<p:message for="categorias" />
+					<p:commandButton oncomplete="PF('cadCateg').show()"
+						icon="ui-icon-circle-plus"
+						actionListener="#{contaPagarController.abrirPopupCadastro}"
+						process="@this" update=":form:painelCadastroCateg" />
+					<p:outputLabel value="Nº Documento: " />
+					<p:inputText id="ndoc" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{contaPagarController.contaPagar.nrTransacao}" size="10" />
+					<p:message for="ndoc" />
+				</h:panelGrid>
+				<br />
+				<p:outputLabel value="Vencimento e Valor"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGrid columns="6" cellpadding="3">
+					<p:outputLabel value="Data Emissão: " />
+					<p:calendar id="dtEmissao" showOn="button" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{contaPagarController.contaPagar.dataEmissao}" />
+					<p:message for="dtEmissao" />
+					<p:outputLabel value="Data Vencimento: " />
+					<p:calendar id="dtVencimento" showOn="button" required="true"
+						requiredMessage="Campo Obrigatório"
+						value="#{contaPagarController.contaPagar.dataVencimento}" />
+					<p:message for="dtVencimento" />
+					<p:outputLabel value="Valor: " />
+					<p:inputNumber id="valor" required="true"
+						requiredMessage="Campo Obrigatório" symbol="R$"
+						value="#{contaPagarController.contaPagar.valor}"
+						decimalSeparator="," thousandSeparator="." />
+					<p:message for="valor" />
+				</h:panelGrid>
+				<br />
+				<p:outputLabel value="Anotações"
+					style="font-size:medium;color: steelblue" />
+				<p:separator style="height:1px" />
+				<h:panelGroup>
+					<p:inputTextarea
+						value="#{contaPagarController.contaPagar.anotacao}" />
+				</h:panelGroup>
+				<h:panelGroup>
+					<p:commandButton value="Salvar"
+						oncomplete="if(!args.validationFailed) PF('cd').show()"
+						icon="ui-icon-check" validateClient="true" update="panel"
+						process="panel">
+					</p:commandButton>
+					<p:commandButton value="Voltar"
+						actionListener="#{contaPagarController.voltar}" immediate="true"
+						action="listaContasPagar?faces-redirect=true">
+					</p:commandButton>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<p:dialog header="Cadastrar Categoria" widgetVar="cadCateg"
+				width="800" height="100" modal="true" showEffect="fade"
+				hideEffect="fade" resizable="false" id="painelCadastroCateg">
+				<p:outputPanel style="text-align:center;" layout="inline">
+					<h:panelGrid columns="3" width="320"
+						style="text-align:left;margin-bottom:14px;">
+						<p:outputLabel value="Nome Categoria: "
+							style="font-size: 18px;font-weight:100" />
+						<p:inputText id="nmCateg"
+							value="#{contaPagarController.categoria.nome}" required="true"
+							requiredMessage="Campo Obrigatório" />
+						<p:message for="nmCateg" />
+					</h:panelGrid>
+					<h:panelGroup>
+						<p:commandButton value="Cadastrar"
+							oncomplete="PF('cadCateg').hide()"
+							actionListener="#{contaPagarController.cadastrarCategoria}"
+							update="categorias" icon="ui-icon-check"
+							process="painelCadastroCateg" />
+						<p:commandButton value="Voltar" oncomplete="PF('cadCateg').hide()"
+							icon="ui-icon-close" immediate="true" />
+					</h:panelGroup>
+				</p:outputPanel>
+			</p:dialog>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o produto?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{contaPagarController.confirmaGravacao}"
+					action="#{contaPagarController.salvar}" icon="ui-icon-check"
+					process="@this" update="message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

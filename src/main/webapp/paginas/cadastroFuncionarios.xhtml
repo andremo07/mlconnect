@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<h:panelGrid id="panel" columns="3" cellpadding="4">
+				<p:outputLabel value="Nome: " />
+				<p:inputText id="nome" required="true"
+					requiredMessage="Campo Obrigatório"
+					value="#{funcionarioController.funcionario.nome}">
+				</p:inputText>
+				<p:message for="nome" />
+				<p:outputLabel value="Data Nascimento: " />
+				<p:calendar id="dtNasc" pattern="dd/MM/yyyy" mask="true"
+					value="#{funcionarioController.funcionario.dtNascimento}"
+					showOn="button" required="true" requiredMessage="Campo Obrigatório"/>
+				<p:message for="dtNasc" />
+				<p:outputLabel value="Cargo: " />
+				<p:selectOneMenu id="cargo" required="true" requiredMessage="Campo Obrigatório"
+					value="#{funcionarioController.funcionario.cargo}"
+					style="width:200px;" converter="#{cargoConverter}">
+					<f:selectItem itemLabel="Selecione um cargo" itemValue="" />
+					<f:selectItems value="#{funcionarioController.cargos}" var="cargo"
+						itemValue="#{cargo}" itemLabel="#{cargo.tipo}" />
+				</p:selectOneMenu>
+				<p:message for="cargo" />
+				<p:commandButton value="Salvar"
+					oncomplete="if(!args.validationFailed) PF('cd').show()"
+					icon="ui-icon-check" validateClient="true" update="panel">
+				</p:commandButton>
+				<p:commandButton value="Voltar" actionListener="#{funcionarioController.voltar}"
+					immediate="true" action="listaFuncionarios?faces-redirect=true">
+				</p:commandButton>
+			</h:panelGrid>
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja gravar o funcionário?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{funcionarioController.confirmaGravacao}"
+					action="#{funcionarioController.salvar}" icon="ui-icon-check"
+					process="@this" update="message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

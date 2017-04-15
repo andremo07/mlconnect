@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<p:outputPanel id="painel">
+				<p:fileUpload id="upLoadBaixa" mode="advanced" style="width: 450px;"
+					invalidFileMessage="Arquivo com formato inválido"
+					label="Baixa Estoque"
+					fileUploadListener="#{estoqueController.baixarEstoque}"
+					update="message panelTabelas" multiple="false" skinSimple="true"
+					allowTypes="/(\.|\/)(xls|xlsx)$/" />
+			</p:outputPanel>
+			<br />
+			<h:panelGroup id="panelTabelas">
+				<p:dataTable var="produto"
+					value="#{estoqueController.produtosAtualizadosList}"
+					scrollable="true" id="tabProdutosAtualizados" style="width:600px;"
+					rendered="#{not empty estoqueController.produtosAtualizadosList}">
+					<f:facet name="header">
+						<div align="left">
+							<h:outputText value="Produtos Atualizados"
+								style="text-align:left;" />
+						</div>
+					</f:facet>
+					<p:column headerText="Nome" style="width:350px;">
+						<h:outputText value="#{produto.nome}" />
+					</p:column>
+					<p:column headerText="SKU" style="width:100px;text-align:center;">
+						<h:outputText value="#{produto.sku}" />
+					</p:column>
+					<p:column headerText="Quantidade"
+						style="width:60px;text-align:center;">
+						<h:outputText value="#{produto.quantidadeDisponivel}" />
+					</p:column>
+				</p:dataTable>
+			</h:panelGroup>
+			<br />
+			<p:commandButton value="Voltar" immediate="true"
+				action="paginaInicial?faces-redirect=true">
+			</p:commandButton>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

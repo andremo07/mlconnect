@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<h:form id="menuForm">
+	<p:menubar autoDisplay="true">
+		<p:submenu label="Cadastro">
+			<p:menuitem value="Vendas"
+				action="cadastroVendas?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Anuncios"
+				action="listaAnuncios?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Produtos"
+				action="listaProdutos?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Conta Bancária"
+				action="cadastroContaBancaria?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+		</p:submenu>
+		<p:submenu label="Estoque">
+			<p:menuitem value="Baixa" action="estoque?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Reposição"
+				action="reposicaoEstoque?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+		</p:submenu>
+		<p:submenu label="Envios">
+			<p:menuitem value="Relação Envios"
+				action="listaEnvios?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Gerar Etiquetas"
+				action="geracaoEtiquetas?faces-redirect=true"
+				actionListener="#{menuController.consultar}" />
+		</p:submenu>
+		<p:submenu label="Financeiro">
+			<p:menuitem value="Contas a Pagar"
+				action="listaContasPagar?faces-redirect=true"
+				actionListener="#{menuController.consultar}" ajax="false" />
+			<p:menuitem value="Contas a Receber"
+				action="listaContasReceber?faces-redirect=true"
+				actionListener="#{menuController.consultar}" />
+			<p:menuitem value="Fluxo de Caixa"
+				action="fluxoDeCaixa?faces-redirect=true"
+				actionListener="#{menuController.consultar}" />
+		</p:submenu>
+	</p:menubar>
+</h:form>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="1" cellpadding="4" id="grid">
+				<p:commandButton value="Incluir" immediate="true"
+					action="#{contaPagarController.incluir}" />
+				<p:dataTable var="contaPagar" value="#{contaPagarController.model}"
+					paginator="true" rows="10" rowKey="#{contaPagar.id}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					paginatorPosition="bottom" rowsPerPageTemplate="5,10,15"
+					widgetVar="tabContasPagar"
+					id="dtContasPagar"
+					lazy="true" style="width:960px;">
+
+					<p:column headerText="Beneficiário" filterBy="#{contaPagar.nrTransacao}" filterMatchMode="equals">
+						<p:commandLink id="ajax" immediate="true"
+							title="Editar"
+							action="#{contaPagarController.editar}">
+							<h:outputText value="#{contaPagar.beneficiario.nome}" />
+							<br />
+							<h:outputText value="N° da transação: #{contaPagar.nrTransacao}" />
+							<f:setPropertyActionListener value="#{contaPagar}"
+								target="#{contaPagarController.contaPagar}" />
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Data Emissão"
+						style="width:100px;text-align: center">
+						<h:outputText value="#{contaPagar.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Data Vencimento"
+						style="width:100px;text-align: center">
+						<h:outputText value="#{contaPagar.dataVencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Valor" style="width:80px;text-align: center">
+						<h:outputText value="#{contaPagar.valor}" >
+							<f:convertNumber currencySymbol="R$" type="currency"/>
+						</h:outputText>
+					</p:column>
+					<p:column headerText="Visão Rápida"
+						style="width:65px;text-align: center">
+						<p:commandButton update=":form:detalhesConta"
+							oncomplete="PF('detalhesConta').show()" icon="ui-icon-search"
+							title="Visualizar" immediate="true"
+							actionListener="#{contaPagarController.visualizar(contaPagar)}">
+						</p:commandButton>
+					</p:column>
+					<p:column headerText="Status"
+						style="width:100px;text-align: center"
+						filterBy="#{contaPagar.status}" filterMatchMode="exact">
+						<f:facet name="filter">
+							<p:selectOneMenu onchange="PF('tabContasPagar').filter()"
+								style="width:75px;">
+								<f:selectItem itemLabel="#{contaPagarController.statusInicial}"
+									itemValue="#{contaPagarController.statusInicial}"
+									noSelectionOption="true" />
+								<f:selectItems value="#{contaPagarController.status}" />
+							</p:selectOneMenu>
+						</f:facet>
+						<h:outputText value="#{contaPagar.status}" />
+					</p:column>
+					<p:column style="width:75px;text-align: center">
+						<p:menuButton value="Ações">
+							<p:menuitem value="Duplicar" icon="ui-icon-copy" />
+							<p:menuitem value="Baixar" update=":form:baixarConta"
+								rendered="#{empty contaPagar.dataBaixa}" icon="ui-icon-check"
+								actionListener="#{contaPagarController.visualizar(contaPagar)}"
+								oncomplete="PF('baixarConta').show()" immediate="true" />
+							<p:menuitem value="Reverter Baixar"
+								rendered="#{!empty contaPagar.dataBaixa}" icon="fa fa-undo"
+								update="dtContasPagar"
+								actionListener="#{contaPagarController.reverterBaixar(contaPagar)}" />
+							<p:menuitem value="Excluir" icon="ui-icon-trash"
+								oncomplete="PF('cd').show()" process="@this">
+								<f:setPropertyActionListener value="#{contaPagar}"
+									target="#{contaPagarController.contaPagar}" />
+							</p:menuitem>
+						</p:menuButton>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+
+			<p:dialog header="Baixar Conta" widgetVar="baixarConta" width="800"
+				height="195" modal="true" showEffect="fade" hideEffect="fade"
+				resizable="false">
+				<p:outputPanel id="baixarConta" style="text-align:center;"
+					layout="inline">
+					<h:panelGrid id="gridDtBaixa" columns="4" width="750"
+						style="text-align:left;">
+						<p:outputLabel
+							style="font-size: 20px;font-weight:100;padding-right:250px"
+							value="NºDoc. #{contaPagarController.contaPagar.nrTransacao}" />
+						<p:outputLabel value="Data Baixa: "
+							style="font-size: 20px;font-weight:100" />
+						<p:calendar id="dataBaixa" showOn="button" required="true"
+							size="10" requiredMessage="Campo Obrigatório"
+							value="#{contaPagarController.contaPagar.dataBaixa}">
+							<f:ajax event="change" execute="@this" />
+						</p:calendar>
+						<p:message for="dataBaixa" />
+					</h:panelGrid>
+					<p:separator style="height:1px" />
+					<h:panelGrid columns="1" style="text-align:left;">
+						<p:outputLabel style="font-size: 14px;font-weight:100"
+							value="Benficiário" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.beneficiario.nome}" />
+					</h:panelGrid>
+					<h:panelGrid columns="2"
+						style="text-align:left;padding-bottom:10px">
+						<p:outputLabel value="Forma Pagamento: "
+							style="font-size: 14px;font-weight:100" />
+						<p:selectOneMenu id="formaPagamento"
+							value="#{contaPagarController.contaPagar.formaPagamento}"
+							style="width:200px;font-size: 14px;font-weight:100">
+							<f:selectItem itemLabel="Selecione a categoria" itemValue="" />
+							<f:selectItem itemLabel="Débito" itemValue="debito" />
+							<f:selectItem itemLabel="Crédito" itemValue="credito" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<h:panelGroup style="padding-top:40px;">
+						<p:commandButton value="Baixar"
+							oncomplete="PF('baixarConta').hide()"
+							actionListener="#{contaPagarController.baixar}"
+							update="dtContasPagar" icon="ui-icon-check" process="baixarConta" />
+						<p:commandButton value="Não" oncomplete="PF('baixarConta').hide()"
+							icon="ui-icon-close" immediate="true" />
+					</h:panelGroup>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<p:dialog header="Conta a pagar" widgetVar="detalhesConta"
+				width="800" height="165" modal="true" showEffect="fade"
+				hideEffect="fade" resizable="false">
+				<p:outputPanel id="detalhesConta" style="text-align:center;"
+					layout="inline">
+					<p:outputLabel style="font-size: 20px;font-weight:100"
+						value="NºDoc. #{contaPagarController.contaPagar.nrTransacao}" />
+					<p:separator style="height:1px" />
+					<h:panelGrid columns="3" width="750" style="text-align:left;">
+						<p:outputLabel value="Beneficiário"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Categoria"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Status"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.beneficiario.nome}" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.categoria.nome}" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.status}" />
+						<p:outputLabel value="Emissão"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Vencimento"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel value="Valor"
+							style="font-size: 14px;font-weight:100" />
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.dataEmissao}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+						<p:outputLabel style="font-size: 18px;font-weight:200"
+							value="#{contaPagarController.contaPagar.dataVencimento}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</p:outputLabel>
+						<p:outputLabel value="R$ #{contaPagarController.contaPagar.valor}"
+							style="font-size: 18px;font-weight:200" />
+					</h:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+
+
+			<p:confirmDialog header="Confirmação"
+				message="Deseja remover essa conta?" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{contaPagarController.remover}"
+					icon="ui-icon-check" process="@this" update="dtContasPagar message" />
+				<p:commandButton value="Não" onclick="PF('cd').hide()" type="button"
+					icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

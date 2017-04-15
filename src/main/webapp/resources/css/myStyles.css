@@ -1,0 +1,32 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	font-size: 11px;
+}
+
+.ESTOQUE_ALTO {
+	background-color: #a7f1a7 !important;
+}
+
+.ESTOQUE_BAIXO {
+	background-color: #FFA07A !important;
+}
+
+.ESTOQUE_MEDIO {
+	background-color: #FFFF99 !important;
+}
+
+.ui-fileupload-content .ui-progressbar {
+	width: 0px !important;
+	height: 0px !important;
+	margin: 0 !important;
+}
+
+.ui-fileupload-buttonbar .ui-fileupload-cancel {
+    display: none !important;
+}
+
+.noBorders tr, .noBorders td {
+    background: none !important;
+    border: none !important;
+}

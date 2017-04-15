@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div style="font-size: 11px">
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:commandButton value="Incluir"
+					action="#{anuncioController.incluir}" />
+				<p:dataTable var="anuncio"
+					value="#{anuncioController.model}" paginator="true" rows="10"
+					rowKey="#{anuncio.id}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+					paginatorPosition="bottom" rowsPerPageTemplate="5,10,15"
+					selectionMode="single"
+					selection="#{anuncioController.anuncio}"
+					id="tabanuncios" lazy="true">
+
+					<p:column style="width:70px;text-align: center"
+					filterBy="#{anuncio.idMl}" filterMatchMode="contains" headerText="IDML">
+						<h:outputText value="#{anuncio.idMl}"/>
+					</p:column>
+
+					<p:column style="width:250px;text-align: center"
+					filterBy="#{anuncio.titulo}" filterMatchMode="contains" headerText="Titulo">
+						<h:outputText value="#{anuncio.titulo}" />
+					</p:column>
+					
+					<p:column style="width:70px;text-align: center" headerText="Valor">
+						<h:outputText value="#{anuncio.valor}"/>
+					</p:column>
+					
+					<p:column style="width:70px;text-align: center" headerText="Tipo">
+						<h:outputText value="#{anuncio.tipo}"/>
+					</p:column>
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-pencil" title="Editar"
+							action="#{anuncioController.editar}">
+							<f:setPropertyActionListener value="#{anuncio}"
+								target="#{anuncioController.anuncio}" />
+						</p:commandButton>
+					</p:column>
+					<p:column style="width:32px;text-align: center">
+						<p:commandButton icon="ui-icon-trash" title="Remover"
+							oncomplete="PF('cd').show()">
+							<f:setPropertyActionListener value="#{anuncio}"
+								target="#{anuncioController.anuncio}" />
+						</p:commandButton>
+					</p:column>
+				</p:dataTable>
+			</h:panelGrid>
+			<p:confirmDialog header="Confirmação"
+				message="Deseja remover o anuncio" showEffect="fade"
+				hideEffect="fade" widgetVar="cd">
+				<p:commandButton value="Sim" oncomplete="PF('cd').hide()"
+					actionListener="#{anuncioController.remover}"
+					icon="ui-icon-check"
+					process="@this" update="tabanuncios message" />
+				<p:commandButton value="Não" oncomplete="PF('cd').hide()"
+					type="button" icon="ui-icon-close" />
+			</p:confirmDialog>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

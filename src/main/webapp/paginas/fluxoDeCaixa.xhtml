@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/template.xhtml">
+	<ui:define name="content">
+		<div>
+			<p:dataTable var="fluxoDeCaixa" scrollable="true" scrollWidth="99%"
+				value="#{fluxoDeCaixaController.fluxoDeCaixas}">
+
+				<p:columnGroup type="header">
+					<p:row>
+						<p:column headerText="" width="210" />
+						<ui:repeat value="#{fluxoDeCaixaController.meses}" var="mes">
+							<p:column headerText="#{mes}" width="80" />
+						</ui:repeat>
+					</p:row>
+				</p:columnGroup>
+
+				<p:subTable var="conta" style="width:1000px;"
+					value="#{fluxoDeCaixa.contas}">
+
+					<p:column width="200">
+						<h:outputText value="#{conta.categoria}" />
+					</p:column>
+
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(1)}"
+							rendered="#{!empty conta.getValorMensal(1)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(2)}"
+							rendered="#{!empty conta.getValorMensal(2)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(3)}"
+							rendered="#{!empty conta.getValorMensal(3)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(4)}"
+							rendered="#{!empty conta.getValorMensal(4)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(5)}"
+							rendered="#{!empty conta.getValorMensal(5)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(6)}"
+							rendered="#{!empty conta.getValorMensal(6)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(7)}"
+							rendered="#{!empty conta.getValorMensal(7)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(8)}"
+							rendered="#{!empty conta.getValorMensal(8)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(9)}"
+							rendered="#{!empty conta.getValorMensal(9)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(10)}"
+							rendered="#{!empty conta.getValorMensal(10)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(11)}"
+							rendered="#{!empty conta.getValorMensal(11)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+					<p:column width="80">
+						<h:outputText value="#{conta.getValorMensal(12)}"
+							rendered="#{!empty conta.getValorMensal(12)}">
+							<f:convertNumber pattern="###,###.00"/>
+						</h:outputText>
+					</p:column>
+
+					<p:columnGroup type="footer">
+						<p:row>
+							<p:column footerText="#{fluxoDeCaixa.tipoFluxo}" width="180"
+								style="text-align:left;" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(0)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(1)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(2)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(3)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(4)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(5)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(6)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(7)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(8)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(9)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(10)}" width="80" />
+							<p:column style="text-align:left;"
+								footerText="R$ #{fluxoDeCaixa.totais.get(11)}" width="80" />
+						</p:row>
+					</p:columnGroup>
+				</p:subTable>
+
+				<p:columnGroup type="footer">
+					<p:row>
+						<p:column footerText="Resuldado Operacional" width="180"
+							style="text-align:left;" />
+						<ui:repeat
+							value="#{fluxoDeCaixaController.resultadosOperacionais}"
+							var="resultadoOperacional">
+							<p:column footerText="R$ #{resultadoOperacional}" width="80"
+								style="text-align:left;" />
+						</ui:repeat>
+					</p:row>
+					<p:row>
+						<p:column footerText="Saldo Inicial" width="180"
+							style="text-align:left;" />
+						<ui:repeat value="#{fluxoDeCaixaController.saldos}" var="saldo">
+							<p:column footerText="R$ #{saldo.valor}" width="80"
+								style="text-align:left;" >
+							</p:column>
+						</ui:repeat>
+					</p:row>
+					<p:row>
+						<p:column footerText="SALDO FINAL DE CAIXA" width="180"
+							style="text-align:left;" />
+						<ui:repeat value="#{fluxoDeCaixaController.saldosFinaisDeCaixa}"
+							var="saldoFinalDeCaixa">
+							<p:column footerText="R$ #{saldoFinalDeCaixa}" width="80"
+								style="text-align:left;" />
+						</ui:repeat>
+					</p:row>
+				</p:columnGroup>
+
+			</p:dataTable>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>
