@@ -1,5 +1,6 @@
 package br.com.mpconnect.nfe.generator;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -8,15 +9,21 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.Collections;
 
+import org.apache.commons.io.FileUtils;
+
 import com.fincatto.nfe310.assinatura.AssinaturaDigital;
+import com.fincatto.nfe310.classes.NFAmbiente;
 import com.fincatto.nfe310.classes.NFModelo;
 import com.fincatto.nfe310.classes.NFProtocolo;
+import com.fincatto.nfe310.classes.NFUnidadeFederativa;
 import com.fincatto.nfe310.classes.lote.consulta.NFLoteConsultaRetorno;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvio;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvioRetorno;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteIndicadorProcessamento;
 import com.fincatto.nfe310.classes.nota.NFNota;
+import com.fincatto.nfe310.classes.statusservico.consulta.NFStatusServicoConsultaRetorno;
 import com.fincatto.nfe310.parsers.NotaParser;
+import com.fincatto.nfe310.utils.NFGeraCadeiaCertificados;
 import com.fincatto.nfe310.utils.NFGeraChave;
 import com.fincatto.nfe310.webservices.WSFacade;
 
@@ -31,13 +38,13 @@ public class App
     {
         //System.out.println( "Hello World!" );
     	
-    	/*
-    	try {
-            FileUtils.writeByteArrayToFile(new File("producao.cacerts"), NFGeraCadeiaCertificados.geraCadeiaCertificados(NFAmbiente.PRODUCAO, "123456"));
-            FileUtils.writeByteArrayToFile(new File("homologacao.cacerts"), NFGeraCadeiaCertificados.geraCadeiaCertificados(NFAmbiente.HOMOLOGACAO, "123456"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
+    	
+//    	try {
+//            FileUtils.writeByteArrayToFile(new File("producao.cacerts"), NFGeraCadeiaCertificados.geraCadeiaCertificados(NFAmbiente.PRODUCAO, "123456"));
+//            FileUtils.writeByteArrayToFile(new File("homologacao.cacerts"), NFGeraCadeiaCertificados.geraCadeiaCertificados(NFAmbiente.HOMOLOGACAO, "123456"));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     	
     	
     	// Gerar XML da nota de entrada.
@@ -89,6 +96,10 @@ public class App
         loteEnvio.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
     	
         //JasperPrint js = new 
+
+//        NFStatusServicoConsultaRetorno retorno2 = new WSFacade(config).consultaStatus(NFUnidadeFederativa.RJ, NFModelo.NFE);
+//        System.out.println(retorno2.getStatus());
+//        System.out.println(retorno2.getMotivo());
 
         
         

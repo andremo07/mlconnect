@@ -9,6 +9,10 @@
 		<welcome-file>login.xhtml</welcome-file>
 		<welcome-file>login.jsp</welcome-file>
 	</welcome-file-list>
+
+	<session-config>
+		<session-timeout>3</session-timeout>
+	</session-config>
 	
 	<!-- Spring -->
 	<context-param>
@@ -65,7 +69,7 @@
 		<dispatcher>REQUEST</dispatcher>
     	<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-   
+	
 <!--    <filter>   -->
 <!--        <filter-name>validator</filter-name>   -->
 <!--        <filter-class>br.com.mpconnect.web.filter.TesteFilter</filter-class>   -->
@@ -114,6 +118,7 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 	
+	<!-- Primepush 
 	<servlet>
 		<servlet-name>Push Servlet</servlet-name>
 		<servlet-class>org.primefaces.push.PushServlet</servlet-class>
@@ -128,7 +133,7 @@
 		<servlet-name>Push Servlet</servlet-name>
 		<url-pattern>/primepush/*</url-pattern>
 	</servlet-mapping>
-	
+	-->
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
 		<param-value>redmond</param-value>
@@ -144,5 +149,5 @@
     	<param-name>javax.faces.PROJECT_STAGE</param-name>
     	<param-value>Development</param-value>
   	</context-param>
-	
+  		
 </web-app>

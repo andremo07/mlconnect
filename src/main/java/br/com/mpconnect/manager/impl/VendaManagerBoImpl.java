@@ -203,7 +203,7 @@ public class VendaManagerBoImpl implements VendaManagerBo, Serializable {
 	@Transactional
 	public void carregaVendasRecentes(){
 
-		Set<VendaML> vendasMl = apiVendas.recuperaVendasPeriodo(apiUsuario.getIdUsuarioLogado(), DateUtils.adicionaDias(new Date(), -4), new Date());
+		Set<VendaML> vendasMl = apiVendas.recuperaVendasPeriodo(apiUsuario.getIdUsuarioLogado(), DateUtils.adicionaDias(new Date(), -15), new Date());
 		vendasMl = retornaVendasNaoExistentes(vendasMl);
 
 

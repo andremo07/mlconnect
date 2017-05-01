@@ -3,9 +3,10 @@ package br.com.mpconnect.ml.api;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import br.com.mpconnect.manager.AcessoManagerBo;
-
 import com.mercadolibre.sdk.Meli;
+
+import br.com.mpconnect.manager.AcessoManagerBo;
+import br.com.mpconnect.model.AcessoMl;
 
 public class ApiMl {
 	
@@ -19,9 +20,8 @@ public class ApiMl {
 	
 	@PostConstruct
 	public void init(){
-		
-		me = acessoManager.getAcessoMl();
-		
+		AcessoMl acessoMl = acessoManager.recuperarUltimoAcesso();
+		me = new Meli(acessoMl.getClientId(),acessoMl.getClientSecret() , acessoMl.getAccessToken(),acessoMl.getRefreshToken());
 	}
 
 	public AcessoManagerBo getAcessoManager() {

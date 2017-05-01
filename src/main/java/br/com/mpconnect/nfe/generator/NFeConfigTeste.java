@@ -1,5 +1,6 @@
 package br.com.mpconnect.nfe.generator;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +49,8 @@ public class NFeConfigTeste extends NFeConfig {
 		
 		if (this.keyStoreCertificado == null) {
             this.keyStoreCertificado = KeyStore.getInstance("PKCS12");
-            try (InputStream certificadoStream = new FileInputStream("/resources/certificado.pfx")) {
+            
+            try (InputStream certificadoStream = new FileInputStream("certificado.pfx")) {
                 this.keyStoreCertificado.load(certificadoStream, this.getCertificadoSenha().toCharArray());
             } catch (CertificateException | NoSuchAlgorithmException | IOException e) {
                 this.keyStoreCadeia = null;

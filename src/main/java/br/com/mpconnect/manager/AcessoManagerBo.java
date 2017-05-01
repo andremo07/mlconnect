@@ -1,10 +1,12 @@
 package br.com.mpconnect.manager;
 
-import com.mercadolibre.sdk.Meli;
+import br.com.mpconnect.dao.DaoException;
+import br.com.mpconnect.model.AcessoMl;
 
 
 public interface AcessoManagerBo {
 	
-	public Meli getAcessoMl();
+	public void conectarMl();
+	public AcessoMl recuperarUltimoAcesso();
 	
 }

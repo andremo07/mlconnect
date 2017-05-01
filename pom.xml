@@ -27,8 +27,8 @@
 		</repository>
 
 		<repository>
-			<id>mercadolibre-snapshots</id>
-			<url>https://github.com/mercadolibre/java-sdk-repo/raw/master/snapshots</url>
+			<id>repo</id>
+			<url>https://github.com/mercadolibre/java-sdk-repo/raw/master/releases</url>
 		</repository>
 
 		<repository>
