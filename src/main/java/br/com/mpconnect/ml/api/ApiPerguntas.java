@@ -9,27 +9,31 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import br.com.mpconnect.ml.data.PerguntaML;
-import br.com.mpconnect.utils.DateUtils;
-import br.com.mpconnect.utils.comparator.PerguntaMLComparator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
-@Service
-public class ApiPerguntas extends ApiMl{
+import br.com.mpconnect.ml.data.PerguntaML;
+import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.utils.comparator.PerguntaMLComparator;
 
+@Component
+public class ApiPerguntas{
+
+	@Autowired
+	private ApiMl apiMl;
+	
 	public List<PerguntaML> recuperarPerguntasVenda(String itemId, String clientId){
 		try {
 
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
+			params.add("access_token", apiMl.getMe().getAccessToken());
 			params.add("item", itemId);
 			params.add("from", clientId);
-			Response meliResponse = this.getMe().get("/questions/search",params);
+			Response meliResponse = apiMl.getMe().get("/questions/search",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			JSONArray perguntas = jsonObject.getJSONArray("questions");
 

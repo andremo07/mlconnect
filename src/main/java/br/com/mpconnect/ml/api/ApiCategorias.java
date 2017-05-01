@@ -7,19 +7,23 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import br.com.mpconnect.ml.data.CategoriaML;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.Response;
 
-@Service
-public class ApiCategorias extends ApiMl {
+import br.com.mpconnect.ml.data.CategoriaML;
+
+@Component
+public class ApiCategorias{
+	
+	@Autowired
+	private ApiMl apiMl;
 	
 	public List<CategoriaML> retornaCategoriasPrincipais() throws MeliException, JSONException, IOException{
 		
-		Response meliResponse = this.getMe().get("/sites/MLB/categories");
+		Response meliResponse = apiMl.getMe().get("/sites/MLB/categories");
 		JSONArray arrayCategorias = new JSONArray(meliResponse.getResponseBody());
 		List<CategoriaML> categorias = parseJsonArrayToArrayCategorias(arrayCategorias);
 		return categorias;
@@ -28,7 +32,7 @@ public class ApiCategorias extends ApiMl {
 	
 	public List<CategoriaML> retornaSubCategorias(String idCategoria) throws MeliException, JSONException, IOException{
 		
-		Response meliResponse = this.getMe().get("/categories/"+idCategoria);
+		Response meliResponse = apiMl.getMe().get("/categories/"+idCategoria);
 		JSONObject jsonObj = new JSONObject(meliResponse.getResponseBody());
 		JSONArray arrayCategorias = jsonObj.getJSONArray("children_categories");
 		List<CategoriaML> categorias = parseJsonArrayToArrayCategorias(arrayCategorias);
@@ -38,7 +42,7 @@ public class ApiCategorias extends ApiMl {
 	
 	public CategoriaML retornaCategoria(String idCategoria) throws MeliException, JSONException, IOException{
 		
-		Response meliResponse = this.getMe().get("/categories/"+idCategoria);
+		Response meliResponse = apiMl.getMe().get("/categories/"+idCategoria);
 		JSONObject jsonObj = new JSONObject(meliResponse.getResponseBody());
 		CategoriaML categoria = parseJsonToCategoriaML(jsonObj);
 		return categoria;

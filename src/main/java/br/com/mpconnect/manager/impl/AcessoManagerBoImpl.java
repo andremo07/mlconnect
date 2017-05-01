@@ -18,10 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.transaction.support.TransactionTemplate;
+
+import com.mercadolibre.sdk.Meli;
 
 import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.DaoException;
@@ -57,7 +56,7 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 	}
 
 	@Transactional
-	public void conectarMl() {
+	public Meli conectarMl() {
 
 		try {
 
@@ -74,18 +73,24 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 			acessoMl.setAccessToken(accessToken);
 			acessoMl.setRefreshToken(refreshToken);
 			acessoDao.alterar(acessoMl);
+			Meli meli = new Meli(acessoMl.getClientId(),acessoMl.getClientSecret() , acessoMl.getAccessToken(),acessoMl.getRefreshToken());
+			return meli;
 		} catch (DaoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 	}
 	

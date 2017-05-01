@@ -3,16 +3,13 @@ package br.com.mpconnect.ml.api;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.mercadolibre.sdk.Meli;
 
 import br.com.mpconnect.manager.AcessoManagerBo;
-import br.com.mpconnect.model.AcessoMl;
 
 @Component
-@Scope("singleton") 
 public class ApiMl {
 	
 	@Resource
@@ -22,11 +19,12 @@ public class ApiMl {
 	
 	public static final int RESPONSE_STATUS_CODE_FAIL = 400;
 	public static final int RESPONSE_STATUS_CODE_SUCCESS = 204;
-	
+
 	@PostConstruct
 	public void init(){
-		AcessoMl acessoMl = acessoManager.recuperarUltimoAcesso();
-		me = new Meli(acessoMl.getClientId(),acessoMl.getClientSecret() , acessoMl.getAccessToken(),acessoMl.getRefreshToken());
+		System.out.println();
+		//AcessoMl acessoMl = acessoManager.recuperarUltimoAcesso();
+		//me = new Meli(acessoMl.getClientId(),acessoMl.getClientSecret() , acessoMl.getAccessToken(),acessoMl.getRefreshToken());
 	}
 
 	public AcessoManagerBo getAcessoManager() {

@@ -2,12 +2,16 @@ package br.com.mpconnect.ml.api;
 
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.ml.data.ClienteML;
 
-@Service
-public class ApiCliente extends ApiMl {
+@Component
+public class ApiCliente{
+	
+	@Autowired
+	private ApiMl apiMl;
 	
 	public ClienteML parseJson(JSONObject jsonObj){
 

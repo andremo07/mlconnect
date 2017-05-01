@@ -11,7 +11,12 @@ import java.util.Set;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.mercadolibre.sdk.MeliException;
+import com.ning.http.client.FluentStringsMap;
+import com.ning.http.client.Response;
 
 import br.com.mpconnect.ml.api.enums.StatusAnuncioEnum;
 import br.com.mpconnect.ml.data.AnuncioML;
@@ -22,14 +27,11 @@ import br.com.mpconnect.ml.data.ValorVariacaoML;
 import br.com.mpconnect.ml.data.VariacaoML;
 import br.com.mpconnect.utils.DateUtils;
 
-import com.mercadolibre.sdk.MeliException;
-import com.ning.http.client.FluentStringsMap;
-import com.ning.http.client.Response;
+@Component
+public class ApiProdutos{
 
-@Service
-public class ApiProdutos extends ApiMl{
-
-
+	@Autowired
+	private ApiMl apiMl;
 
 	public List<AnuncioML> recuperaAnuncios(String idUsuario){
 
@@ -78,11 +80,11 @@ public class ApiProdutos extends ApiMl{
 		try {
 
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
+			params.add("access_token", apiMl.getMe().getAccessToken());
 			JSONObject parametrosJson = parseAnuncio(anuncio);
-			Response meliResponse = this.getMe().post("/items/validate", params, parametrosJson.toString());
+			Response meliResponse = apiMl.getMe().post("/items/validate", params, parametrosJson.toString());
 			if(meliResponse.getStatusCode()== ApiMl.RESPONSE_STATUS_CODE_SUCCESS){
-				meliResponse = this.getMe().post("/items", params, parametrosJson.toString());
+				meliResponse = apiMl.getMe().post("/items", params, parametrosJson.toString());
 				JSONObject jsonResponse = new JSONObject(meliResponse.getResponseBody());
 			}
 			else{
@@ -106,8 +108,8 @@ public class ApiProdutos extends ApiMl{
 	public void atualizarAnuncio(AnuncioML anuncioMl,JSONObject parametrosAlterados){
 		try {
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().put("/items/"+anuncioMl.getId(), params, parametrosAlterados.toString());
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().put("/items/"+anuncioMl.getId(), params, parametrosAlterados.toString());
 			JSONObject jsonResponse = new JSONObject(meliResponse.getResponseBody());
 			System.out.println();
 		} catch (JSONException e) {
@@ -205,13 +207,13 @@ public class ApiProdutos extends ApiMl{
 	public void adicionaDescricao(String idAnuncio, String html){
 		try {
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
+			params.add("access_token", apiMl.getMe().getAccessToken());
 
 			JSONObject jsonObj = new JSONObject();
 			jsonObj.put("description", html);
 
 
-			Response meliResponse = this.getMe().put("/items/"+idAnuncio+"/descriptions", params, jsonObj.toString());
+			Response meliResponse = apiMl.getMe().put("/items/"+idAnuncio+"/descriptions", params, jsonObj.toString());
 			JSONObject jsonResponse = new JSONObject(meliResponse.getResponseBody());
 
 
@@ -232,7 +234,7 @@ public class ApiProdutos extends ApiMl{
 
 		try {
 
-			Response meliResponse = this.getMe().get("/items/"+idAnuncio);
+			Response meliResponse = apiMl.getMe().get("/items/"+idAnuncio);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			AnuncioML anuncio = parseJson(jsonObject);
 			return anuncio;
@@ -256,7 +258,7 @@ public class ApiProdutos extends ApiMl{
 			params.add("last", "1");
 			params.add("unit", "day");
 			params.add("ending", DateUtils.getDataAnteriorString(dias-1));
-			Response meliResponse = this.getMe().get("/items/"+idAnuncio+"/visits/time_window",params);
+			Response meliResponse = apiMl.getMe().get("/items/"+idAnuncio+"/visits/time_window",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			Integer totalVisitas = jsonObject.getInt("total_visits");
 			return totalVisitas;
@@ -277,7 +279,7 @@ public class ApiProdutos extends ApiMl{
 
 		try {
 
-			Response meliResponse = this.getMe().get("/items/"+idAnuncio+"/descriptions/MLB704220068-932591798");
+			Response meliResponse = apiMl.getMe().get("/items/"+idAnuncio+"/descriptions/MLB704220068-932591798");
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			return jsonObject;
 		} catch (MeliException e) {
@@ -300,7 +302,7 @@ public class ApiProdutos extends ApiMl{
 				params = new FluentStringsMap();
 
 			if(!params.containsKey("access_token"))
-				params.add("access_token", this.getMe().getAccessToken());
+				params.add("access_token", apiMl.getMe().getAccessToken());
 
 			if(!params.containsKey("limit"))
 				params.add("limit", "50");
@@ -308,7 +310,7 @@ public class ApiProdutos extends ApiMl{
 			if(!params.containsKey("offset"))
 				params.add("offset", offset.toString());
 
-			Response meliResponse = this.getMe().get("/users/"+idVendedor+"/items/search",params);
+			Response meliResponse = apiMl.getMe().get("/users/"+idVendedor+"/items/search",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			JSONArray idsAnuncios = jsonObject.getJSONArray("results");
 			if(stringIdsAnuncios==null)
@@ -346,8 +348,8 @@ public class ApiProdutos extends ApiMl{
 		try{
 			if(params==null)
 				params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().get("/users/"+idVendedor+"/items/search",params);
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/users/"+idVendedor+"/items/search",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			JSONObject jsonObjectPaging = (JSONObject) jsonObject.get("paging");
 			Integer total = (Integer) jsonObjectPaging.get("total");
@@ -583,7 +585,7 @@ public class ApiProdutos extends ApiMl{
 	public List<TipoAnuncioML> retornaTipoAnuncios(){
 		try {
 			List<TipoAnuncioML> tiposAnuncios = new ArrayList<TipoAnuncioML>();
-			Response meliResponse = this.getMe().get("/sites/MLB/listing_types");
+			Response meliResponse = apiMl.getMe().get("/sites/MLB/listing_types");
 			JSONArray jsonArray = new JSONArray(meliResponse.getResponseBody());
 			for(int index=0; index<jsonArray.length(); index++){
 				JSONObject jsonObject = jsonArray.getJSONObject(index);
@@ -609,7 +611,7 @@ public class ApiProdutos extends ApiMl{
 
 	public Map<String,VariacaoML> retornaVariacoesPossiveisPorCategoria(String idCategoria){
 		try {
-			Response meliResponse = this.getMe().get("/categories/"+idCategoria+"/attributes/");
+			Response meliResponse = apiMl.getMe().get("/categories/"+idCategoria+"/attributes/");
 			JSONArray jsonArray = new JSONArray(meliResponse.getResponseBody());
 			Map<String,VariacaoML> variacoes = new HashMap<String,VariacaoML>();
 			for(int index=0; index<jsonArray.length(); index++){

@@ -9,18 +9,22 @@ import java.util.List;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
-import br.com.mpconnect.ml.data.EnderecoML;
-import br.com.mpconnect.ml.data.EnvioML;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
-@Service("apiEnvios")
-public class ApiEnvios extends ApiMl{
+import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
+import br.com.mpconnect.ml.data.EnderecoML;
+import br.com.mpconnect.ml.data.EnvioML;
+
+@Component("apiEnvios")
+public class ApiEnvios{
+	
+	@Autowired
+	private ApiMl apiMl;
 
 	private EnderecoML parseEndereco(JSONObject jsonObj){
 
@@ -76,7 +80,7 @@ public class ApiEnvios extends ApiMl{
 
 		try {
 
-			Response meliResponse = this.getMe().get("/categories/"+categoria+"/shipping");
+			Response meliResponse = apiMl.getMe().get("/categories/"+categoria+"/shipping");
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 
 			String height = jsonObject.getString("height");
@@ -87,7 +91,7 @@ public class ApiEnvios extends ApiMl{
 			FluentStringsMap params = new FluentStringsMap();
 			params.add("dimensions", height+"x"+width+"x"+length+","+weight);
 
-			meliResponse = this.getMe().get("/users/"+idUsuario+"/shipping_options/free",params);
+			meliResponse = apiMl.getMe().get("/users/"+idUsuario+"/shipping_options/free",params);
 			jsonObject = new JSONObject(meliResponse.getResponseBody());
 
 			Double custoEnvio = jsonObject.getJSONObject("coverage").getJSONObject("all_country_except_exclusion_zone").getDouble("list_cost");
@@ -109,7 +113,7 @@ public class ApiEnvios extends ApiMl{
 
 		try {
 
-			Response meliResponse = this.getMe().get("/categories/"+categoria+"/shipping");
+			Response meliResponse = apiMl.getMe().get("/categories/"+categoria+"/shipping");
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 
 			String height = jsonObject.getString("height");
@@ -122,7 +126,7 @@ public class ApiEnvios extends ApiMl{
 			params.add("zip_code_from", "24210-145");
 			params.add("zip_code_to", cepComprador);
 
-			meliResponse = this.getMe().get("/sites/MLB/shipping_options",params);
+			meliResponse = apiMl.getMe().get("/sites/MLB/shipping_options",params);
 			jsonObject = new JSONObject(meliResponse.getResponseBody());
 
 			Double custoEnvio = jsonObject.getJSONObject("coverage").getJSONObject("all_country_except_exclusion_zone").getDouble("list_cost");
@@ -148,7 +152,7 @@ public class ApiEnvios extends ApiMl{
 			params.add("shipment_ids", idsEnvios);
 			//params.add("shipment_ids", "25836325361%2025820092634%2025836325223%2025832914335");
 			params.add("response_type", "pdf");
-			params.add("access_token", this.getMe().getAccessToken());
+			params.add("access_token", apiMl.getMe().getAccessToken());
 			JSONArray array = new JSONArray(idsEnvios);
 			JSONObject jsonObj = new JSONObject();
 			try {
@@ -158,8 +162,8 @@ public class ApiEnvios extends ApiMl{
 				e.printStackTrace();
 			}
 
-			Response meliResponse = this.getMe().get("/shipment_labels",params);
-			//Response meliResponse = this.getMe().get("/shipment_labels?shipment_ids=25836325361,25820092634,25836325223,25832914335&savePdf=Y&access_token="+this.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/shipment_labels",params);
+			//Response meliResponse = apiMl.getMe().get("/shipment_labels?shipment_ids=25836325361,25820092634,25836325223,25832914335&savePdf=Y&access_token="+apiMl.getMe().getAccessToken());
 			InputStream input = meliResponse.getResponseBodyAsStream();
 			return input;
 
@@ -187,7 +191,7 @@ public class ApiEnvios extends ApiMl{
 
 			String apiUrl = "https://api.mercadolibre.com";
 			String url = apiUrl+"/shipment_labels?shipment_ids="+sb+
-					"&savePdf=Y&access_token="+this.getMe().getAccessToken();
+					"&savePdf=Y&access_token="+apiMl.getMe().getAccessToken();
 
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();

@@ -1,39 +1,34 @@
 package br.com.mpconnect.ml.api;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import br.com.mpconnect.ml.data.AnuncioML;
-import br.com.mpconnect.ml.data.TipoAnuncioML;
-import br.com.mpconnect.ml.data.UsuarioML;
-import br.com.mpconnect.utils.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
-@Service
-public class ApiUsuario extends ApiMl{
+import br.com.mpconnect.ml.data.UsuarioML;
+import br.com.mpconnect.utils.DateUtils;
 
-	public ApiUsuario(){
+@Component
+public class ApiUsuario{
 
-
-	}
+	@Autowired
+	private ApiMl apiMl;
 
 	public String getIdUsuarioLogado(){
 
 		try {
 			////myfeeds?app_id={App_id}
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().get("/users/me",params);
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/users/me",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			String id = jsonObject.getString("id");
 			return id;	
@@ -56,7 +51,7 @@ public class ApiUsuario extends ApiMl{
 		try {
 			FluentStringsMap params = new FluentStringsMap();
 			params.add("app_id", "4013368235398167");
-			Response meliResponse = this.getMe().get("/myfeeds",params);
+			Response meliResponse = apiMl.getMe().get("/myfeeds",params);
 			JSONArray jsonArray = new JSONArray(meliResponse.getResponseBody());
 			for(int index=0; index<jsonArray.length(); index++){
 				JSONObject jsonObject = jsonArray.getJSONObject(index);;
@@ -82,8 +77,8 @@ public class ApiUsuario extends ApiMl{
 
 		try {
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().get("/users/"+idUsuario,params);
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/users/"+idUsuario,params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			UsuarioML usuario = parseJson(jsonObject);
 			return usuario;	
@@ -107,7 +102,7 @@ public class ApiUsuario extends ApiMl{
 			FluentStringsMap params = new FluentStringsMap();
 			params.add("date_from", DateUtils.getDataFormatada(dataInicio));
 			params.add("date_to", DateUtils.getDataFormatada(dataFim));
-			Response meliResponse = this.getMe().get("/users/"+idUsuario+"/items_visits",params);
+			Response meliResponse = apiMl.getMe().get("/users/"+idUsuario+"/items_visits",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			Integer totalVisitas = jsonObject.getInt("total_visits");
 			return totalVisitas;	
@@ -131,7 +126,7 @@ public class ApiUsuario extends ApiMl{
 			params.add("last", "1");
 			params.add("unit", "day");
 			params.add("ending", DateUtils.getDataAnteriorString(dias-1));
-			Response meliResponse = this.getMe().get("/users/"+idUsuario+"/items_visits/time_window",params);
+			Response meliResponse = apiMl.getMe().get("/users/"+idUsuario+"/items_visits/time_window",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			Integer totalVisitas = jsonObject.getInt("total_visits");
 			return totalVisitas;	

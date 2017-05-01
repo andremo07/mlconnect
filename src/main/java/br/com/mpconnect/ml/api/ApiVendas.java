@@ -12,7 +12,11 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
+import com.mercadolibre.sdk.MeliException;
+import com.ning.http.client.FluentStringsMap;
+import com.ning.http.client.Response;
 
 import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
 import br.com.mpconnect.ml.api.enums.StatusEtiquetaMlEnum;
@@ -26,13 +30,12 @@ import br.com.mpconnect.ml.data.VendaML;
 import br.com.mpconnect.utils.DateUtils;
 import br.com.mpconnect.utils.comparator.MensagemMLComparator;
 
-import com.mercadolibre.sdk.MeliException;
-import com.ning.http.client.FluentStringsMap;
-import com.ning.http.client.Response;
+@Component
+public class ApiVendas{
 
-@Service
-public class ApiVendas extends ApiMl{
-
+	@Autowired
+	private ApiMl apiMl;
+	
 	@Autowired
 	private ApiEnvios apiEnvios;
 
@@ -111,7 +114,7 @@ public class ApiVendas extends ApiMl{
 	
 	private void adicionaParametros(FluentStringsMap params, String idVendedor){
 		params.add("seller", idVendedor);
-		params.add("access_token", this.getMe().getAccessToken());
+		params.add("access_token", apiMl.getMe().getAccessToken());
 		params.add("offset", "0");
 	}
 	
@@ -120,8 +123,8 @@ public class ApiVendas extends ApiMl{
 		try {
 			FluentStringsMap params = new FluentStringsMap();
 			params.add("seller", idVendedor);
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().get("/orders/"+id,params);
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/orders/"+id,params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			return parseJson(jsonObject);
 		} catch (MeliException e) {
@@ -142,7 +145,7 @@ public class ApiVendas extends ApiMl{
 
 		try {
 
-			Response meliResponse = this.getMe().get("/orders/search",params);
+			Response meliResponse = apiMl.getMe().get("/orders/search",params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			JSONArray vendas = jsonObject.getJSONArray("results");
 
@@ -181,8 +184,8 @@ public class ApiVendas extends ApiMl{
 		try {
 
 			FluentStringsMap params = new FluentStringsMap();
-			params.add("access_token", this.getMe().getAccessToken());
-			Response meliResponse = this.getMe().get("/messages/orders/"+resourceId,params);
+			params.add("access_token", apiMl.getMe().getAccessToken());
+			Response meliResponse = apiMl.getMe().get("/messages/orders/"+resourceId,params);
 			JSONObject jsonObject = new JSONObject(meliResponse.getResponseBody());
 			JSONArray mensagens = jsonObject.getJSONArray("results");
 

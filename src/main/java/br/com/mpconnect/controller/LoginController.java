@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -17,6 +16,7 @@ import com.mercadolibre.sdk.Meli;
 import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.UsuarioDao;
 import br.com.mpconnect.manager.AcessoManagerBo;
+import br.com.mpconnect.ml.api.ApiMl;
 import br.com.mpconnect.model.Usuario;
 
 
@@ -24,6 +24,10 @@ import br.com.mpconnect.model.Usuario;
 @Scope(value="view")
 public class LoginController implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4099469083045992073L;
 	private String user;
 	private String senha;
 
@@ -32,6 +36,9 @@ public class LoginController implements Serializable{
 
 	@Autowired
 	private UsuarioDao usuarioDao;
+		
+	@Autowired
+	private ApiMl apiMl;
 	
 	public LoginController(){
 
@@ -44,7 +51,8 @@ public class LoginController implements Serializable{
 			Usuario usuario = usuarioDao.getUsuarioByLoginSenha("admin", "admin");
 
 			if(usuario!=null){
-				acessoManager.conectarMl();
+				Meli meli = acessoManager.conectarMl();
+				apiMl.setMe(meli);
 				Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 				map.put("usuario", usuario);
 				if(map.containsKey("lastPage")){
