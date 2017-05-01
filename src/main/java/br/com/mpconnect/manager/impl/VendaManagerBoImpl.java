@@ -479,4 +479,10 @@ public class VendaManagerBoImpl implements VendaManagerBo, Serializable {
 
 	}
 
+
+	@Override
+	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni, Date dtFinal) {
+		return vendaDao.recuperarVendasPorPeriodoSemNfe(dtIni, dtFinal);
+	}
+
 }

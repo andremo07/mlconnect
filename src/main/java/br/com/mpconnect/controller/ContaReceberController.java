@@ -18,6 +18,7 @@ import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.PessoaDao;
 import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.ml.api.enums.StatusContaReceberEnum;
+import br.com.mpconnect.ml.api.enums.TipoPagamentoEnum;
 import br.com.mpconnect.model.CategoriaContaReceber;
 import br.com.mpconnect.model.ContaReceber;
 import br.com.mpconnect.model.Pessoa;
@@ -55,7 +56,7 @@ public class ContaReceberController extends GenericCrudController<ContaReceber> 
 	@PostConstruct
 	public void init(){
 		try{
-			if(tipoOperacao==0){
+			if(tipoOperacao==null||tipoOperacao==0){
 				this.getModel().setRowCount(contaReceberDao.recuperaTotalRegistros().intValue());
 				this.getModel().setDatasource(contaReceberDao.recuperaTodosPorIntervalo(0, this.getModel().getPageSize(), new HashMap<String, Object>()));
 			}

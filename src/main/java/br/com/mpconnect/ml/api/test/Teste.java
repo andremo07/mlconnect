@@ -1,6 +1,5 @@
 package br.com.mpconnect.ml.api.test;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -8,21 +7,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import org.codehaus.jettison.json.JSONException;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
-import com.mercadolibre.sdk.MeliException;
-
 import br.com.mpconnect.manager.VendaManagerBo;
 import br.com.mpconnect.ml.api.ApiCategorias;
-import br.com.mpconnect.ml.api.ApiEnvios;
 import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiProdutos;
 import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.api.ApiVendas;
 import br.com.mpconnect.ml.data.AnuncioML;
-import br.com.mpconnect.ml.data.CategoriaML;
 import br.com.mpconnect.ml.data.MensagemVendaML;
 import br.com.mpconnect.ml.data.TipoAnuncioML;
 import br.com.mpconnect.ml.data.VendaML;
@@ -38,14 +32,14 @@ public class Teste {
 		ClassPathXmlApplicationContext ctx = 
 				new ClassPathXmlApplicationContext("applicationContext.xml");
 
-		ApiProdutos apiProdutos = (ApiProdutos) ctx.getBean("apiProdutos");
+//		ApiProdutos apiProdutos = (ApiProdutos) ctx.getBean("apiProdutos");
 		ApiUsuario apiUsuario = (ApiUsuario) ctx.getBean("apiUsuario");
 		ApiVendas apiVendas = (ApiVendas) ctx.getBean("apiVendas");
-		ApiCategorias apiCategorias = (ApiCategorias) ctx.getBean("apiCategorias");
-		ApiPerguntas apiPerguntas = (ApiPerguntas)ctx.getBean("apiPerguntas");
+//		ApiCategorias apiCategorias = (ApiCategorias) ctx.getBean("apiCategorias");
+//		ApiPerguntas apiPerguntas = (ApiPerguntas)ctx.getBean("apiPerguntas");
 		VendaManagerBo vendasManager = (VendaManagerBo) ctx.getBean("vendasManager");
 		
-		VendaML venda2 = apiVendas.retornaVendaPorId("1321321828", apiUsuario.getIdUsuarioLogado());
+		VendaML venda2 = apiVendas.retornaVendaPorId("1180741404", apiUsuario.getIdUsuarioLogado());
 					
 		List<MensagemVendaML> msgs = apiVendas.obterMensagensPosVenda("1263510385");
 		//List<ProdutoML> produtos = apiProdutos.recuperaProdutos(apiUsuario.getIdUsuarioLogado());

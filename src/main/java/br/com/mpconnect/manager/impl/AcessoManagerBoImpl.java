@@ -47,13 +47,13 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 	@PostConstruct
 	public void init(){
 
-		TransactionTemplate tmpl = new TransactionTemplate(txManager);
-		tmpl.execute(new TransactionCallbackWithoutResult() {
-			@Override
-			protected void doInTransactionWithoutResult(TransactionStatus status) {
-				conectarMl();
-			}
-		});
+//		TransactionTemplate tmpl = new TransactionTemplate(txManager);
+//		tmpl.execute(new TransactionCallbackWithoutResult() {
+//			@Override
+//			protected void doInTransactionWithoutResult(TransactionStatus status) {
+//				conectarMl();
+//			}
+//		});
 	}
 
 	@Transactional
@@ -89,6 +89,7 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 		}
 	}
 	
+	@Transactional
 	public AcessoMl recuperarUltimoAcesso(){
 		try {
 			return acessoDao.recuperarUltimo();

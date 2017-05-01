@@ -1,5 +1,7 @@
 package br.com.mpconnect.manager;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import br.com.mpconnect.ml.data.VendaML;
@@ -20,5 +22,6 @@ public interface VendaManagerBo {
 	public Venda recuperarVenda(String id);
 	public Long getMaxIdVenda();
 	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl);
+	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni,Date dtFinal);
 	
 }

@@ -236,23 +236,25 @@ public class ApiVendas extends ApiMl{
 			List<PagamentoML> pagamentos = new ArrayList<PagamentoML>();
 			for (int index=0;index < pagamentosJS.length();index++){
 				JSONObject obj = pagamentosJS.getJSONObject(index);
-				String idPagamento = obj.getString("id");
-				Double valorTransacao = obj.getDouble("transaction_amount");
-				Double custoEnvio = obj.getDouble("shipping_cost");
-				Double totalPago = obj.getDouble("total_paid_amount");
-				String tipoPagamento = obj.getString("payment_type");
-				String numeroParcelas = obj.getString("installments");
-				int numParcelas=0;
-				if(!numeroParcelas.equals("null"))
-					numParcelas=new Integer(numeroParcelas).intValue();
-				PagamentoML pagamento = new PagamentoML();
-				pagamento.setId(idPagamento);
-				pagamento.setValorTransacao(valorTransacao);
-				pagamento.setCustoEnvio(custoEnvio);
-				pagamento.setTotalPago(totalPago);
-				pagamento.setTipoPagamento(tipoPagamento);
-				pagamento.setNumeroParcelas(numParcelas);
-				pagamentos.add(pagamento);
+				if(obj.get("status").equals("approved")){
+					String idPagamento = obj.getString("id");
+					Double valorTransacao = obj.getDouble("transaction_amount");
+					Double custoEnvio = obj.getDouble("shipping_cost");
+					Double totalPago = obj.getDouble("total_paid_amount");
+					String tipoPagamento = obj.getString("payment_type");
+					String numeroParcelas = obj.getString("installments");
+					int numParcelas=0;
+					if(!numeroParcelas.equals("null"))
+						numParcelas=new Integer(numeroParcelas).intValue();
+					PagamentoML pagamento = new PagamentoML();
+					pagamento.setId(idPagamento);
+					pagamento.setValorTransacao(valorTransacao);
+					pagamento.setCustoEnvio(custoEnvio);
+					pagamento.setTotalPago(totalPago);
+					pagamento.setTipoPagamento(tipoPagamento);
+					pagamento.setNumeroParcelas(numParcelas);
+					pagamentos.add(pagamento);
+				}
 			}
 
 			//ENVIO

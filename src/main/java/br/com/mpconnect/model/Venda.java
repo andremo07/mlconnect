@@ -29,6 +29,18 @@ public class Venda implements Persistente{
 	@Column(name="DATA")
 	private Date data;
 	
+	@Column(name="NR_NFE")
+	private Long nrNfe;
+	
+	@Column(name="NR_SERIE_NFE")
+	private Long nrSerieNfe;
+	
+	@Column(name="NR_NFE_ST")
+	private Long nrNfeSt;
+	
+	@Column(name="NR_SERIE_NFE_ST")
+	private Long nrSerieNfeSt;
+	
 	@OneToMany(fetch = FetchType.LAZY,cascade={CascadeType.ALL})
 	@JoinColumn(name="VENDA_ID", nullable=false)
 	private List<DetalheVenda> detalhesVenda;
@@ -123,6 +135,38 @@ public class Venda implements Persistente{
 
 	public void setOrigem(Origem origem) {
 		this.origem = origem;
+	}
+
+	public Long getNrNfe() {
+		return nrNfe;
+	}
+
+	public void setNrNfe(Long nrNfe) {
+		this.nrNfe = nrNfe;
+	}
+
+	public Long getNrSerieNfe() {
+		return nrSerieNfe;
+	}
+
+	public void setNrSerieNfe(Long nrSerieNfe) {
+		this.nrSerieNfe = nrSerieNfe;
+	}
+
+	public Long getNrNfeSt() {
+		return nrNfeSt;
+	}
+
+	public void setNrNfeSt(Long nrNfeSt) {
+		this.nrNfeSt = nrNfeSt;
+	}
+
+	public Long getNrSerieNfeSt() {
+		return nrSerieNfeSt;
+	}
+
+	public void setNrSerieNfeSt(Long nrSerieNfeSt) {
+		this.nrSerieNfeSt = nrSerieNfeSt;
 	}
 	
 }

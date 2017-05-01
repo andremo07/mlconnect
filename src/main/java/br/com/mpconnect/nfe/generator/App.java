@@ -72,7 +72,6 @@ public class App
     	NFeConfigTeste config = new NFeConfigTeste();
     	
     	NFNota nota = new NFNota();
-    	nota.setInfo(GerarNotaConsumidor.getNFNotaInfo());
     	
     	NFGeraChave ch = new NFGeraChave(nota);
     	

@@ -1,6 +1,7 @@
 package br.com.mpconnect.dao.impl;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -27,6 +28,13 @@ public class VendaDaoImpl extends DaoCrudImpJpa<Venda> implements VendaDao, Seri
 	public List<String> recuperaIdsVendasExistentes(List<String> ids){
 		Query query = getEntityManager().createQuery("select v.id from Venda v where v.id in (:ids)");
 		query.setParameter("ids", ids);
+		return query.getResultList();
+	}
+	
+	public List<Venda> recuperarVendasPorPeriodoSemNfe(Date dtIni,Date dtFinal){
+		Query query = getEntityManager().createQuery("from Venda v where (v.data between :dtInicio and :dtFim) and v.nrNfe is null");
+		query.setParameter("dtInicio", dtIni);
+		query.setParameter("dtFim", dtFinal);
 		return query.getResultList();
 	}
 

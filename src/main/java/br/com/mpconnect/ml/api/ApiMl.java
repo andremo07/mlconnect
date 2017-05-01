@@ -3,11 +3,16 @@ package br.com.mpconnect.ml.api;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
 import com.mercadolibre.sdk.Meli;
 
 import br.com.mpconnect.manager.AcessoManagerBo;
 import br.com.mpconnect.model.AcessoMl;
 
+@Component
+@Scope("singleton") 
 public class ApiMl {
 	
 	@Resource
