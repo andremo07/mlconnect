@@ -1,6 +1,6 @@
 package br.com.mpconnect.ml.api.enums;
 
-import br.com.mpconnect.ml.data.TipoAnuncioML;
+import br.com.mpconnect.ml.dto.TipoAnuncioML;
 
 public enum TipoAnuncioEnum {
 	

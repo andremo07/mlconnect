@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="USUARIO")
@@ -30,6 +31,9 @@ public class Usuario implements Persistente, Serializable{
 	
 	@Column(name="TIPO")
 	private String tipo;
+	
+	@Transient
+	private AcessoMl acessoMercadoLivre;
 
 	public Long getId() {
 		return id;
@@ -61,6 +65,14 @@ public class Usuario implements Persistente, Serializable{
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public AcessoMl getAcessoMercadoLivre() {
+		return acessoMercadoLivre;
+	}
+
+	public void setAcessoMercadoLivre(AcessoMl acessoMercadoLivre) {
+		this.acessoMercadoLivre = acessoMercadoLivre;
 	}
 	
 }

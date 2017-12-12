@@ -18,15 +18,23 @@
 	<context-param>
         <param-name>contextConfigLocation</param-name>
            <param-value>
-                /WEB-INF/applicationContext.xml
+                classpath:spring.xml
         </param-value>
     </context-param>
+    <context-param>
+		<param-name>contextInitializerClasses</param-name>
+		<param-value>br.com.mpconnect.spring.initializer.ApplicationInitializer</param-value>
+	</context-param>
     
     <!-- File Upload -->
 	<context-param>
         <param-name>primefaces.UPLOADER</param-name>
         <param-value>auto</param-value>
     </context-param>
+	
+	<listener>
+		<listener-class>br.com.mpconnect.listener.Log4JListener</listener-class>
+	</listener>
 	
 	<listener>
         <listener-class>
@@ -98,7 +106,6 @@
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
-		<async-supported>true</async-supported>
 	</servlet>
 	<!-- Map these files with JSF -->
 	<servlet-mapping>

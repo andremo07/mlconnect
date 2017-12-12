@@ -17,8 +17,8 @@ import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
 import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
-import br.com.mpconnect.ml.data.EnderecoML;
-import br.com.mpconnect.ml.data.EnvioML;
+import br.com.mpconnect.ml.dto.EnderecoML;
+import br.com.mpconnect.ml.dto.EnvioML;
 
 @Component("apiEnvios")
 public class ApiEnvios{

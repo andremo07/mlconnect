@@ -13,7 +13,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -29,25 +28,24 @@ import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.VendaDao;
+import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.VendaManagerBo;
-import br.com.mpconnect.ml.api.ApiEnvios;
 import br.com.mpconnect.ml.api.ApiPerguntas;
-import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.api.ApiVendas;
-import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
-import br.com.mpconnect.ml.api.enums.StatusEtiquetaMlEnum;
-import br.com.mpconnect.ml.data.MensagemVendaML;
-import br.com.mpconnect.ml.data.PerguntaML;
-import br.com.mpconnect.ml.data.VendaML;
+import br.com.mpconnect.ml.dto.MensagemVendaML;
+import br.com.mpconnect.ml.dto.PerguntaML;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.VendaComparator;
+import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
+import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
+import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 @Component
 @Scope(value="view")
@@ -61,13 +59,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	private VendaDao vendaDao;
 
 	@Autowired
-	private ApiEnvios apiEnvios;
-
-	@Autowired
 	private ApiVendas apiVendas;
-
-	@Autowired
-	private ApiUsuario apiUsuario;
 
 	@Autowired
 	private ApiPerguntas apiPerguntas;
@@ -96,19 +88,19 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			vendasManager.carregaVendasRecentes();
-			Set<VendaML> vendasMl = apiVendas.recuperaVendasPorStatusEnvio(apiUsuario.getIdUsuarioLogado(), StatusEnvioMlEnum.PRONTO_PARA_ENVIO, StatusEtiquetaMlEnum.PRONTO_PARA_IMPRIMIR);
-			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
+			//vendasManager.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -3), new Date());
+			vendas = vendasManager.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
+/*			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
 				VendaML vendaMl = it.next();
 				Venda venda = vendaDao.recuperaUm(vendaMl.getId());
 				if(venda!=null)
 					vendas.add(venda);
 			}
 
-			Collections.sort(vendas,new VendaComparator());
+			Collections.sort(vendas,new VendaComparator());*/
 
-		} catch (DaoException e) {
-			e.printStackTrace();
+		} catch (BusinessException e) {
+			addMessage("Erro!", "Problema no carregamento das vendas recentes");
 		}
 	}
 
@@ -140,11 +132,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			ZipUtils zipUtils = new ZipUtils(zipFile);
 
 			Collections.sort(vendasSelecionadas, new VendaComparator());
-			//GERAÇÂO DO ARQUIVO PDF
-			List<String> idsEnvios = getIdsEnvios();
-			InputStream pdfInputStream = apiEnvios.gerarEtiquetas2(idsEnvios);
-			//
-
+			//GERAÇÂO DO ARQUIVO PDF		
+			InputStream pdfInputStream = vendasManager.printShippingTags(vendasSelecionadas);
+	
 			//LEITURA PDF
 			if(pdfInputStream!=null){
 				PdfUtils pdfFile = new PdfUtils(pdfInputStream);
@@ -158,9 +148,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				//
 
 				//GERAÇAO PLANILHA EXCEL
-				if(idsEnvios.size()==codigosNf.size()){
+				if(vendasSelecionadas.size()==codigosNf.size()){
 					XSSFWorkbook workbook = new XSSFWorkbook();
-					criarPlanilhaExcelEnvio(workbook,idsEnvios,codigosNf);
+					criarPlanilhaExcelEnvio(workbook,codigosNf);
 					File fileExcel = new File(path+"\\planilhaTemp.xlsx");
 					fileExcel.createNewFile();
 					FileOutputStream fos = new FileOutputStream(fileExcel);
@@ -171,7 +161,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 					InputStream excelInputStream = new BufferedInputStream(new FileInputStream(fileExcel));
 					zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
 				}
-				//
 
 				//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
 				zipUtils.finalizarGravacao();
@@ -187,19 +176,21 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (ProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
-	public void criarPlanilhaExcelEnvio(XSSFWorkbook workbook,List<String> idsEnvios,List<String> codigosNf){
+	public void criarPlanilhaExcelEnvio(XSSFWorkbook workbook, List<String> codigosNf){
 
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
 		XSSFSheet sheet = excelUtils.criarFolha("FirstSheet");  
 
 		XSSFRow cabecalhoRow = sheet.createRow((short)0);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "ID", 0);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "NF", 1);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 2);
+		excelUtils.criarCelulaCabecalho(cabecalhoRow, "NF", 0);
+		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 1);
 
 		int index =0;
 		for(Iterator<Venda> i = vendasSelecionadas.iterator(); i.hasNext();){
@@ -210,11 +201,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				produto=new Produto();
 				produto.setSku("");
 			}
-			System.out.println(produto.getSku());
 			XSSFRow row = sheet.createRow((short)index+1);
-			excelUtils.criarCelula(row, idsEnvios.get(index), 0, true);
-			excelUtils.criarCelula(row, codigosNf.get(index), 1, true);
-			excelUtils.criarCelula(row, produto.getSku(), 2, true);
+			excelUtils.criarCelula(row, codigosNf.get(index), 0, true);
+			excelUtils.criarCelula(row, produto.getSku(), 1, true);
 			index++;
 		}
 
@@ -225,20 +214,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			vendasSelecionadas.add(venda);
 		else
 			vendasSelecionadas.remove(venda);
-	}
-
-	private List<String> getIdsEnvios(){
-		List<String> idsEnvios = new ArrayList<String>();
-		try {
-			for(Venda venda: vendasSelecionadas){
-				venda = vendaDao.recuperaUm(venda.getId());
-				idsEnvios.add(venda.getEnvio().getIdMl());
-			}
-		} catch (DaoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return idsEnvios;
 	}
 
 	public List<Venda> getVendas() {

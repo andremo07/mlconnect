@@ -20,7 +20,7 @@ import br.com.mpconnect.dao.ContaPagarDao;
 import br.com.mpconnect.dao.ContaReceberDao;
 import br.com.mpconnect.manager.ContaBancariaManagerBo;
 import br.com.mpconnect.ml.api.enums.MesesEnum;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.util.DateUtils;
 
 @Component
 @Scope(value="view")

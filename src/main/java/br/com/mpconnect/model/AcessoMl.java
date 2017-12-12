@@ -4,10 +4,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="ACESSO_ML")
 public class AcessoMl implements Persistente{
+	
+	@Transient
+	private String idMl;
 	
 	@Id
 	@Column(name="CLIENT_ID")
@@ -52,6 +56,14 @@ public class AcessoMl implements Persistente{
 
 	public void setRefreshToken(String refreshToken) {
 		this.refreshToken = refreshToken;
+	}
+	
+	public String getIdMl() {
+		return idMl;
+	}
+
+	public void setIdMl(String idMl) {
+		this.idMl = idMl;
 	}
 
 	public Long getId() {

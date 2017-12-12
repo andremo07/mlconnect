@@ -36,13 +36,13 @@ import br.com.mpconnect.ml.api.ApiProdutos;
 import br.com.mpconnect.ml.api.enums.ModoEnvioFreteGratisMlEnum;
 import br.com.mpconnect.ml.api.enums.ModoEnvioMlEnum;
 import br.com.mpconnect.ml.api.enums.TipoAnuncioEnum;
-import br.com.mpconnect.ml.data.AnuncioML;
-import br.com.mpconnect.ml.data.CategoriaML;
-import br.com.mpconnect.ml.data.MetodoEnvioML;
-import br.com.mpconnect.ml.data.PictureML;
-import br.com.mpconnect.ml.data.TipoAnuncioML;
-import br.com.mpconnect.ml.data.ValorVariacaoML;
-import br.com.mpconnect.ml.data.VariacaoML;
+import br.com.mpconnect.ml.dto.AnuncioML;
+import br.com.mpconnect.ml.dto.CategoriaML;
+import br.com.mpconnect.ml.dto.MetodoEnvioML;
+import br.com.mpconnect.ml.dto.PictureML;
+import br.com.mpconnect.ml.dto.TipoAnuncioML;
+import br.com.mpconnect.ml.dto.ValorVariacaoML;
+import br.com.mpconnect.ml.dto.VariacaoML;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Produto;
 
@@ -392,7 +392,7 @@ public class AnuncioController extends GenericCrudController<Anuncio> implements
 			outStream.close();
 			targetFile.createNewFile();
 			List<PictureML> imagens = anuncioMl.getPictures();
-			String serverPath = "http://localhost:8080/ml-connect/tmp/";
+			String serverPath = "http://localhost:8080/mlconnect/tmp/";
 			PictureML pic = new PictureML();
 			pic.setSource(serverPath+file.getFileName());
 			imagens.add(pic);
@@ -427,7 +427,7 @@ public class AnuncioController extends GenericCrudController<Anuncio> implements
 			outStream.close();
 			targetFile.createNewFile();
 			List<PictureML> imagens = variacao.getPictures();
-			String serverPath = "http://localhost:8080/ml-connect/tmp/";
+			String serverPath = "http://localhost:8080/mlconnect/tmp/";
 			PictureML pic = new PictureML();
 			pic.setSource(serverPath+file.getFileName());
 			imagens.add(pic);

@@ -1,4 +1,4 @@
-package br.com.mpconnect.utils;
+package br.com.mpconnect.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

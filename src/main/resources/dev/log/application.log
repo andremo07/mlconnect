@@ -1,0 +1,285 @@
+2017-11-30 17:36:17 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-11-30 17:36:17 localhost-startStop-1 INFO  AbstractApplicationContext:582 258 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Thu Nov 30 17:36:17 BRST 2017]; root of context hierarchy
+2017-11-30 17:36:17 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 448 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-11-30 17:36:20 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 3702 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-11-30 17:36:21 localhost-startStop-1 INFO  DriverManagerDataSource:133 4283 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-11-30 17:36:22 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 4877 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-11-30 17:36:22 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 4878 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-11-30 17:36:22 localhost-startStop-1 INFO  LogHelper:46 5098 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-11-30 17:36:23 localhost-startStop-1 INFO  Version:54 6215 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-11-30 17:36:23 localhost-startStop-1 INFO  Environment:239 6236 - <clinit> - HHH000206: hibernate.properties not found
+2017-11-30 17:36:23 localhost-startStop-1 INFO  Environment:346 6246 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-11-30 17:36:25 localhost-startStop-1 INFO  JavaReflectionManager:66 8186 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-11-30 17:36:26 localhost-startStop-1 INFO  Dialect:145 9138 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-11-30 17:36:26 localhost-startStop-1 INFO  LobCreatorBuilder:88 9246 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-11-30 17:36:27 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 10625 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-11-30 17:36:31 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 14053 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-11-30 17:36:33 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 16356 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-11-30 17:36:34 localhost-startStop-1 INFO  ContextLoader:345 16876 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 16869 ms
+2017-12-01 17:52:09 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-01 17:52:09 localhost-startStop-1 INFO  AbstractApplicationContext:582 595 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Fri Dec 01 17:52:09 BRST 2017]; root of context hierarchy
+2017-12-01 17:52:09 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 832 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-01 17:52:17 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 7908 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-01 17:52:17 localhost-startStop-1 INFO  DriverManagerDataSource:133 8709 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-01 17:52:18 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 9690 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-01 17:52:18 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 9693 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-01 17:52:19 localhost-startStop-1 INFO  LogHelper:46 10152 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-01 17:52:22 localhost-startStop-1 INFO  Version:54 13319 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-01 17:52:22 localhost-startStop-1 INFO  Environment:239 13347 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-01 17:52:22 localhost-startStop-1 INFO  Environment:346 13391 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-01 17:52:27 localhost-startStop-1 INFO  JavaReflectionManager:66 18419 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-01 17:52:29 localhost-startStop-1 INFO  Dialect:145 20149 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-01 17:52:29 localhost-startStop-1 INFO  LobCreatorBuilder:88 20386 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-01 17:52:32 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 23561 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-01 17:52:42 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 33808 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 17:52:46 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 36896 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-01 17:52:46 localhost-startStop-1 INFO  ContextLoader:345 37506 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 37469 ms
+2017-12-01 18:15:15 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-01 18:15:15 localhost-startStop-1 INFO  AbstractApplicationContext:582 227 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Fri Dec 01 18:15:15 BRST 2017]; root of context hierarchy
+2017-12-01 18:15:15 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 370 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-01 18:15:17 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 2072 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-01 18:15:18 localhost-startStop-1 INFO  DriverManagerDataSource:133 2603 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-01 18:15:18 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 2887 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-01 18:15:18 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 2888 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:15:18 localhost-startStop-1 INFO  LogHelper:46 3008 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-01 18:15:19 localhost-startStop-1 INFO  Version:54 3599 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-01 18:15:19 localhost-startStop-1 INFO  Environment:239 3604 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-01 18:15:19 localhost-startStop-1 INFO  Environment:346 3607 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-01 18:15:20 localhost-startStop-1 INFO  JavaReflectionManager:66 4757 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-01 18:15:20 localhost-startStop-1 INFO  Dialect:145 5188 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-01 18:15:20 localhost-startStop-1 INFO  LobCreatorBuilder:88 5217 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-01 18:15:21 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 5874 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-01 18:15:22 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 7329 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:15:24 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 8978 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-01 18:15:24 localhost-startStop-1 INFO  ContextLoader:345 9337 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 9331 ms
+2017-12-01 18:27:57 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-01 18:27:57 localhost-startStop-1 INFO  AbstractApplicationContext:582 508 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Fri Dec 01 18:27:57 BRST 2017]; root of context hierarchy
+2017-12-01 18:27:58 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 782 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-01 18:28:02 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 5046 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-01 18:28:02 localhost-startStop-1 INFO  DriverManagerDataSource:133 5479 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-01 18:28:03 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 5819 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-01 18:28:03 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 5820 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:28:03 localhost-startStop-1 INFO  LogHelper:46 5899 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-01 18:28:03 localhost-startStop-1 INFO  Version:54 6257 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-01 18:28:03 localhost-startStop-1 INFO  Environment:239 6264 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-01 18:28:03 localhost-startStop-1 INFO  Environment:346 6278 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-01 18:28:04 localhost-startStop-1 INFO  JavaReflectionManager:66 7323 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-01 18:28:04 localhost-startStop-1 INFO  Dialect:145 7631 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-01 18:28:05 localhost-startStop-1 INFO  LobCreatorBuilder:88 7666 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-01 18:28:06 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 8814 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-01 18:28:08 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 10974 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:28:11 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 13719 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-01 18:28:11 localhost-startStop-1 INFO  ContextLoader:345 14450 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 14409 ms
+2017-12-01 18:43:34 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-01 18:43:34 localhost-startStop-1 INFO  AbstractApplicationContext:582 214 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Fri Dec 01 18:43:34 BRST 2017]; root of context hierarchy
+2017-12-01 18:43:34 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 333 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-01 18:43:37 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 2817 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-01 18:43:37 localhost-startStop-1 INFO  DriverManagerDataSource:133 3378 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-01 18:43:38 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 3717 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-01 18:43:38 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 3718 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:43:38 localhost-startStop-1 INFO  LogHelper:46 3805 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-01 18:43:38 localhost-startStop-1 INFO  Version:54 4067 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-01 18:43:38 localhost-startStop-1 INFO  Environment:239 4072 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-01 18:43:38 localhost-startStop-1 INFO  Environment:346 4075 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-01 18:43:39 localhost-startStop-1 INFO  JavaReflectionManager:66 5175 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-01 18:43:39 localhost-startStop-1 INFO  Dialect:145 5542 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-01 18:43:39 localhost-startStop-1 INFO  LobCreatorBuilder:88 5586 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-01 18:43:40 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 6331 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-01 18:43:41 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 7705 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:43:43 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 9174 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-01 18:43:43 localhost-startStop-1 INFO  ContextLoader:345 9597 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 9591 ms
+2017-12-01 18:53:55 localhost-startStop-2 INFO  AbstractApplicationContext:987 621097 - doClose - Closing Root WebApplicationContext: startup date [Fri Dec 01 18:43:34 BRST 2017]; root of context hierarchy
+2017-12-01 18:53:55 localhost-startStop-2 INFO  AbstractEntityManagerFactoryBean:551 621104 - destroy - Closing JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:55:11 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-01 18:55:12 localhost-startStop-1 INFO  AbstractApplicationContext:582 230 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Fri Dec 01 18:55:12 BRST 2017]; root of context hierarchy
+2017-12-01 18:55:12 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 452 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-01 18:55:13 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 2161 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-01 18:55:14 localhost-startStop-1 INFO  DriverManagerDataSource:133 2668 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-01 18:55:14 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 2910 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-01 18:55:14 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 2911 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:55:14 localhost-startStop-1 INFO  LogHelper:46 2977 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-01 18:55:15 localhost-startStop-1 INFO  Version:54 3337 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-01 18:55:15 localhost-startStop-1 INFO  Environment:239 3342 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-01 18:55:15 localhost-startStop-1 INFO  Environment:346 3346 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-01 18:55:16 localhost-startStop-1 INFO  JavaReflectionManager:66 4281 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-01 18:55:16 localhost-startStop-1 INFO  Dialect:145 4577 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-01 18:55:16 localhost-startStop-1 INFO  LobCreatorBuilder:88 4612 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-01 18:55:17 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 5365 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-01 18:55:18 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 6772 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-01 18:55:20 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 8379 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-01 18:55:22 localhost-startStop-1 INFO  ContextLoader:345 10251 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 10246 ms
+2017-12-12 14:20:01 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 14:20:02 localhost-startStop-1 INFO  AbstractApplicationContext:582 320 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 14:20:02 BRST 2017]; root of context hierarchy
+2017-12-12 14:20:02 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 652 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 14:20:08 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 6518 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 14:20:09 localhost-startStop-1 INFO  DriverManagerDataSource:133 7430 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 14:20:09 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 7881 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 14:20:09 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 7882 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:20:09 localhost-startStop-1 INFO  LogHelper:46 8080 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 14:20:10 localhost-startStop-1 INFO  Version:54 8769 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 14:20:10 localhost-startStop-1 INFO  Environment:239 8776 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 14:20:10 localhost-startStop-1 INFO  Environment:346 8785 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 14:20:12 localhost-startStop-1 INFO  JavaReflectionManager:66 10248 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 14:20:12 localhost-startStop-1 INFO  Dialect:145 10669 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 14:20:12 localhost-startStop-1 INFO  LobCreatorBuilder:88 10737 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 14:20:13 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 11730 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 14:20:15 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 13521 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:20:18 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 16733 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 14:20:18 localhost-startStop-1 INFO  ContextLoader:345 17181 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 17169 ms
+2017-12-12 14:32:05 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 14:32:06 localhost-startStop-1 INFO  AbstractApplicationContext:582 283 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 14:32:06 BRST 2017]; root of context hierarchy
+2017-12-12 14:32:06 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 430 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 14:32:08 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 2593 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 14:32:08 localhost-startStop-1 INFO  DriverManagerDataSource:133 3236 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 14:32:09 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 3444 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 14:32:09 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 3445 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:32:09 localhost-startStop-1 INFO  LogHelper:46 3498 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 14:32:09 localhost-startStop-1 INFO  Version:54 3752 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 14:32:09 localhost-startStop-1 INFO  Environment:239 3757 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 14:32:09 localhost-startStop-1 INFO  Environment:346 3761 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 14:32:10 localhost-startStop-1 INFO  JavaReflectionManager:66 4606 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 14:32:10 localhost-startStop-1 INFO  Dialect:145 4787 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 14:32:10 localhost-startStop-1 INFO  LobCreatorBuilder:88 4822 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 14:32:11 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 5476 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 14:32:12 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 6851 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:32:14 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 9034 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 14:32:15 localhost-startStop-1 INFO  ContextLoader:345 9443 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 9429 ms
+2017-12-12 14:36:46 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 14:36:46 localhost-startStop-1 INFO  AbstractApplicationContext:582 463 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 14:36:46 BRST 2017]; root of context hierarchy
+2017-12-12 14:36:47 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 760 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 14:36:50 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 4400 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 14:36:52 localhost-startStop-1 INFO  DriverManagerDataSource:133 5539 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 14:36:52 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 5981 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 14:36:52 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 5988 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:36:52 localhost-startStop-1 INFO  LogHelper:46 6233 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 14:36:53 localhost-startStop-1 INFO  Version:54 6791 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 14:36:53 localhost-startStop-1 INFO  Environment:239 6807 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 14:36:53 localhost-startStop-1 INFO  Environment:346 6813 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 14:36:55 localhost-startStop-1 INFO  JavaReflectionManager:66 8545 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 14:36:55 localhost-startStop-1 INFO  Dialect:145 8966 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 14:36:55 localhost-startStop-1 INFO  LobCreatorBuilder:88 9024 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 14:36:56 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 10232 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 14:36:59 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 12968 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:37:03 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 16488 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 14:37:03 localhost-startStop-1 INFO  ContextLoader:345 17225 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 17217 ms
+2017-12-12 14:50:22 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 14:50:23 localhost-startStop-1 INFO  AbstractApplicationContext:582 637 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 14:50:23 BRST 2017]; root of context hierarchy
+2017-12-12 14:50:23 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 1021 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 14:50:26 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 3648 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 14:50:27 localhost-startStop-1 INFO  DriverManagerDataSource:133 4344 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 14:50:27 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 4621 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 14:50:27 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 4622 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:50:27 localhost-startStop-1 INFO  LogHelper:46 4780 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 14:50:28 localhost-startStop-1 INFO  Version:54 5319 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 14:50:28 localhost-startStop-1 INFO  Environment:239 5326 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 14:50:28 localhost-startStop-1 INFO  Environment:346 5400 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 14:50:29 localhost-startStop-1 INFO  JavaReflectionManager:66 6739 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 14:50:29 localhost-startStop-1 INFO  Dialect:145 7055 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 14:50:29 localhost-startStop-1 INFO  LobCreatorBuilder:88 7096 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 14:50:30 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 7872 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 14:50:32 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 9867 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:50:35 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 12531 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 14:50:35 localhost-startStop-1 INFO  ContextLoader:345 13024 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 13017 ms
+2017-12-12 14:53:15 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 14:53:15 localhost-startStop-1 INFO  AbstractApplicationContext:582 550 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 14:53:15 BRST 2017]; root of context hierarchy
+2017-12-12 14:53:16 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 920 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 14:53:19 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 4321 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 14:53:20 localhost-startStop-1 INFO  DriverManagerDataSource:133 5235 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 14:53:20 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 5423 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 14:53:20 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 5424 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:53:20 localhost-startStop-1 INFO  LogHelper:46 5491 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 14:53:21 localhost-startStop-1 INFO  Version:54 5750 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 14:53:21 localhost-startStop-1 INFO  Environment:239 5755 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 14:53:21 localhost-startStop-1 INFO  Environment:346 5760 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 14:53:22 localhost-startStop-1 INFO  JavaReflectionManager:66 6673 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 14:53:22 localhost-startStop-1 INFO  Dialect:145 7024 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 14:53:22 localhost-startStop-1 INFO  LobCreatorBuilder:88 7083 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 14:53:23 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 8148 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 14:53:25 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 10218 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 14:53:28 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 13387 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 14:53:29 localhost-startStop-1 INFO  ContextLoader:345 14136 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 14122 ms
+2017-12-12 15:05:32 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 15:05:32 localhost-startStop-1 INFO  AbstractApplicationContext:582 337 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 15:05:32 BRST 2017]; root of context hierarchy
+2017-12-12 15:05:33 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 542 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 15:05:36 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 3556 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 15:05:37 localhost-startStop-1 INFO  DriverManagerDataSource:133 4565 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 15:05:37 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 4941 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 15:05:37 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 4941 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:05:37 localhost-startStop-1 INFO  LogHelper:46 5088 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 15:05:38 localhost-startStop-1 INFO  Version:54 5631 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 15:05:38 localhost-startStop-1 INFO  Environment:239 5638 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 15:05:38 localhost-startStop-1 INFO  Environment:346 5642 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 15:05:39 localhost-startStop-1 INFO  JavaReflectionManager:66 7371 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 15:05:40 localhost-startStop-1 INFO  Dialect:145 7745 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 15:05:40 localhost-startStop-1 INFO  LobCreatorBuilder:88 7811 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 15:05:41 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 9002 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 15:05:44 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 11480 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:05:47 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 14520 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 15:05:47 localhost-startStop-1 INFO  ContextLoader:345 15143 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 15137 ms
+2017-12-12 15:09:25 http-nio-8080-exec-4 WARN  FileSystemFontProvider:444 233172 - loadDiskCache - New fonts found, font cache will be re-built
+2017-12-12 15:09:25 http-nio-8080-exec-4 WARN  FileSystemFontProvider:224 233178 - <init> - Building on-disk font cache, this may take a while
+2017-12-12 15:09:28 http-nio-8080-exec-4 WARN  FileSystemFontProvider:227 235759 - <init> - Finished building on-disk font cache, found 276 fonts
+2017-12-12 15:38:36 localhost-startStop-1 INFO  ContextLoader:305 0 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 15:38:36 localhost-startStop-1 INFO  AbstractApplicationContext:582 512 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 15:38:36 BRST 2017]; root of context hierarchy
+2017-12-12 15:38:37 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 993 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 15:38:41 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 4833 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 15:38:42 localhost-startStop-1 INFO  DriverManagerDataSource:133 5726 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 15:38:42 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 6113 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 15:38:42 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 6116 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:38:42 localhost-startStop-1 INFO  LogHelper:46 6251 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 15:38:43 localhost-startStop-1 INFO  Version:54 6863 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 15:38:43 localhost-startStop-1 INFO  Environment:239 6883 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 15:38:43 localhost-startStop-1 INFO  Environment:346 6891 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 15:38:45 localhost-startStop-1 INFO  JavaReflectionManager:66 8693 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 15:38:45 localhost-startStop-1 INFO  Dialect:145 9021 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 15:38:45 localhost-startStop-1 INFO  LobCreatorBuilder:88 9057 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 15:38:46 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 10013 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 15:38:48 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 11979 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:38:51 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 14941 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 15:38:52 localhost-startStop-1 INFO  ContextLoader:345 15583 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 15574 ms
+2017-12-12 15:48:26 localhost-startStop-1 INFO  ContextLoader:305 1 - initWebApplicationContext - Root WebApplicationContext: initialization started
+2017-12-12 15:48:26 localhost-startStop-1 INFO  AbstractApplicationContext:582 323 - prepareRefresh - Refreshing Root WebApplicationContext: startup date [Tue Dec 12 15:48:26 BRST 2017]; root of context hierarchy
+2017-12-12 15:48:26 localhost-startStop-1 INFO  XmlBeanDefinitionReader:317 529 - loadBeanDefinitions - Loading XML bean definitions from class path resource [spring.xml]
+2017-12-12 15:48:29 localhost-startStop-1 INFO  AutowiredAnnotationBeanPostProcessor:155 3624 - <init> - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+2017-12-12 15:48:30 localhost-startStop-1 INFO  DriverManagerDataSource:133 4456 - setDriverClassName - Loaded JDBC driver: com.mysql.jdbc.Driver
+2017-12-12 15:48:30 localhost-startStop-1 INFO  DefaultPersistenceUnitManager:500 4873 - readPersistenceUnitInfos - Found explicit default unit with name 'pu' in persistence.xml - overriding local default unit settings ('packagesToScan'/'mappingResources')
+2017-12-12 15:48:30 localhost-startStop-1 INFO  LocalContainerEntityManagerFactoryBean:349 4877 - createNativeEntityManagerFactory - Building JPA container EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:48:31 localhost-startStop-1 INFO  LogHelper:46 4978 - logPersistenceUnitInformation - HHH000204: Processing PersistenceUnitInfo [
+	name: pu
+	...]
+2017-12-12 15:48:31 localhost-startStop-1 INFO  Version:54 5529 - logVersion - HHH000412: Hibernate Core {4.3.8.Final}
+2017-12-12 15:48:31 localhost-startStop-1 INFO  Environment:239 5537 - <clinit> - HHH000206: hibernate.properties not found
+2017-12-12 15:48:31 localhost-startStop-1 INFO  Environment:346 5553 - buildBytecodeProvider - HHH000021: Bytecode provider name : javassist
+2017-12-12 15:48:33 localhost-startStop-1 INFO  JavaReflectionManager:66 7488 - <clinit> - HCANN000001: Hibernate Commons Annotations {4.0.5.Final}
+2017-12-12 15:48:34 localhost-startStop-1 INFO  Dialect:145 7939 - <init> - HHH000400: Using dialect: org.hibernate.dialect.MySQLDialect
+2017-12-12 15:48:34 localhost-startStop-1 INFO  LobCreatorBuilder:88 8016 - useContextualLobCreation - HHH000422: Disabling contextual LOB creation as connection was null
+2017-12-12 15:48:35 localhost-startStop-1 INFO  ASTQueryTranslatorFactory:47 9437 - <init> - HHH000397: Using ASTQueryTranslatorFactory
+2017-12-12 15:48:38 localhost-startStop-1 INFO  AbstractEntityManagerFactoryBean:382 12151 - buildNativeEntityManagerFactory - Initialized JPA EntityManagerFactory for persistence unit 'pu'
+2017-12-12 15:48:41 localhost-startStop-1 WARN  GenericTypeAwarePropertyDescriptor:135 15620 - getWriteMethodForActualAccess - Invalid JavaBean property 'dateFormat' being accessed! Ambiguous write methods found next to actually used [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(java.lang.String)]: [public com.google.gson.GsonBuilder com.google.gson.GsonBuilder.setDateFormat(int)]
+2017-12-12 15:48:42 localhost-startStop-1 INFO  ContextLoader:345 16371 - initWebApplicationContext - Root WebApplicationContext: initialization completed in 16364 ms

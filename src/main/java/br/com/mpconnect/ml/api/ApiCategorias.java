@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.Response;
 
-import br.com.mpconnect.ml.data.CategoriaML;
+import br.com.mpconnect.ml.dto.CategoriaML;
 
 @Component
 public class ApiCategorias{

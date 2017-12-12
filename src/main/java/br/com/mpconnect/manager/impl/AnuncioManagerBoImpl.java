@@ -16,7 +16,7 @@ import br.com.mpconnect.manager.AnuncioManagerBo;
 import br.com.mpconnect.ml.api.ApiProdutos;
 import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.api.enums.StatusAnuncioEnum;
-import br.com.mpconnect.ml.data.AnuncioML;
+import br.com.mpconnect.ml.dto.AnuncioML;
 import br.com.mpconnect.model.Anuncio;
 
 @Service("anuncioManager")

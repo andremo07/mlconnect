@@ -5,7 +5,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.ml.data.NotificacaoML;
+import br.com.mpconnect.ml.dto.NotificacaoML;
 
 @Component
 public class ApiNotificacoes{

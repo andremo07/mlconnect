@@ -2,6 +2,7 @@ package br.com.mpconnect.ml.api;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,13 +20,13 @@ import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
 import br.com.mpconnect.ml.api.enums.StatusAnuncioEnum;
-import br.com.mpconnect.ml.data.AnuncioML;
-import br.com.mpconnect.ml.data.MetodoEnvioML;
-import br.com.mpconnect.ml.data.PictureML;
-import br.com.mpconnect.ml.data.TipoAnuncioML;
-import br.com.mpconnect.ml.data.ValorVariacaoML;
-import br.com.mpconnect.ml.data.VariacaoML;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.ml.dto.AnuncioML;
+import br.com.mpconnect.ml.dto.MetodoEnvioML;
+import br.com.mpconnect.ml.dto.PictureML;
+import br.com.mpconnect.ml.dto.TipoAnuncioML;
+import br.com.mpconnect.ml.dto.ValorVariacaoML;
+import br.com.mpconnect.ml.dto.VariacaoML;
+import br.com.mpconnect.util.DateUtils;
 
 @Component
 public class ApiProdutos{
@@ -324,7 +325,7 @@ public class ApiProdutos{
 				offset = offset+50;
 				String[] values = new String[1];
 				values[0]=offset.toString();
-				params.replace("offset", values);
+				params.replaceWith("offset", values);
 				stringIdsAnuncios.addAll(getListIdsAnuncios(stringIdsAnuncios, totalAnuncios, idVendedor,offset,params));
 			}
 

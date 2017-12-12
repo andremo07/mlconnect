@@ -23,7 +23,7 @@ public class SessionPhaseListener implements PhaseListener {
 	 */
 	private static final long serialVersionUID = -5928849396046589752L;
 	private static final String LOGIN_PAGE = "/login.xhtml";
-	private static final String HOME_PATH = "/ml-connect";
+	private static final String HOME_PATH = "/mlconnect";
 
     @Override
     public void afterPhase(PhaseEvent event) {

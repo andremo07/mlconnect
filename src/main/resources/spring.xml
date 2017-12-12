@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+ http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+ http://www.springframework.org/schema/context
+ http://www.springframework.org/schema/context/spring-context-4.0.xsd
+ http://www.springframework.org/schema/tx
+ http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	<context:component-scan base-package="br.com.mpconnect" />
+
+	<bean id="gson" class="com.google.gson.Gson" factory-bean="gsonFactory" factory-method="create" />
+
+	<bean id="gsonFactory" class="com.google.gson.GsonBuilder">
+		<property name="dateFormat" value="yyyy-MM-dd'T'HH:mm:ss.SSSXXX" />
+	</bean>
+	
+	<bean id="meliConfHolder" class="br.com.mpconnect.holder.MeliConfigurationHolder" factory-method="setInstance">
+  		<constructor-arg name="clientId" value="4013368235398167" />
+  		<constructor-arg name="clientSecret" value="fcn1Xo99nYX3vHf7q4MRFA7K6Q7HeCm5" />
+	</bean>
+
+	<!-- ML Beans -->
+	<bean id="userProvider" class="br.com.trendsoftware.mlProvider.dataprovider.UserProvider" scope="prototype"/>
+	<bean id="orderProvider" class="br.com.trendsoftware.mlProvider.dataprovider.OrderProvider" scope="prototype"/>
+	<bean id="shippingProvider" class="br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider" scope="prototype"/>
+	<bean id="itemProvider" class="br.com.trendsoftware.mlProvider.dataprovider.ItemProvider" scope="prototype"/>
+
+	<!-- Configuração Banco de Dados-->
+	<bean id="myDataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://192.99.4.157:3306/trendERP_db" />
+		<property name="username" value="wcontaifer" />
+		<property name="password" value="wcm@1234" />
+	</bean>
+	
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="myDataSource" />
+		<property name="persistenceUnitName" value="pu" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="packagesToScan" value="br.com.mpconnect.model" />
+	</bean>
+
+	<!-- Procurar no contexto da aplicações todos os beans anotados com @Transacional, 
+		para demarcar as transações -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="dataSource" ref="myDataSource" />
+	</bean>
+
+	<context:annotation-config />
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor" />
+		
+	<!-- Implementação ViewScope do Spring -->	
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+	    <property name="scopes">
+	        <map>
+	            <entry key="view">
+	                <bean class="br.com.mpconnect.spring.scope.ViewScope"/>
+	            </entry>
+	        </map>
+	    </property>
+	</bean>
+	
+	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename" value="i18n/message" />
+    	<property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
+
+</beans>

@@ -16,15 +16,15 @@ import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiProdutos;
 import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.api.ApiVendas;
-import br.com.mpconnect.ml.data.AnuncioML;
-import br.com.mpconnect.ml.data.MensagemVendaML;
-import br.com.mpconnect.ml.data.TipoAnuncioML;
-import br.com.mpconnect.ml.data.VendaML;
+import br.com.mpconnect.ml.dto.AnuncioML;
+import br.com.mpconnect.ml.dto.MensagemVendaML;
+import br.com.mpconnect.ml.dto.TipoAnuncioML;
+import br.com.mpconnect.ml.dto.VendaML;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.utils.DateUtils;
-import br.com.mpconnect.utils.FileUtils;
+import br.com.mpconnect.util.DateUtils;
+import br.com.mpconnect.util.FileUtils;
 
-@Service
+//@Service
 public class Teste {
 
 	public static void main(String[] args){
@@ -50,8 +50,8 @@ public class Teste {
 		Set<VendaML> vendasMl = apiVendas.recuperaVendasPeriodo(apiUsuario.getIdUsuarioLogado(), DateUtils.adicionaDias(new Date(), -10), new Date());
 		List<Object> vendasMlList = Arrays.asList(vendasMl.toArray());
 		for(Object vendaMl: vendasMlList){
-			Venda venda = vendasManager.parseVendaMltoVenda((VendaML) vendaMl);
-			vendasManager.cadastrarVenda(venda);
+/*			Venda venda = vendasManager.parseVendaMltoVenda((VendaML) vendaMl);
+			vendasManager.cadastrarVenda(venda);*/
 		}
 
 		AnuncioML produto = new AnuncioML();

@@ -20,14 +20,14 @@ import com.ning.http.client.Response;
 
 import br.com.mpconnect.ml.api.enums.StatusEnvioMlEnum;
 import br.com.mpconnect.ml.api.enums.StatusEtiquetaMlEnum;
-import br.com.mpconnect.ml.data.ClienteML;
-import br.com.mpconnect.ml.data.DetalheVendaML;
-import br.com.mpconnect.ml.data.EnvioML;
-import br.com.mpconnect.ml.data.MensagemVendaML;
-import br.com.mpconnect.ml.data.PagamentoML;
-import br.com.mpconnect.ml.data.UsuarioML;
-import br.com.mpconnect.ml.data.VendaML;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.ml.dto.ClienteML;
+import br.com.mpconnect.ml.dto.DetalheVendaML;
+import br.com.mpconnect.ml.dto.EnvioML;
+import br.com.mpconnect.ml.dto.MensagemVendaML;
+import br.com.mpconnect.ml.dto.PagamentoML;
+import br.com.mpconnect.ml.dto.UsuarioML;
+import br.com.mpconnect.ml.dto.VendaML;
+import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.MensagemMLComparator;
 
 @Component
@@ -159,7 +159,7 @@ public class ApiVendas{
 
 			if(totalVendas > listaVendas.size()){
 				offset = offset+50;
-				params.replace("offset", offset.toString());
+				params.replaceWith("offset",offset.toString());
 				listaVendas.addAll(populaListaVendas(listaVendas,params));
 			}
 

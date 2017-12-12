@@ -3,21 +3,30 @@ package br.com.mpconnect.controller;
 import java.io.Serializable;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.mercadolibre.sdk.Meli;
-
+import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.UsuarioDao;
+import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.AcessoManagerBo;
 import br.com.mpconnect.ml.api.ApiMl;
+import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Usuario;
+import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
+import br.com.trendsoftware.mlProvider.dto.User;
+import br.com.trendsoftware.mlProvider.dto.UserToken;
+import br.com.trendsoftware.mlProvider.response.Response;
+import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 
 @Component
@@ -36,23 +45,46 @@ public class LoginController implements Serializable{
 
 	@Autowired
 	private UsuarioDao usuarioDao;
+	
+	@Resource
+	public AcessoMlDao acessoDao;
+	
+	@Autowired
+	public UserProvider userProvider;
 		
 	@Autowired
 	private ApiMl apiMl;
 	
+	final Logger logger = Logger.getLogger(this.getClass().getName());
+	
 	public LoginController(){
 
+	}
+	
+	@PostConstruct
+	public void init(){
+		getUserProvider().setLogger(logger);
 	}
 
 	public String login(){
 
 		try {
 			
-			Usuario usuario = usuarioDao.getUsuarioByLoginSenha("admin", "admin");
+			Usuario usuario = usuarioDao.getUsuarioByLoginSenha(user, senha);
 
 			if(usuario!=null){
-				Meli meli = acessoManager.conectarMl();
-				apiMl.setMe(meli);
+				
+				AcessoMl acessoMl = acessoDao.recuperarUltimo();
+				
+				Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
+				UserToken token = (UserToken) response.getData(); 
+				acessoMl.setAccessToken(token.getAccessToken());
+				acessoMl.setRefreshToken(token.getRefreshToken());
+				
+				response = userProvider.getUserInfo(token.getAccessToken());
+				User user = (User) response.getData();
+				acessoMl.setIdMl(user.getId());
+				usuario.setAcessoMercadoLivre(acessoMl);
 				Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 				map.put("usuario", usuario);
 				if(map.containsKey("lastPage")){
@@ -66,6 +98,9 @@ public class LoginController implements Serializable{
 
 		} catch (DaoException e) {
 			addMessage(FacesMessage.SEVERITY_INFO,"Ocorreu um erro!", "Erro na consulta");
+		} catch (ProviderException e) {
+			
+			addMessage(FacesMessage.SEVERITY_INFO,"Ocorreu um erro!", "Erro Mercado Livre");
 		}
 
 		addMessage(FacesMessage.SEVERITY_INFO,"Usuario inválido!", "Não existe o usuário no sistema");
@@ -99,4 +134,8 @@ public class LoginController implements Serializable{
 		this.acessoManager = acessoManager;
 	}
 
+	public UserProvider getUserProvider() {
+		return userProvider;
+	}
+	
 }

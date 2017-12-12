@@ -1,4 +1,4 @@
-package br.com.mpconnect.ml.data;
+package br.com.mpconnect.ml.dto;
 
 public class CategoriaML {
 	

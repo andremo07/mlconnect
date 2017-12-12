@@ -2,7 +2,7 @@ package br.com.mpconnect.utils.comparator;
 
 import java.util.Comparator;
 
-import br.com.mpconnect.ml.data.MensagemVendaML;
+import br.com.mpconnect.ml.dto.MensagemVendaML;
 
 public class MensagemMLComparator implements Comparator<MensagemVendaML>{
 

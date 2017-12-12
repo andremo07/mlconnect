@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import br.com.mpconnect.manager.FuncionarioManagerBo;
 import br.com.mpconnect.ml.api.ApiNotificacoes;
-import br.com.mpconnect.ml.data.NotificacaoML;
+import br.com.mpconnect.ml.dto.NotificacaoML;
 
 
 @PushEndpoint("/notifications")

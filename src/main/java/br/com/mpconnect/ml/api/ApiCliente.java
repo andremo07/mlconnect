@@ -5,7 +5,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.ml.data.ClienteML;
+import br.com.mpconnect.ml.dto.ClienteML;
 
 @Component
 public class ApiCliente{

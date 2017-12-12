@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import br.com.mpconnect.dao.EnvioDao;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.util.DateUtils;
 
 @Component
 @Scope(value="view")

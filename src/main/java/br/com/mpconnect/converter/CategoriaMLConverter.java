@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.ml.api.ApiCategorias;
-import br.com.mpconnect.ml.data.CategoriaML;
+import br.com.mpconnect.ml.dto.CategoriaML;
 
 import com.mercadolibre.sdk.MeliException;
 

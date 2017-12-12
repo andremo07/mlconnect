@@ -9,7 +9,7 @@ import javax.faces.convert.Converter;
 import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.ml.api.enums.TipoAnuncioEnum;
-import br.com.mpconnect.ml.data.TipoAnuncioML;
+import br.com.mpconnect.ml.dto.TipoAnuncioML;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
 

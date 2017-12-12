@@ -13,8 +13,8 @@ import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
-import br.com.mpconnect.ml.data.UsuarioML;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.ml.dto.UsuarioML;
+import br.com.mpconnect.util.DateUtils;
 
 @Component
 public class ApiUsuario{

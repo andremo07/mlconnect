@@ -2,7 +2,7 @@ package br.com.mpconnect.utils.comparator;
 
 import java.util.Comparator;
 
-import br.com.mpconnect.ml.data.PerguntaML;
+import br.com.mpconnect.ml.dto.PerguntaML;
 
 public class PerguntaMLComparator implements Comparator<PerguntaML>{
 

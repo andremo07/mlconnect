@@ -63,7 +63,7 @@ public class GerarNotaConsumidor {
 	public NFNotaInfo getNFNotaInfo() {
         final NFNotaInfo info = new NFNotaInfo();
         
-        vendaManager.carregaVendasRecentes();
+        //vendaManager.carregaVendasRecentes();
         
         //info.setIdentificador("89172658591754401086218048846976493475937081");
         info.setVersao(new BigDecimal("3.10"));

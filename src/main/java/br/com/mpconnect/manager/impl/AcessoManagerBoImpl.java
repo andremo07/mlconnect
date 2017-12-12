@@ -14,10 +14,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.primefaces.json.JSONException;
 import org.primefaces.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mercadolibre.sdk.Meli;
@@ -38,10 +35,6 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 
 	@Resource
 	public AcessoMlDao acessoDao;
-
-	@Autowired
-	@Qualifier("transactionManager")
-	protected PlatformTransactionManager txManager;
 
 	@PostConstruct
 	public void init(){

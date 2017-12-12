@@ -16,8 +16,8 @@ import com.mercadolibre.sdk.MeliException;
 import com.ning.http.client.FluentStringsMap;
 import com.ning.http.client.Response;
 
-import br.com.mpconnect.ml.data.PerguntaML;
-import br.com.mpconnect.utils.DateUtils;
+import br.com.mpconnect.ml.dto.PerguntaML;
+import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.PerguntaMLComparator;
 
 @Component
