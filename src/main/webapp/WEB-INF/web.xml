@@ -77,19 +77,6 @@
 		<dispatcher>REQUEST</dispatcher>
     	<dispatcher>FORWARD</dispatcher>
 	</filter-mapping>
-	
-<!--    <filter>   -->
-<!--        <filter-name>validator</filter-name>   -->
-<!--        <filter-class>br.com.mpconnect.web.filter.TesteFilter</filter-class>   -->
-<!--        <async-supported>true</async-supported>   -->
-<!--    </filter>   -->
-  
-<!--    <filter-mapping>   -->
-<!--        <filter-name>validator</filter-name>   -->
-<!-- 		<url-pattern>/primepush/*</url-pattern>   -->
-<!-- 		<dispatcher>REQUEST</dispatcher> -->
-<!--     	<dispatcher>FORWARD</dispatcher> -->
-<!--    </filter-mapping>  -->
    
    <filter>
     	<filter-name>PrimeFaces FileUpload Filter</filter-name>
@@ -125,22 +112,27 @@
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
 	
-	<!-- Primepush 
+	<!-- Jersey 2.x -->
 	<servlet>
-		<servlet-name>Push Servlet</servlet-name>
-		<servlet-class>org.primefaces.push.PushServlet</servlet-class>
-
+		<servlet-name>MarketHub</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
 		<init-param>
-			<param-name>org.atmosphere.annotation.packages</param-name>
-			<param-value>org.primefaces.push.annotation</param-value>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>br.com.mpconnect.ml.api</param-value>
 		</init-param>
+		<init-param>
+			<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
 		<async-supported>true</async-supported>
 	</servlet>
+
 	<servlet-mapping>
-		<servlet-name>Push Servlet</servlet-name>
-		<url-pattern>/primepush/*</url-pattern>
+		<servlet-name>MarketHub</servlet-name>
+		<url-pattern>/service/*</url-pattern>
 	</servlet-mapping>
-	-->
+	
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
 		<param-value>redmond</param-value>
