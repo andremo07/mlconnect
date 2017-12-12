@@ -9,6 +9,9 @@
 
 	<properties>
 		<spring.version>4.3.5.RELEASE</spring.version>
+		<jersey.version>2.22.1</jersey.version>
+		<jsf.version>2.2.13</jsf.version>
+		<hibernte.version>4.3.8.Final</hibernte.version>
 	</properties>
 
 	<build>
@@ -103,13 +106,13 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.3.8.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.3.8.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
 
 		<dependency>
@@ -151,13 +154,13 @@
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-impl</artifactId>
-			<version>2.2.13</version>
+			<version>${jsf.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.sun.faces</groupId>
 			<artifactId>jsf-api</artifactId>
-			<version>2.2.13</version>
+			<version>${jsf.version}</version>
 		</dependency>
 
 		<dependency>
@@ -209,6 +212,7 @@
 			<version>1.0</version>
 		</dependency>
 
+		<!-- REMOVER FUTURAMENTE  -->
 		<dependency>
 			<groupId>com.mercadolibre</groupId>
 			<artifactId>sdk</artifactId>
@@ -221,28 +225,11 @@
 			</exclusions>
 		</dependency>
 
+		<!-- REMOVER FUTURAMENTE  -->
 		<dependency>
 			<groupId>com.mercadopago</groupId>
 			<artifactId>sdk</artifactId>
 			<version>0.3.4</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.websocket</groupId>
-			<artifactId>javax.websocket-api</artifactId>
-			<version>1.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-runtime</artifactId>
-			<version>2.3.0-RC6</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.atmosphere</groupId>
-			<artifactId>atmosphere-spring</artifactId>
-			<version>2.3.0-RC5</version>
 		</dependency>
 
 		<dependency>
@@ -262,6 +249,38 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.3</version>
 		</dependency>
+		
+		<!-- Jersey 2.x -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-server</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.containers</groupId>
+			<artifactId>jersey-container-servlet</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency> <!-- Json Support -->
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-moxy</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-multipart</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.ext</groupId>
+			<artifactId>jersey-spring3</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey.version}</version>
+		</dependency>
 
 		<!-- Nota Fiscal -->
 		<dependency>
@@ -270,12 +289,6 @@
 			<version>2.0.2</version>
 			<type>jar</type>
 			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>net.sf.jasperreports</groupId>
-			<artifactId>jasperreports</artifactId>
-			<version>6.2.0</version>
 		</dependency>
 
 		<dependency>
