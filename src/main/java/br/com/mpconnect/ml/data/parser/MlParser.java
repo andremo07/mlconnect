@@ -144,7 +144,7 @@ public class MlParser {
 			envio.setPais(address.getCountry() != null ? address.getCountry().getName() : null);
 			envio.setNumero(address.getStreetNumber());
 			envio.setComplemento(address.getComment());
-			envio.setUf(address.getState() != null ? address.getState().getName() : null);
+			envio.setUf(address.getState() != null ? address.getState().getId().split("-")[1] : null);
 			envio.setBairro(address.getNeighborhood() != null ? address.getNeighborhood().getName() : null);
 		}	
 		
@@ -152,7 +152,7 @@ public class MlParser {
 		
 	}
 
-	public static Venda parseVenda(Order order){
+	public static Venda parseOrder(Order order){
 
 		Venda venda = new Venda(); 
 		

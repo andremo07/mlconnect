@@ -8,19 +8,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.stereotype.Service;
 
-import br.com.mpconnect.manager.VendaManagerBo;
-import br.com.mpconnect.ml.api.ApiCategorias;
-import br.com.mpconnect.ml.api.ApiPerguntas;
-import br.com.mpconnect.ml.api.ApiProdutos;
+import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.api.ApiVendas;
 import br.com.mpconnect.ml.dto.AnuncioML;
 import br.com.mpconnect.ml.dto.MensagemVendaML;
 import br.com.mpconnect.ml.dto.TipoAnuncioML;
 import br.com.mpconnect.ml.dto.VendaML;
-import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.FileUtils;
 
@@ -37,7 +32,7 @@ public class Teste {
 		ApiVendas apiVendas = (ApiVendas) ctx.getBean("apiVendas");
 //		ApiCategorias apiCategorias = (ApiCategorias) ctx.getBean("apiCategorias");
 //		ApiPerguntas apiPerguntas = (ApiPerguntas)ctx.getBean("apiPerguntas");
-		VendaManagerBo vendasManager = (VendaManagerBo) ctx.getBean("vendasManager");
+		OrderBusiness vendasManager = (OrderBusiness) ctx.getBean("vendasManager");
 		
 		VendaML venda2 = apiVendas.retornaVendaPorId("1180741404", apiUsuario.getIdUsuarioLogado());
 					

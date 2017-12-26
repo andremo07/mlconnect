@@ -33,7 +33,7 @@ import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
-import br.com.mpconnect.manager.VendaManagerBo;
+import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiVendas;
 import br.com.mpconnect.ml.dto.MensagemVendaML;
@@ -65,7 +65,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	private ApiPerguntas apiPerguntas;
 
 	@Autowired
-	private VendaManagerBo vendasManager;
+	private OrderBusiness orderBusiness;
 	
 	@Autowired
 	private FluxoDeCaixaManagerBo fluxoDeCaixaManager;
@@ -89,7 +89,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	public void init(){
 		try{
 			//vendasManager.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -3), new Date());
-			vendas = vendasManager.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 /*			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
 				VendaML vendaMl = it.next();
 				Venda venda = vendaDao.recuperaUm(vendaMl.getId());
@@ -133,7 +133,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 			Collections.sort(vendasSelecionadas, new VendaComparator());
 			//GERAÇÂO DO ARQUIVO PDF		
-			InputStream pdfInputStream = vendasManager.printShippingTags(vendasSelecionadas);
+			InputStream pdfInputStream = orderBusiness.printShippingTags(vendasSelecionadas);
 	
 			//LEITURA PDF
 			if(pdfInputStream!=null){

@@ -11,13 +11,13 @@ import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
 import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
-import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 
 
-public interface VendaManagerBo {
+public interface OrderBusiness {
 	
-	public InputStream printShippingTags(List<Venda> vendas) throws ProviderException;
+	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException;
+	public void save(String userId, String orderId) throws BusinessException;
 	public void salvarVenda(Venda venda);
 	public void cadastrarVenda(Venda venda);
 	public void cadastrarVendaUnitaria(Venda venda, Produto produto);

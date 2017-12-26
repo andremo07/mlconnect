@@ -17,7 +17,6 @@ public class AcessoMlDaoImpl extends DaoCrudImpJpa<AcessoMl> implements AcessoMl
 	 */
 	private static final long serialVersionUID = 4125606391551235642L;
 	
-	
 	public AcessoMl recuperarUltimo() throws DaoException{
 		String msg = new String("Erro ao realizar o merge no DAO.");
 		try {

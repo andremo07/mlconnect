@@ -53,12 +53,12 @@ import com.fincatto.nfe310.classes.nota.NFNotaInfoVolume;
 import com.fincatto.nfe310.classes.nota.NFOperacaoConsumidorFinal;
 import com.fincatto.nfe310.classes.nota.NFViaTransporteInternacional;
 
-import br.com.mpconnect.manager.VendaManagerBo;
+import br.com.mpconnect.manager.OrderBusiness;
 
 public class GerarNotaConsumidor {
 	
 	@Autowired
-	private VendaManagerBo vendaManager;
+	private OrderBusiness vendaManager;
 	
 	public NFNotaInfo getNFNotaInfo() {
         final NFNotaInfo info = new NFNotaInfo();

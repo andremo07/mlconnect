@@ -17,7 +17,7 @@ import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.OrigemDao;
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.dao.VendedorDao;
-import br.com.mpconnect.manager.VendaManagerBo;
+import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.enums.TipoPagamentoEnum;
 import br.com.mpconnect.ml.api.enums.TipoPessoaEnum;
 import br.com.mpconnect.model.Anuncio;
@@ -62,7 +62,7 @@ public class VendaController extends GenericCrudController<Venda> implements Ser
 	private ClienteDao clienteDao;
 
 	@Autowired
-	private VendaManagerBo vendasManager;
+	private OrderBusiness orderBusiness;
 
 	public VendaController(){
 		limparCampos();
@@ -119,11 +119,11 @@ public class VendaController extends GenericCrudController<Venda> implements Ser
 				cliente.setTipoContribuinteIcms(9);
 			else
 				cliente.setTipoContribuinteIcms(9);
-			Long id = vendasManager.getMaxIdVenda();
+			Long id = orderBusiness.getMaxIdVenda();
 			if (id!=null){
 				id = id+1;
 				venda.setId(id.toString());
-				vendasManager.cadastrarVendaUnitaria(venda, produto); 
+				orderBusiness.cadastrarVendaUnitaria(venda, produto); 
 				limparCampos();
 			}
 		} catch (DaoException e) {

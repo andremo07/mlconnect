@@ -16,7 +16,7 @@ public class MarketHubBusiness
 		return logger;
 	}
 	
-	public Usuario getUserLogin(){
+	public Usuario getSessionUserLogin(){
 		
 		Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 		Usuario usuario =  (Usuario) map.get("usuario");
