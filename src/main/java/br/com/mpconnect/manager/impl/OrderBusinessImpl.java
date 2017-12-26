@@ -20,6 +20,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;
 import br.com.mpconnect.dao.CategoriaContaPagarDao;
 import br.com.mpconnect.dao.CategoriaContaReceberDao;
@@ -31,12 +32,15 @@ import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.exception.BusinessException;
+import br.com.mpconnect.exception.BusinessProviderException;
+import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
-import br.com.mpconnect.manager.VendaManagerBo;
+import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiEnvios;
 import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.data.parser.MlParser;
 import br.com.mpconnect.ml.dto.VendaML;
+import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
@@ -56,11 +60,12 @@ import br.com.trendsoftware.mlProvider.dto.OrderList;
 import br.com.trendsoftware.mlProvider.dto.OrderStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
+import br.com.trendsoftware.mlProvider.dto.UserToken;
 import br.com.trendsoftware.mlProvider.response.Response;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 @Service("vendasManager")
-public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManagerBo, Serializable {
+public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusiness, Serializable {
 
 	/**
 	 * 
@@ -89,6 +94,9 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 	public EnvioDao envioDao;
 
 	@Resource
+	public AcessoMlDao acessoDao;
+
+	@Resource
 	public VendaDao vendaDao;
 
 	@Resource
@@ -114,7 +122,7 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 
 	@Autowired
 	private ItemProvider itemProvider;
-	
+
 	@Autowired
 	private ShippingProvider shippingProvider;
 
@@ -226,12 +234,12 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 		getLogger().debug("carregando vendas recentes");
 
 		try {
-			
-			Usuario usuario = getUserLogin();
-			
+
+			Usuario usuario = getSessionUserLogin();
+
 			String userId = usuario.getAcessoMercadoLivre().getIdMl();
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-			
+
 			int offset = 0;
 			Response response = orderProvider.listOrdersByDate(userId, fromDate, toDate, OrderStatus.PAID, offset, 10, accessToken);
 			OrderList orderList = (OrderList) response.getData();
@@ -247,9 +255,9 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 			orders = retornaVendasNaoExistentes(orders);
 
 			Origem origem = origemDao.recuperaUm(new Long(1));
-			
+
 			for(Order order: orders){
-				Venda venda = MlParser.parseVenda(order);
+				Venda venda = MlParser.parseOrder(order);
 				venda.setOrigem(origem);
 				salvarVenda(venda);
 				fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(venda);
@@ -265,15 +273,52 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 			throw new BusinessException(exception);
 		}
 	}
+	
+	public void saveOrder(Venda venda) throws BusinessException
+	{
+		Origem origem = new Origem();
+		origem.setId(1L);
+		venda.setOrigem(origem);
+		salvarVenda(venda);
+		fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(venda);
+	}
+
+	@Transactional
+	public void save(String userId, String orderId) throws BusinessException
+	{
+		try {
+			AcessoMl acessoMl = acessoDao.recuperarUltimo();
+			
+			//MUDAR PARA BUSCA NA TABELA PELA COLUNA USER_ID
+			Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
+			UserToken token = (UserToken) response.getData();
+
+			response = orderProvider.searchOrderById(orderId, token.getAccessToken());
+			Order order = (Order) response.getData();
+			Venda venda = MlParser.parseOrder(order);
+
+			saveOrder(venda);
+			
+		} catch (DaoException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("");
+			throw new BusinessException(exception);
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("");
+			throw new BusinessProviderException(exception);
+		}
+
+	}
 
 	public List<Venda> listOrdersByShippingStatus(ShippingStatus shippingStatus, ShippingSubStatus shippingSubStatus) throws BusinessException{
-		
+
 		getLogger().debug("carregando vendas com etiquetas para imprimir");
 
 		try {
-			
-			Usuario usuario = getUserLogin();
-			
+
+			Usuario usuario = getSessionUserLogin();
+
 			String userId = usuario.getAcessoMercadoLivre().getIdMl();
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
 
@@ -292,12 +337,12 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 
 			List<Venda> vendas = new ArrayList<Venda>();
 			for(Order order: orders){
-				Venda venda = MlParser.parseVenda(order);
+				Venda venda = MlParser.parseOrder(order);
 				vendas.add(venda);
 			}
-			
+
 			getLogger().debug("foram carregadas "+vendas.size()+" vendas");
-			
+
 			return vendas;
 
 		} catch (ProviderException e) {
@@ -307,21 +352,27 @@ public class VendaManagerBoImpl extends MarketHubBusiness implements VendaManage
 		}
 
 	}
-	
-	public InputStream printShippingTags(List<Venda> vendas) throws ProviderException{
-		
-		Usuario usuario = getUserLogin();
-		String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-		
-		List<String> shippingIds = new ArrayList<String>();
-		
-		for(Venda venda: vendas)
-			shippingIds.add(venda.getEnvio().getIdMl());
-			
-		return shippingProvider.printTags(shippingIds, accessToken);
-		
+
+	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException{
+
+		try {
+			Usuario usuario = getSessionUserLogin();
+			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
+
+			List<String> shippingIds = new ArrayList<String>();
+
+			for(Venda venda: vendas)
+				shippingIds.add(venda.getEnvio().getIdMl());
+
+			return shippingProvider.printTags(shippingIds, accessToken);
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
+			throw new BusinessProviderException(exception);
+		}
+
 	}
-	
+
 	public Long getMaxIdVenda(){
 
 		Criteria criteria = vendaDao.getSession()
