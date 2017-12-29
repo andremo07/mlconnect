@@ -16,3 +16,5 @@ applicationContext.xml
 
 #target path
 /target
+
+\.settings/
