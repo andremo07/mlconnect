@@ -47,7 +47,7 @@ public class NFeProvider {
 		NFGeraChave ch = new NFGeraChave(nota);
 		nota.setInfo(getNFeInfo(ch,venda));
 		assinarNFe(nota);
-		consultarLoteNFe(gerarLoteEnvioNfe(nota));
+		NFLoteConsultaRetorno retc = consultarLoteNFe(gerarLoteEnvioNfe(nota));
 		return null;
 	}
 
