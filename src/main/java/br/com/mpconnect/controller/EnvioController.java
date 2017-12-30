@@ -176,7 +176,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ProviderException e) {
+		} catch (BusinessException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

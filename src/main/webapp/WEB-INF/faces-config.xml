@@ -22,14 +22,12 @@
     	<source-class>javax.faces.component.UIViewRoot</source-class>
 	</system-event-listener>
 
-	<lifecycle>
-		<phase-listener>br.com.mpconnect.session.config.SessionPhaseListener</phase-listener>
-	</lifecycle>
-	
 	      <resource-bundle>
         <base-name>JSF Spring Integration</base-name>
         <var>labels</var>
        </resource-bundle>
     </application>
-    
+    <lifecycle>
+		<phase-listener>br.com.mpconnect.session.config.SessionPhaseListener</phase-listener>
+	</lifecycle>
 </faces-config>
