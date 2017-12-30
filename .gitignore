@@ -17,4 +17,9 @@ applicationContext.xml
 #target path
 /target
 
-\.settings/
+.settings
+.classpath
+.project
+target
+src/main/resources/log
+src/main/resources/dev
