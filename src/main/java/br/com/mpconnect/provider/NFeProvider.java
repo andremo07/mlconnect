@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.fincatto.nfe310.NFeConfig;
 import com.fincatto.nfe310.assinatura.AssinaturaDigital;
 import com.fincatto.nfe310.classes.NFModelo;
+import com.fincatto.nfe310.classes.lote.consulta.NFLoteConsultaRetorno;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvio;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvioRetorno;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteIndicadorProcessamento;
@@ -46,7 +47,7 @@ public class NFeProvider {
 		NFGeraChave ch = new NFGeraChave(nota);
 		nota.setInfo(getNFeInfo(ch,venda));
 		assinarNFe(nota);
-		NFLoteEnvioRetorno loteEnvioRetorno = gerarLoteEnvioNfe(nota);
+		consultarLoteNFe(gerarLoteEnvioNfe(nota));
 		return null;
 	}
 
@@ -118,6 +119,28 @@ public class NFeProvider {
 			String strgNotaAssinada = asd.assinarDocumento(nota.toString());
 			NotaParser np = new NotaParser();
 			nota = np.notaParaObjeto(strgNotaAssinada);
+		} catch (Exception e) {
+			throw new NfeProviderException();
+		}
+	}
+
+	public NFLoteConsultaRetorno consultarLoteNFe(NFLoteEnvioRetorno loteEnvioRetorno) throws NfeProviderException{
+		
+		try {
+			NFLoteConsultaRetorno retc = new WSFacade(config).consultaLote(loteEnvioRetorno.getInfoRecebimento().getRecibo(), NFModelo.NFE);
+			return retc;
+		} catch (KeyManagementException e) {
+			throw new NfeProviderException();
+		} catch (UnrecoverableKeyException e) {
+			throw new NfeProviderException();
+		} catch (KeyStoreException e) {
+			throw new NfeProviderException();
+		} catch (NoSuchAlgorithmException e) {
+			throw new NfeProviderException();
+		} catch (CertificateException e) {
+			throw new NfeProviderException();
+		} catch (IOException e) {
+			throw new NfeProviderException();
 		} catch (Exception e) {
 			throw new NfeProviderException();
 		}
