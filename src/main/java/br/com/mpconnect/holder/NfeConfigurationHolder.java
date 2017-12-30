@@ -1,4 +1,4 @@
-package br.com.mpconnect.nfe.generator;
+package br.com.mpconnect.holder;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,10 +11,32 @@ import java.security.cert.CertificateException;
 import com.fincatto.nfe310.NFeConfig;
 import com.fincatto.nfe310.classes.NFUnidadeFederativa;
 
-public class NFeConfigTeste extends NFeConfig {
+public class NfeConfigurationHolder extends NFeConfig
+{	
 
-	private KeyStore keyStoreCertificado = null;
-    private KeyStore keyStoreCadeia = null;
+	private KeyStore keyStoreCertificado;
+	
+    private KeyStore keyStoreCadeia;
+    
+    private String certificadoSenha;
+    
+    private String cadeiaCertificadosSenha;
+	
+	private static NfeConfigurationHolder instance;
+	
+	public NfeConfigurationHolder(String certificadoSenha, String cadeiaCertificadosSenha) {
+		this.certificadoSenha = certificadoSenha;
+		this.cadeiaCertificadosSenha = cadeiaCertificadosSenha;
+	}
+	
+	public static NfeConfigurationHolder getInstance() {
+		return instance;
+	}
+
+	public static NfeConfigurationHolder setInstance(String certificadoSenha, String cadeiaCertificadosSenha) {
+		NfeConfigurationHolder.instance = new NfeConfigurationHolder(certificadoSenha,cadeiaCertificadosSenha);
+		return NfeConfigurationHolder.instance;
+	}
 	
 	@Override
 	public NFUnidadeFederativa getCUF() {
@@ -38,12 +60,6 @@ public class NFeConfigTeste extends NFeConfig {
 	}
 
 	@Override
-	public String getCadeiaCertificadosSenha() {
-		
-		return "123456";
-	}
-
-	@Override
 	public KeyStore getCertificadoKeyStore() throws KeyStoreException {
 		
 		if (this.keyStoreCertificado == null) {
@@ -59,11 +75,23 @@ public class NFeConfigTeste extends NFeConfig {
         return this.keyStoreCertificado;
         
 	}
-
+	
 	@Override
 	public String getCertificadoSenha() {
-
-		return "FPhone@2013soci";
+		return certificadoSenha;
 	}
 
+	@Override
+	public String getCadeiaCertificadosSenha() {
+		return cadeiaCertificadosSenha;
+	}
+	
+	public void setCertificadoSenha(String certificadoSenha) {
+		this.certificadoSenha = certificadoSenha;
+	}
+
+	public void setCadeiaCertificadosSenha(String cadeiaCertificadosSenha) {
+		this.cadeiaCertificadosSenha = cadeiaCertificadosSenha;
+	}
+	
 }

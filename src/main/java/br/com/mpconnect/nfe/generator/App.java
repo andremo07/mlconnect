@@ -21,6 +21,7 @@ import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvio;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteEnvioRetorno;
 import com.fincatto.nfe310.classes.lote.envio.NFLoteIndicadorProcessamento;
 import com.fincatto.nfe310.classes.nota.NFNota;
+import com.fincatto.nfe310.classes.nota.NFNotaInfo;
 import com.fincatto.nfe310.classes.statusservico.consulta.NFStatusServicoConsultaRetorno;
 import com.fincatto.nfe310.parsers.NotaParser;
 import com.fincatto.nfe310.utils.NFGeraCadeiaCertificados;
@@ -73,6 +74,11 @@ public class App
     	
     	NFNota nota = new NFNota();
     	
+    	NFNotaInfo nfNotaInfo = new NFNotaInfo();
+    	
+    	
+    	nota.setInfo(nfNotaInfo);
+    	
     	NFGeraChave ch = new NFGeraChave(nota);
     	
     	nota.getInfo().setIdentificador(ch.getChaveAcesso());
@@ -85,13 +91,12 @@ public class App
     	System.out.println(notaAss);
     	
     	NotaParser np = new NotaParser();
-    	NFNota objNFeAss = new NFNota();
-    	objNFeAss = np.notaParaObjeto(notaAss);
+    	nota = np.notaParaObjeto(notaAss);
     	
     	final NFLoteEnvio loteEnvio = new NFLoteEnvio();
         loteEnvio.setIdLote("333972757970401");
         loteEnvio.setVersao("3.10");
-        loteEnvio.setNotas(Collections.singletonList(objNFeAss));
+        loteEnvio.setNotas(Collections.singletonList(nota));
         loteEnvio.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
     	
         //JasperPrint js = new 

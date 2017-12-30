@@ -189,6 +189,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.21</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
@@ -212,7 +218,7 @@
 			<version>1.0</version>
 		</dependency>
 
-		<!-- REMOVER FUTURAMENTE  -->
+		<!-- REMOVER FUTURAMENTE -->
 		<dependency>
 			<groupId>com.mercadolibre</groupId>
 			<artifactId>sdk</artifactId>
@@ -225,7 +231,7 @@
 			</exclusions>
 		</dependency>
 
-		<!-- REMOVER FUTURAMENTE  -->
+		<!-- REMOVER FUTURAMENTE -->
 		<dependency>
 			<groupId>com.mercadopago</groupId>
 			<artifactId>sdk</artifactId>
@@ -249,7 +255,7 @@
 			<artifactId>pdfbox</artifactId>
 			<version>2.0.3</version>
 		</dependency>
-		
+
 		<!-- Jersey 2.x -->
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
@@ -286,7 +292,7 @@
 		<dependency>
 			<groupId>com.github.wmixvideo</groupId>
 			<artifactId>nfe</artifactId>
-			<version>2.0.2</version>
+			<version>2.0.3-SNAPSHOT</version>
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>

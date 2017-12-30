@@ -22,6 +22,11 @@
   		<constructor-arg name="clientId" value="4013368235398167" />
   		<constructor-arg name="clientSecret" value="fcn1Xo99nYX3vHf7q4MRFA7K6Q7HeCm5" />
 	</bean>
+	
+	<bean id="nfeConfHolder" class="br.com.mpconnect.holder.NfeConfigurationHolder" factory-method="setInstance">
+  		<constructor-arg name="certificadoSenha" value="FPhone@2013soci" />
+  		<constructor-arg name="cadeiaCertificadosSenha" value="123456" />
+	</bean>
 
 	<!-- ML Beans -->
 	<bean id="userProvider" class="br.com.trendsoftware.mlProvider.dataprovider.UserProvider" scope="prototype"/>

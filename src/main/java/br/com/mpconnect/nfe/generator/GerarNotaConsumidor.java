@@ -6,7 +6,6 @@ import java.util.Collections;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fincatto.nfe310.classes.NFAmbiente;
 import com.fincatto.nfe310.classes.NFEndereco;
@@ -53,12 +52,7 @@ import com.fincatto.nfe310.classes.nota.NFNotaInfoVolume;
 import com.fincatto.nfe310.classes.nota.NFOperacaoConsumidorFinal;
 import com.fincatto.nfe310.classes.nota.NFViaTransporteInternacional;
 
-import br.com.mpconnect.manager.OrderBusiness;
-
 public class GerarNotaConsumidor {
-	
-	@Autowired
-	private OrderBusiness vendaManager;
 	
 	public NFNotaInfo getNFNotaInfo() {
         final NFNotaInfo info = new NFNotaInfo();
