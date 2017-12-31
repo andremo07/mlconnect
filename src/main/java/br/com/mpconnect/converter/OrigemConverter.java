@@ -22,10 +22,11 @@ public class OrigemConverter implements Converter {
 	@Autowired
 	private OrigemDao origemDao;
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return (Origem) origemDao.recuperaUm(new Long(value));
+				return origemDao.recuperaUm(new Long(value));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -37,7 +38,8 @@ public class OrigemConverter implements Converter {
         return new Produto();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof Origem) {
         	Origem origem= (Origem) value;
             if (origem != null && origem instanceof Origem && origem.getId() != null) {

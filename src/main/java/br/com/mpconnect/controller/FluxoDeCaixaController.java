@@ -101,12 +101,12 @@ public class FluxoDeCaixaController {
 			Double total = 0.0;
 			for(ContaBo conta : contas){
 				Map<Integer,Double> valoresMensais = conta.getValoresMensais();
-				Double valorMensal = (Double) valoresMensais.get(i);
+				Double valorMensal = valoresMensais.get(i);
 				if(valorMensal!=null){
-					total = total + (Double) valoresMensais.get(i);
+					total = total + valoresMensais.get(i);
 				}
 			}
-			BigDecimal bd = new BigDecimal((Double) total);
+			BigDecimal bd = new BigDecimal(total);
 			bd = bd.setScale(2, RoundingMode.HALF_UP);
 			totais.add(bd.doubleValue());	
 		}
@@ -123,7 +123,7 @@ public class FluxoDeCaixaController {
 
 		for(int index=0; index<totaisRecebimentos.size();index++){
 			Double valor = totaisRecebimentos.get(index)-totaisPagamentos.get(index);
-			BigDecimal bd = new BigDecimal((Double) valor);
+			BigDecimal bd = new BigDecimal(valor);
 			bd = bd.setScale(2, RoundingMode.HALF_UP);
 			resultadosOperacionais.add(bd.doubleValue());
 		}		
@@ -135,7 +135,7 @@ public class FluxoDeCaixaController {
 			SaldoBo saldo = saldos.get(index);
 			double resultadoOperacional = resultadosOperacionais.get(index);
 			double valor = resultadoOperacional+saldo.getValor();
-			BigDecimal bd = new BigDecimal((Double) valor);
+			BigDecimal bd = new BigDecimal(valor);
 			bd = bd.setScale(2, RoundingMode.HALF_UP);
 			saldosFinaisDeCaixa.add(bd.doubleValue());
 			saldo = new SaldoBo();

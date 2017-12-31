@@ -12,6 +12,7 @@ public class ViewScope implements Scope {
 
 	public static final String VIEW_SCOPE_CALLBACKS = "viewScope.callbacks";
 
+	@Override
 	public synchronized Object get(String name, ObjectFactory<?> objectFactory) {
 		Object instance = getViewMap().get(name);
 		if (instance == null) {
@@ -21,6 +22,7 @@ public class ViewScope implements Scope {
 		return instance;
 	}
 
+	@Override
 	public Object remove(String name) {
 		Object instance = getViewMap().remove(name);
 		if (instance != null) {
@@ -32,6 +34,7 @@ public class ViewScope implements Scope {
 		return instance;
 	}
 
+	@Override
 	public void registerDestructionCallback(String name, Runnable runnable) {
 		Map<String, Runnable> callbacks = (Map<String, Runnable>) getViewMap().get(VIEW_SCOPE_CALLBACKS);
 		if (callbacks != null) {
@@ -39,12 +42,14 @@ public class ViewScope implements Scope {
 		}
 	}
 
+	@Override
 	public Object resolveContextualObject(String name) {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		FacesRequestAttributes facesRequestAttributes = new FacesRequestAttributes(facesContext);
 		return facesRequestAttributes.resolveReference(name);
 	}
 
+	@Override
 	public String getConversationId() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		FacesRequestAttributes facesRequestAttributes = new FacesRequestAttributes(facesContext);

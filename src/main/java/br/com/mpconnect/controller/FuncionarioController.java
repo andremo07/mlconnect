@@ -15,7 +15,6 @@ import br.com.mpconnect.manager.CargoManagerBo;
 import br.com.mpconnect.manager.FuncionarioManagerBo;
 import br.com.mpconnect.model.Cargo;
 import br.com.mpconnect.model.Funcionario;
-import br.com.mpconnect.model.Produto;
 
 @Component
 @Scope(value="view")

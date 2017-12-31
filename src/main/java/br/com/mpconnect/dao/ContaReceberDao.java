@@ -10,6 +10,7 @@ public interface ContaReceberDao extends DaoCrud<ContaReceber>{
 	
 	public List<ContaBo> obterRecebimentosAgrupados();
 	public List<ContaReceber> recuperarContaPorNrTransacao(String nrTransacao);
+	@Override
 	public List<ContaReceber> recuperaTodosPorIntervalo(int first, int max, Map<String,Object> filters) throws DaoException;
 
 }

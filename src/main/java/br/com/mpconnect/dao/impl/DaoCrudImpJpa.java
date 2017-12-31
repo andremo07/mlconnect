@@ -49,11 +49,13 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 	}
 
 
+	@Override
 	public Session getSession() {
 		return (Session) this.getEntityManager().getDelegate();
 	}
 
 
+	@Override
 	@Transactional
 	public void alterar(P persistente) throws DaoException {
 		String msg = new String("Erro ao realizar o merge no DAO.");
@@ -65,6 +67,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public void deletar(P persistente) throws DaoException {
 		String msg = new String("Erro ao realizar o delete no DAO.");
@@ -76,6 +79,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public void excluirTodos() throws DaoException {
 		String msg = new String("Erro ao realizar o deleteTodos no DAO.");
@@ -90,6 +94,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public void gravar(P persistente) throws DaoException {
 		String msg = new String("Erro ao realizar o gravar no DAO.");
@@ -104,6 +109,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public void gravar(List<P> listaPersistente) throws DaoException {
 		for (P p : listaPersistente) {
@@ -111,6 +117,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public int executaUpdateOuDelete(String queryString) throws DaoException {
 		String msg = new String(
@@ -123,6 +130,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	@Transactional
 	public int executaUpdateOuDelete(String query, Map<String, Object> params)
 			throws DaoException {
@@ -146,6 +154,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 	}
 
 
+	@Override
 	public List<P> recuperaTodos() throws DaoException {
 		String msg = new String("Erro ao realizar o recuperar todos no DAO.");
 		try {
@@ -159,6 +168,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	public List<P> recuperaTodosPorIntervalo(int first, int max, Map<String,Object> filters) throws DaoException {
 		String msg = new String("Erro ao realizar o recuperar todos no DAO.");
 		try {
@@ -178,6 +188,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 	}
 
 
+	@Override
 	public List<P> recuperaTodosOrderBy(String query) throws DaoException {
 		String msg = new String(
 				"Erro ao realizar o recuperar todos com ordenação no DAO.");
@@ -189,6 +200,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	public List<P> recuperaTodosOrderByCriteria(String orderBy) throws DaoException {
 		String msg = new String(
 				"Erro ao realizar o recuperar todos com ordenação via Criteria no DAO.");
@@ -205,6 +217,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public P recuperaUm(Serializable pk) throws DaoException {
 		String msg = new String("Erro ao realizar o recuperar um no DAO.");
 		try {
@@ -218,6 +231,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorParams(String query, Map<String, Object> params)
 			throws DaoException {
 
@@ -241,6 +255,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorParamsSql(String strQuery,
 			Map<String, Object> params, Class<P> classe,
 			int maximo, int atual) throws DaoException {
@@ -269,6 +284,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorParamsSql(String strQuery,
 			Map<String, Object> params, Class<P> classe) throws DaoException {
 
@@ -293,6 +309,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorParams(String query, Map<String, Object> params,
 			int maxResults) throws DaoException {
 
@@ -318,6 +335,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorParams(String query, Map<String, Object> params,
 			int maximo, int atual) throws DaoException {
 
@@ -351,6 +369,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public Long recuperaPorParamsQteReg(String query, Map<String, Object> params)
 			throws DaoException {
 
@@ -374,6 +393,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public List<P> recuperaPorQuery(String query) throws DaoException {
 
 		String msg = new String(
@@ -391,6 +411,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public Object recuperaUmPorQuery(String query) throws DaoException {
 
 		String msg = new String(
@@ -408,6 +429,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 
 
+	@Override
 	public P recuperaUmPorParams(String query, Map<String, Object> params)
 			throws DaoException {
 
@@ -446,6 +468,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 	 */
 
 
+	@Override
 	public P recuperaUmPorParamsTrataNull(String query,
 			Map<String, Object> params) throws DaoException {
 
@@ -475,6 +498,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 	}
 
 
+	@Override
 	public Object recuperaUmCampoPorParams(String query,
 			Map<String, Object> params) throws DaoException {
 		String msg = new String(
@@ -498,6 +522,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 	// @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 
+	@Override
 	public P merge(P persistente) throws DaoException {
 		return entityManager.merge(persistente);
 	}
@@ -505,21 +530,25 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 	// @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
 
+	@Override
 	public P refresh(P persistente) throws DaoException {
 		return entityManager.merge(persistente);
 	}
 
 
+	@Override
 	public void refreshRefresh(P persistente) throws DaoException {
 		entityManager.refresh(persistente);
 	}
 
 
+	@Override
 	public void flush() throws DaoException {
 		entityManager.flush();
 	}	
 
 
+	@Override
 	public List<P> paginacaoBaseSerializableDataModel(String strQuery,
 			Map<String, Object> params) throws DaoException {
 		String msg = new String(
@@ -539,6 +568,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 		}
 	}
 
+	@Override
 	public Long recuperaTotalRegistros() throws DaoException{
 
 		String msg = new String("Erro ao realizar o recuperar todos no DAO.");
@@ -553,6 +583,7 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 	}
 
+	@Override
 	public Long recuperaTotalRegistros(Map<String, Object> filters) throws DaoException{
 
 		String msg = new String("Erro ao realizar o recuperar todos no DAO.");

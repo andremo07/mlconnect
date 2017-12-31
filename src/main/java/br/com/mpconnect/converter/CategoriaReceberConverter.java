@@ -22,10 +22,11 @@ public class CategoriaReceberConverter implements Converter {
 	@Autowired
 	private CategoriaContaReceberDao categoriaContaReceberDao;
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return (CategoriaContaReceber) categoriaContaReceberDao.recuperaUm(new Long(value));
+				return categoriaContaReceberDao.recuperaUm(new Long(value));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -37,7 +38,8 @@ public class CategoriaReceberConverter implements Converter {
         return new Produto();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof CategoriaContaReceber) {
         	CategoriaContaReceber categoriaContaReceber= (CategoriaContaReceber) value;
             if (categoriaContaReceber != null && categoriaContaReceber instanceof CategoriaContaReceber && categoriaContaReceber.getId() != null) {

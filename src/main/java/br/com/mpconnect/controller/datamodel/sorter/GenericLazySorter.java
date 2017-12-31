@@ -15,7 +15,8 @@ public class GenericLazySorter<T> implements Comparator<T> {
         this.sortOrder = sortOrder;
     }
  
-    public int compare(T obj1, T obj2) {
+    @Override
+	public int compare(T obj1, T obj2) {
         try {
             Object value1 = ((Class<T>)getClass()).getField(this.sortField).get(obj1);
             Object value2 = ((Class<T>)getClass()).getField(this.sortField).get(obj2);

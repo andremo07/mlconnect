@@ -22,6 +22,7 @@ public class EnvioDaoImpl extends DaoCrudImpJpa<Envio> implements EnvioDao, Seri
 	 */
 	private static final long serialVersionUID = 7183819607214181309L;
 
+	@Override
 	public Envio recuperaEnvioPorIdMl(String idMl){
 		Envio envio = null;
 		try{
@@ -35,6 +36,7 @@ public class EnvioDaoImpl extends DaoCrudImpJpa<Envio> implements EnvioDao, Seri
 
 	}
 	
+	@Override
 	public List<Envio> listarEnvios(Date dtInicio, Date dtFim){
 		
 		try{

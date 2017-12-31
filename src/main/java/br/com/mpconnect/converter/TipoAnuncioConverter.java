@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.ml.api.enums.TipoAnuncioEnum;
 import br.com.mpconnect.ml.dto.TipoAnuncioML;
-import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
 
 @ManagedBean(name="tipoAnuncioConverter")
@@ -19,7 +18,8 @@ import br.com.mpconnect.model.Produto;
 public class TipoAnuncioConverter implements Converter {
 	
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
         		if(value.equals(TipoAnuncioEnum.ML_PREMIUM.getValue().getId()))
@@ -34,7 +34,8 @@ public class TipoAnuncioConverter implements Converter {
         return new Produto();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof TipoAnuncioML) {
         	TipoAnuncioML tipo= (TipoAnuncioML) value;
             if (tipo != null && tipo instanceof TipoAnuncioML && tipo.getId() != null) {

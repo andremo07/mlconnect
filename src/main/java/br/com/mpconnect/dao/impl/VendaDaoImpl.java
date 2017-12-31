@@ -20,17 +20,20 @@ public class VendaDaoImpl extends DaoCrudImpJpa<Venda> implements VendaDao, Seri
 	 */
 	private static final long serialVersionUID = 8695014859740008255L;
 	
+	@Override
 	public List<String> recuperarTodosIdsVendas(){
 		Query query = getEntityManager().createQuery("select v.id from Venda v");
 		return query.getResultList();
 	}
 	
+	@Override
 	public List<String> recuperaIdsVendasExistentes(List<String> ids){
 		Query query = getEntityManager().createQuery("select v.id from Venda v where v.id in (:ids)");
 		query.setParameter("ids", ids);
 		return query.getResultList();
 	}
 	
+	@Override
 	public List<Venda> recuperarVendasPorPeriodoSemNfe(Date dtIni,Date dtFinal){
 		Query query = getEntityManager().createQuery("from Venda v where (v.data between :dtInicio and :dtFim) and v.nrNfe is null");
 		query.setParameter("dtInicio", dtIni);

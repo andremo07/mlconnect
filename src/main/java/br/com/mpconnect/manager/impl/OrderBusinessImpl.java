@@ -64,7 +64,7 @@ import br.com.trendsoftware.mlProvider.dto.UserToken;
 import br.com.trendsoftware.mlProvider.response.Response;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
-@Service("vendasManager")
+@Service("orderBusiness")
 public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusiness, Serializable {
 
 	/**
@@ -134,6 +134,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		getShippingProvider().setLogger(logger);
 	}
 
+	@Override
 	@Transactional
 	public void cadastrarVenda(Venda venda){
 		Venda vendaExistente =null;
@@ -165,6 +166,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	}
 
 
+	@Override
 	@Transactional
 	public void cadastrarVendaUnitaria(Venda venda, Produto produto){
 
@@ -179,6 +181,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
+	@Override
 	@Transactional
 	public void salvarVenda(Venda venda){
 
@@ -228,6 +231,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
+	@Override
 	@Transactional
 	public void loadOrdersByDate(Date fromDate, Date toDate) throws BusinessException{
 
@@ -283,6 +287,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(venda);
 	}
 
+	@Override
 	@Transactional
 	public void save(String userId, String orderId) throws BusinessException
 	{
@@ -311,6 +316,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
+	@Override
 	public List<Venda> listOrdersByShippingStatus(ShippingStatus shippingStatus, ShippingSubStatus shippingSubStatus) throws BusinessException{
 
 		getLogger().debug("carregando vendas com etiquetas para imprimir");
@@ -353,6 +359,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
+	@Override
 	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException{
 
 		try {
@@ -373,6 +380,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
+	@Override
 	public Long getMaxIdVenda(){
 
 		Criteria criteria = vendaDao.getSession()
@@ -383,6 +391,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
+	@Override
 	@Transactional
 	public void atualizarVenda(Venda venda){
 
@@ -437,6 +446,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
+	@Override
 	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl){
 
 		List<String> idsVendas = new ArrayList<String>();

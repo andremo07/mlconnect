@@ -18,6 +18,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 	@Resource
 	public FuncionarioDao funcionarioDao;
 
+	@Override
 	@Transactional
 	public void inserirFuncionario(Funcionario funcionario) {
 		
@@ -30,6 +31,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 		
 	}
 
+	@Override
 	@Transactional
 	public void editarFuncionario(Funcionario funcionario) {
 		
@@ -42,6 +44,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 		
 	}
 	
+	@Override
 	@Transactional
 	public void removerFuncionario(Funcionario funcionario) {
 		
@@ -54,6 +57,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 		
 	}
 	
+	@Override
 	public List<Funcionario> listarFuncionarios() {
 		
 		try {
@@ -66,6 +70,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 		return null;
 	}
 	
+	@Override
 	public List<Funcionario> listarFuncionariosPorIntervalo(int first,int max) {
 		
 		try {
@@ -78,6 +83,7 @@ public class FuncionarioManagerBoImpl implements FuncionarioManagerBo{
 		return null;
 	}
 
+	@Override
 	public Long recuperaTotalFuncionarios() {
 		
 		try {

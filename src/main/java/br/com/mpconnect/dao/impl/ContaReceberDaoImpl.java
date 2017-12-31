@@ -26,6 +26,7 @@ import br.com.mpconnect.model.ContaReceber;
 @Service("contaReceberDao")
 public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements ContaReceberDao{
 
+	@Override
 	public List<ContaBo> obterRecebimentosAgrupados(){
 		String query = "select month(cr.dataBaixa),ccp.nome,sum(cr.valor) "+
 				"from ContaReceber as cr "+
@@ -83,6 +84,7 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 	}
 	
 	
+	@Override
 	public List<ContaReceber> recuperarContaPorNrTransacao(String nrTransacao){
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();

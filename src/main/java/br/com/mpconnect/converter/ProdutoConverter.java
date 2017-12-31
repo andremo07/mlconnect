@@ -21,10 +21,11 @@ public class ProdutoConverter implements Converter {
 	@Autowired
 	private ProdutoDao produtoDao;
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return (Produto) produtoDao.recuperaUm(new Long(value));
+				return produtoDao.recuperaUm(new Long(value));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -36,7 +37,8 @@ public class ProdutoConverter implements Converter {
         return new Produto();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof Produto) {
         	Produto produto= (Produto) value;
             if (produto != null && produto instanceof Produto && produto.getId() != null) {

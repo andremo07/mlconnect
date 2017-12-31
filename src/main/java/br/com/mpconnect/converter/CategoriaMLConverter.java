@@ -25,10 +25,11 @@ public class CategoriaMLConverter implements Converter {
 	@Autowired
 	private ApiCategorias apiCategorias;
 
+	@Override
 	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
 		if (value != null && !value.isEmpty()) {
 			try {
-				return (CategoriaML) apiCategorias.retornaCategoria(value);
+				return apiCategorias.retornaCategoria(value);
 			} catch (MeliException | JSONException | IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -37,6 +38,7 @@ public class CategoriaMLConverter implements Converter {
 		return new CategoriaML();
 	}
 
+	@Override
 	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
 		if (value instanceof CategoriaML) {
 			CategoriaML categoriaMl= (CategoriaML) value;

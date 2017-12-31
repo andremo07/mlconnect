@@ -50,6 +50,7 @@ public class FluxoDeCaixaManagerBoImpl implements FluxoDeCaixaManagerBo{
 	@Resource
 	public FornecedorDao fornecedorDao;
 
+	@Override
 	@Transactional
 	public void gerarFluxoDeCaixaVendaMl(Venda venda) {
 

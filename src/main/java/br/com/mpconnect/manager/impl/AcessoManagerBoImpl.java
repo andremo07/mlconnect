@@ -48,6 +48,7 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 //		});
 	}
 
+	@Override
 	@Transactional
 	public Meli conectarMl() {
 
@@ -87,6 +88,7 @@ public class AcessoManagerBoImpl implements AcessoManagerBo, Serializable{
 		}
 	}
 	
+	@Override
 	@Transactional
 	public AcessoMl recuperarUltimoAcesso(){
 		try {

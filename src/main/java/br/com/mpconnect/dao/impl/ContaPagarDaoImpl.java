@@ -27,6 +27,7 @@ import br.com.mpconnect.model.ContaPagar;
 public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements ContaPagarDao{
 	
 	
+	@Override
 	public List<ContaBo> obterDespesasAgrupadas(){
 		String query = "select month(cp.dataBaixa),ccp.nome,sum(cp.valor) "+
 						"from ContaPagar as cp "+
@@ -86,6 +87,7 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 	}
 	
 	
+	@Override
 	public List<ContaPagar> recuperarContaPorNrTransacao(String nrTransacao){
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();

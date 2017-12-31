@@ -45,7 +45,6 @@ import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.VendaComparator;
 import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
-import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 @Component
 @Scope(value="view")

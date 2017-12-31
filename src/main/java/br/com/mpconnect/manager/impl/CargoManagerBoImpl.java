@@ -17,6 +17,7 @@ public class CargoManagerBoImpl implements CargoManagerBo{
 	@Resource
 	public CargoDao cargoDao;
 	
+	@Override
 	public List<Cargo> listarCargos() {
 		
 		try {
@@ -29,6 +30,7 @@ public class CargoManagerBoImpl implements CargoManagerBo{
 		return null;
 	}
 	
+	@Override
 	public Cargo findCargoById(Long id){
 		
 		try {

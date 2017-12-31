@@ -15,13 +15,11 @@ import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.api.exception.custom.APIProviderException;
 import br.com.mpconnect.api.exception.custom.PreConditionFailedException;
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.trendsoftware.mlProvider.dto.Notification;
 import br.com.trendsoftware.mlProvider.dto.Topic;
-import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 @Component
 @Path("/notification")
@@ -58,7 +56,7 @@ public class NotificationApi
 
 					String resource = notification.getResource();
 					String orderId = resource.split("/")[2];
-					String userId = (String) notification.getUser_id();
+					String userId = notification.getUser_id();
 
 					getOrderBusiness().save(userId, orderId);
 					

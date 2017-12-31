@@ -27,7 +27,6 @@ import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.manager.ProdutoManagerBo;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Produto;
-import br.com.mpconnect.util.DateUtils;
 
 @Service("produtoManager")
 public class ProdutoManagerBoImpl implements ProdutoManagerBo, Serializable{
@@ -56,6 +55,7 @@ public class ProdutoManagerBoImpl implements ProdutoManagerBo, Serializable{
 		}
 	}
 
+	@Override
 	@Transactional
 	public void reporEstoqueProdutos(InputStream is, List<Produto> produtosAtualizadosList, List<Produto> produtosCadastradosList){
 
@@ -108,6 +108,7 @@ public class ProdutoManagerBoImpl implements ProdutoManagerBo, Serializable{
 		}
 	}
 
+	@Override
 	@Transactional
 	public void baixarEstoqueProdutos(InputStream is, List<Produto> produtosAtualizadosList){
 

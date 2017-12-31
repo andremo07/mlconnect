@@ -18,7 +18,6 @@ import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.PessoaDao;
 import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.ml.api.enums.StatusContaReceberEnum;
-import br.com.mpconnect.ml.api.enums.TipoPagamentoEnum;
 import br.com.mpconnect.model.CategoriaContaReceber;
 import br.com.mpconnect.model.ContaReceber;
 import br.com.mpconnect.model.Pessoa;

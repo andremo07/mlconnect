@@ -54,7 +54,7 @@ import com.fincatto.nfe310.classes.nota.NFViaTransporteInternacional;
 
 public class GerarNotaConsumidor {
 	
-	public NFNotaInfo getNFNotaInfo() {
+	public static NFNotaInfo getNFNotaInfo() {
         final NFNotaInfo info = new NFNotaInfo();
         
         //vendaManager.carregaVendasRecentes();
@@ -89,7 +89,7 @@ public class GerarNotaConsumidor {
         identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_VISTA);
         identificacao.setModelo(NFModelo.NFE);
         identificacao.setNaturezaOperacao("Venda de Mercadoria");
-        identificacao.setNumeroNota("38");
+        identificacao.setNumeroNota("40");
         identificacao.setProgramaEmissor(NFProcessoEmissor.CONTRIBUINTE);
         identificacao.setSerie("1");
         identificacao.setTipo(NFTipo.SAIDA);
@@ -155,7 +155,7 @@ public class GerarNotaConsumidor {
 	public static NFNotaInfoTransporte getNFNotaInfoTransporte() {
         final NFNotaInfoTransporte transporte = new NFNotaInfoTransporte();
         //transporte.setIcmsTransporte(FabricaDeObjetosFake.getNFNotaInfoRetencaoICMSTransporte());
-        transporte.setModalidadeFrete(NFModalidadeFrete.POR_CONTA_DO_EMITENTE);
+        transporte.setModalidadeFrete(NFModalidadeFrete.POR_CONTA_DE_TERCEIROS);
         //transporte.setReboques(Collections.singletonList(FabricaDeObjetosFake.getNFNotaInfoReboque()));
         transporte.setTransportador(GerarNotaConsumidor.getNFNotaInfoTransportador());
         transporte.setVolumes(Collections.singletonList(GerarNotaConsumidor.getNFNotaInfoVolume()));

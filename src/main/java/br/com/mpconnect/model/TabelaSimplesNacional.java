@@ -3,9 +3,11 @@ package br.com.mpconnect.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
-@Entity(name="SIMPLES_NACIONAL_TX")
-public class TabelaSimplesNacional {
+@Entity
+@Table(name="SIMPLES_NACIONAL_TX")
+public class TabelaSimplesNacional implements Persistente{
 	
 	@Id
 	@Column(name="ID")

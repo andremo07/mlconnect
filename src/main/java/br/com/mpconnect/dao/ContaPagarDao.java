@@ -10,6 +10,7 @@ public interface ContaPagarDao extends DaoCrud<ContaPagar>{
 	
 	public List<ContaBo> obterDespesasAgrupadas();
 	public List<ContaPagar> recuperarContaPorNrTransacao(String nrTransacao);
+	@Override
 	public List<ContaPagar> recuperaTodosPorIntervalo(int first, int max, Map<String,Object> filters) throws DaoException;
 
 

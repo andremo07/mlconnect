@@ -19,6 +19,7 @@ public class ClienteDaoImpl extends DaoCrudImpJpa<Cliente> implements ClienteDao
 	 */
 	private static final long serialVersionUID = 2187725238689881891L;
 	
+	@Override
 	public Cliente recuperaClientePorIdMl(String idMl){
 		Cliente cliente = null;
 		try{

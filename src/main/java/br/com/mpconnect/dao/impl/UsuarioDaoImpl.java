@@ -13,6 +13,7 @@ import br.com.mpconnect.model.Usuario;
 @Service("usuarioDao")
 public class UsuarioDaoImpl extends DaoCrudImpJpa<Usuario> implements UsuarioDao{
 
+	@Override
 	public Usuario getUsuarioByLoginSenha(String login,String senha) throws DaoException{
 		Usuario user = null;
 		Map<String, Object> params = new HashMap<String, Object>();

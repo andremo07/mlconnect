@@ -1,0 +1,35 @@
+package br.com.mpconnect.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="MUNICIPIO")
+public class Municipio implements Persistente{
+	
+	@Id
+	@Column(name="CD_MUNICIPIO")
+	private Long id;
+	
+	@Column(name="NM_MUNICIPIO")
+	private String nmMunicipio;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getNmMunicipio() {
+		return nmMunicipio;
+	}
+
+	public void setNmMunicipio(String nmMunicipio) {
+		this.nmMunicipio = nmMunicipio;
+	}
+	
+}

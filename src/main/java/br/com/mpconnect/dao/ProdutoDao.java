@@ -6,6 +6,7 @@ import br.com.mpconnect.model.Produto;
 
 public interface ProdutoDao extends DaoCrud<Produto>{
 	
+	@Override
 	@Transactional
 	public void alterar(Produto persistente) throws DaoException;
 

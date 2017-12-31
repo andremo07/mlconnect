@@ -19,6 +19,7 @@ public class AnuncioDaoImpl extends DaoCrudImpJpa<Anuncio> implements AnuncioDao
 	 */
 	private static final long serialVersionUID = -8619762730628567105L;
 	
+	@Override
 	public List<String> recuperaIdsAnunciosExistentes(List<String> ids){
 		Query query = getEntityManager().createQuery("select a.idMl from Anuncio a where a.idMl in (:ids)");
 		query.setParameter("ids", ids);

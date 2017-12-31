@@ -12,6 +12,7 @@ import javax.faces.event.ViewMapListener;
 
 public class ViewScopeCallbackRegistrer implements ViewMapListener {
 
+	@Override
 	public void processEvent(SystemEvent event) throws AbortProcessingException {
 		if (event instanceof PostConstructViewMapEvent) {
 			PostConstructViewMapEvent viewMapEvent = (PostConstructViewMapEvent) event;
@@ -30,6 +31,7 @@ public class ViewScopeCallbackRegistrer implements ViewMapListener {
 		}
 	}
 
+	@Override
 	public boolean isListenerForSource(Object source) {
 		return source instanceof UIViewRoot;
 	}

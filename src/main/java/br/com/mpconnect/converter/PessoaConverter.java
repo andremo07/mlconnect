@@ -22,10 +22,11 @@ public class PessoaConverter implements Converter {
 	@Autowired
 	private PessoaDao pessoaDao;
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return (Pessoa) pessoaDao.recuperaUm(new Long(value));
+				return pessoaDao.recuperaUm(new Long(value));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -37,7 +38,8 @@ public class PessoaConverter implements Converter {
         return new Produto();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof Pessoa) {
         	Pessoa pessoa= (Pessoa) value;
             if (pessoa != null && pessoa instanceof Pessoa && pessoa.getId() != null) {

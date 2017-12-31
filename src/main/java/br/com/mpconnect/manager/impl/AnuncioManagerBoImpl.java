@@ -31,6 +31,7 @@ public class AnuncioManagerBoImpl implements AnuncioManagerBo{
 	@Resource
 	public AnuncioDao anuncioDao;
 
+	@Override
 	@Transactional
 	public void carregarAnunciosMl() throws DaoException {
 

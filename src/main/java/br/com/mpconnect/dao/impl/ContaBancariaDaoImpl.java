@@ -19,6 +19,7 @@ import br.com.mpconnect.model.ContaBancaria;
 @Service("contaBancariaDao")
 public class ContaBancariaDaoImpl extends DaoCrudImpJpa<ContaBancaria> implements ContaBancariaDao{
 
+	@Override
 	public List<SaldoBo> recuperaSaldosTotaisEmConta(int ano){
 
 		String query = "select month(s.data), sum(s.valor) "+
@@ -42,7 +43,7 @@ public class ContaBancariaDaoImpl extends DaoCrudImpJpa<ContaBancaria> implement
 				Object[] resultado = (Object[]) results.get(index);
 				int mes = (Integer) resultado[0];
 				double valor = (Double) resultado[1];
-				BigDecimal bd = new BigDecimal((Double) valor);
+				BigDecimal bd = new BigDecimal(valor);
 				bd = bd.setScale(2, RoundingMode.HALF_UP);
 				SaldoBo saldo = new SaldoBo();
 				saldo.setMes(mes);

@@ -128,7 +128,8 @@ public class NotificationServlet implements Servlet{
     /**
      * <p>Release all resources acquired at startup time.</p>
      */
-    public void destroy() {
+    @Override
+	public void destroy() {
 
         facesContextFactory = null;
         lifecycle = null;
@@ -141,7 +142,8 @@ public class NotificationServlet implements Servlet{
     /**
      * <p>Return the <code>ServletConfig</code> instance for this servlet.</p>
      */
-    public ServletConfig getServletConfig() {
+    @Override
+	public ServletConfig getServletConfig() {
 
         return (this.servletConfig);
 
@@ -151,7 +153,8 @@ public class NotificationServlet implements Servlet{
     /**
      * <p>Return information about this Servlet.</p>
      */
-    public String getServletInfo() {
+    @Override
+	public String getServletInfo() {
 
         return (this.getClass().getName());
 
@@ -166,7 +169,8 @@ public class NotificationServlet implements Servlet{
      * config file that is parsed before or during the processing of
      * this <code>init()</code> method.
      */
-    public void init(ServletConfig servletConfig) throws ServletException {
+    @Override
+	public void init(ServletConfig servletConfig) throws ServletException {
 
         // Save our ServletConfig instance
         this.servletConfig = servletConfig;
@@ -443,6 +447,7 @@ public class NotificationServlet implements Servlet{
     }
 
 
+	@Override
 	public void service(ServletRequest req, ServletResponse resp)
 			throws ServletException, IOException {
 		HttpServletRequest request = (HttpServletRequest) req;

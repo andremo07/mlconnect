@@ -17,7 +17,8 @@ public class LazySorter implements Comparator<Funcionario> {
         this.sortOrder = sortOrder;
     }
  
-    public int compare(Funcionario funcionario1, Funcionario funcionario2) {
+    @Override
+	public int compare(Funcionario funcionario1, Funcionario funcionario2) {
         try {
             Object value1 = Funcionario.class.getField(this.sortField).get(funcionario1);
             Object value2 = Funcionario.class.getField(this.sortField).get(funcionario2);

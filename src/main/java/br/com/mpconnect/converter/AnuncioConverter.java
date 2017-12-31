@@ -21,10 +21,11 @@ public class AnuncioConverter implements Converter {
 	@Autowired
 	private AnuncioDao anuncioDao;
 	
-    public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
+    @Override
+	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return (Anuncio) anuncioDao.recuperaUm(new Long(value));
+				return anuncioDao.recuperaUm(new Long(value));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -36,7 +37,8 @@ public class AnuncioConverter implements Converter {
         return new Anuncio();
     }
 
-    public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
+    @Override
+	public String getAsString(FacesContext facesContext, UIComponent uiComponent, Object value) {
         if (value instanceof Anuncio) {
         	Anuncio anuncio= (Anuncio) value;
             if (anuncio != null && anuncio instanceof Anuncio && anuncio.getId() != null) {
