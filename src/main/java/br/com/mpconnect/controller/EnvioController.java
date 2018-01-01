@@ -87,7 +87,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			//vendasManager.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -3), new Date());
+			//orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -15), new Date());
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 /*			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
 				VendaML vendaMl = it.next();
@@ -127,6 +127,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
 
 			File zipFile = new File(path+"\\envio.zip");
+			if(!zipFile.exists())
+				zipFile.getParentFile().mkdirs();
 			zipFile.createNewFile();
 			ZipUtils zipUtils = new ZipUtils(zipFile);
 

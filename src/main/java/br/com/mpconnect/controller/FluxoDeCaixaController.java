@@ -83,13 +83,9 @@ public class FluxoDeCaixaController {
 		fluxoDeCaixas.add(fluxoDeSaida);
 
 		saldos = contaManager.retornaSaldosTotaisEmConta(DateUtils.getAno(new Date()));
-//		if(saldos.size()<12){
-//			int colunas = mesesEnum.length-saldos.size();
-//			for(int i=0; i < colunas;i++){
-//				SaldoBo saldo = new SaldoBo();
-//				saldos.add(saldo);
-//			}
-//		}
+		
+		if(saldos==null)
+			
 
 		calculaResultadoOperacional();
 		calculaSaldoFinalDeCaixa();

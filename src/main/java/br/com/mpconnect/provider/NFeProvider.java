@@ -128,13 +128,8 @@ public class NFeProvider {
 		nfeInfo.setTotal(getNFNotaInfoTotal(venda));
 		nfeInfo.setTransporte(getNFNotaInfoTransporte());
 		nfeInfo.setInformacoesAdicionais(getNFNotaInfoInformacoesAdicionais());
-		
-		//
-		
-//			nfeInfo.setIdentificador(ch.getChaveAcesso());
-//			nfeInfo.getIdentificacao().setDigitoVerificador(ch.getDV());
-		return nfeInfo;
 
+		return nfeInfo;
 	}
 
 	public NFLoteEnvioRetorno gerarLoteEnvioNfe(List<NFNota> notas) throws NfeProviderException{

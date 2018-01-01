@@ -60,7 +60,7 @@ import br.com.trendsoftware.mlProvider.dto.OrderList;
 import br.com.trendsoftware.mlProvider.dto.OrderStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
-import br.com.trendsoftware.mlProvider.dto.UserToken;
+import br.com.trendsoftware.mlProvider.dto.UserCredencials;
 import br.com.trendsoftware.mlProvider.response.Response;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
@@ -277,7 +277,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			throw new BusinessException(exception);
 		}
 	}
-	
+
 	public void saveOrder(Venda venda) throws BusinessException
 	{
 		Origem origem = new Origem();
@@ -293,17 +293,18 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	{
 		try {
 			AcessoMl acessoMl = acessoDao.recuperarUltimo();
-			
+
 			//MUDAR PARA BUSCA NA TABELA PELA COLUNA USER_ID
 			Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
-			UserToken token = (UserToken) response.getData();
+			UserCredencials token = (UserCredencials) response.getData();
 
 			response = orderProvider.searchOrderById(orderId, token.getAccessToken());
 			Order order = (Order) response.getData();
-			Venda venda = MlParser.parseOrder(order);
 
-			saveOrder(venda);
-			
+			Venda venda = MlParser.parseOrder(order);
+			if(vendaDao.recuperaUm(new Long(venda.getId()))==null)
+				saveOrder(venda);
+
 		} catch (DaoException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("");

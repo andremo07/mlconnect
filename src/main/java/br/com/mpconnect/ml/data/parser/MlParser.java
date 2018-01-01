@@ -91,10 +91,11 @@ public class MlParser {
 		cliente.setEmail(buyer.getEmail());
 		
 		if(buyer.getPhone()!=null)
-			if(buyer.getPhone().getAreaCode() != null && !buyer.getPhone().getAreaCode().equals("null"))
-				cliente.setTelefone(buyer.getPhone().getAreaCode().trim()+" "+buyer.getPhone().getNumber().trim());
-			else
-				cliente.setTelefone(buyer.getPhone().getNumber().trim());
+			if(buyer.getPhone().getNumber()!=null)
+				if(buyer.getPhone().getAreaCode() != null && !buyer.getPhone().getAreaCode().equals("null"))
+					cliente.setTelefone(buyer.getPhone().getAreaCode().trim()+" "+buyer.getPhone().getNumber().trim());
+				else
+					cliente.setTelefone(buyer.getPhone().getNumber().trim());
 		if(buyer.getBillingInfo().getDocNumber()!=null)
 			if(buyer.getBillingInfo().getDocNumber().toString().length()>11){
 				cliente.setTipo(TipoPessoaEnum.JURIDICA.getValue());
@@ -125,13 +126,14 @@ public class MlParser {
 	public static Envio parseShipping(Shipping shipping){
 
 		Envio envio = new Envio();
-		if(shipping.getShippingOption().getCost()==0){
-			envio.setCusto(shipping.getShippingOption().getListCost());
-		}
-		else
-			envio.setCusto(0.00);
+		if(shipping.getShippingOption()!=null)
+			if(shipping.getShippingOption().getCost()==0){
+				envio.setCusto(shipping.getShippingOption().getListCost());
+			}
+			else
+				envio.setCusto(0.00);
 
-		envio.setIdMl(shipping.getId().toString());
+		envio.setIdMl(shipping.getId() != null ? shipping.getId().toString() : null);
 		envio.setMetodo(shipping.getShippingOption() != null ? shipping.getShippingOption().getName() : null);
 		envio.setModo(shipping.getMode());
 		envio.setTipo(shipping.getTrackingMethod());

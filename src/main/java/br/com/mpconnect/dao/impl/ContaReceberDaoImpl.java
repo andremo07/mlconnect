@@ -28,10 +28,11 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 
 	@Override
 	public List<ContaBo> obterRecebimentosAgrupados(){
-		String query = "select month(cr.dataBaixa),ccp.nome,sum(cr.valor) "+
+		String query = "select year(cr.dataBaixa),month(cr.dataBaixa),ccp.nome,sum(cr.valor) "+
 				"from ContaReceber as cr "+
 				"inner join cr.categoria as ccp "+
-				"group by ccp.nome,month(cr.dataBaixa)";
+				"where cr.status = 'RECEBIDO' "+
+				"group by ccp.nome,year(cr.dataBaixa),month(cr.dataBaixa)";
 		Query q = getEntityManager().createQuery(query);
 		List results = q.getResultList();
 		List<ContaBo> recebimentos = new ArrayList<ContaBo>();

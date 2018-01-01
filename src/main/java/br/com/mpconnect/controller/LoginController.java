@@ -24,7 +24,7 @@ import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Usuario;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.User;
-import br.com.trendsoftware.mlProvider.dto.UserToken;
+import br.com.trendsoftware.mlProvider.dto.UserCredencials;
 import br.com.trendsoftware.mlProvider.response.Response;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
@@ -77,7 +77,7 @@ public class LoginController implements Serializable{
 				AcessoMl acessoMl = acessoDao.recuperarUltimo();
 				
 				Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
-				UserToken token = (UserToken) response.getData(); 
+				UserCredencials token = (UserCredencials) response.getData(); 
 				acessoMl.setAccessToken(token.getAccessToken());
 				acessoMl.setRefreshToken(token.getRefreshToken());
 				
