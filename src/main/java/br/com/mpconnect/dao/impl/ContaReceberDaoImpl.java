@@ -27,13 +27,22 @@ import br.com.mpconnect.model.ContaReceber;
 public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements ContaReceberDao{
 
 	@Override
-	public List<ContaBo> obterRecebimentosAgrupados(){
-		String query = "select year(cr.dataBaixa),month(cr.dataBaixa),ccp.nome,sum(cr.valor) "+
+	public List<ContaBo> obterRecebimentosAgrupados(Integer ano){
+		String query = "select month(cr.dataBaixa),ccp.nome,sum(cr.valor) "+
 				"from ContaReceber as cr "+
 				"inner join cr.categoria as ccp "+
-				"where cr.status = 'RECEBIDO' "+
-				"group by ccp.nome,year(cr.dataBaixa),month(cr.dataBaixa)";
+				"where cr.status = 'RECEBIDO' AND year(cr.dataBaixa)=:year "+
+				"group by ccp.nome, month(cr.dataBaixa)";
+		
 		Query q = getEntityManager().createQuery(query);
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("year", ano);
+		
+		for (String chave : params.keySet()) {
+			q.setParameter(chave, params.get(chave));
+		}
+		
 		List results = q.getResultList();
 		List<ContaBo> recebimentos = new ArrayList<ContaBo>();
 		for(int index=0;index<results.size();index++){

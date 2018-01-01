@@ -87,7 +87,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			//orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -15), new Date());
+			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -1), new Date());
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 /*			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
 				VendaML vendaMl = it.next();

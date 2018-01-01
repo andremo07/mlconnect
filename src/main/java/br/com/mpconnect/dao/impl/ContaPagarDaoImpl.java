@@ -28,13 +28,22 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 	
 	
 	@Override
-	public List<ContaBo> obterDespesasAgrupadas(){
+	public List<ContaBo> obterDespesasAgrupadas(Integer ano){
 		String query = "select month(cp.dataBaixa),ccp.nome,sum(cp.valor) "+
 						"from ContaPagar as cp "+
 						"inner join cp.categoria as ccp "+
-						"where cp.status = 'PAGO' "+
+						"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:year "+
 						"group by ccp.nome,month(cp.dataBaixa)";
+		
 		Query q = getEntityManager().createQuery(query);
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("year", ano);
+		
+		for (String chave : params.keySet()) {
+			q.setParameter(chave, params.get(chave));
+		}
+		
 		List results = q.getResultList();
 		List<ContaBo> pagamentos = new ArrayList<ContaBo>();
 		for(int index=0;index<results.size();index++){

@@ -74,11 +74,11 @@ public class FluxoDeCaixaController {
 		for(int i=0; i < mesesEnum.length;i++)
 			meses.add(mesesEnum[i].getValue());
 
-		recebimentos = contaReceberDao.obterRecebimentosAgrupados();
+		recebimentos = contaReceberDao.obterRecebimentosAgrupados(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeEntrada = populaFluxoDeCaixa(recebimentos, totaisRecebimentos,"Total das Entradas");
 		fluxoDeCaixas.add(fluxoDeEntrada);
 
-		pagamentos = contaPagarDao.obterDespesasAgrupadas();
+		pagamentos = contaPagarDao.obterDespesasAgrupadas(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeSaida = populaFluxoDeCaixa(pagamentos, totaisPagamentos,"Total das Saidas");
 		fluxoDeCaixas.add(fluxoDeSaida);
 
