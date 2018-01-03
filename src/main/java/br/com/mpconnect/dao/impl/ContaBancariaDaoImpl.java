@@ -20,22 +20,14 @@ import br.com.mpconnect.model.ContaBancaria;
 public class ContaBancariaDaoImpl extends DaoCrudImpJpa<ContaBancaria> implements ContaBancariaDao{
 
 	@Override
-	public List<SaldoBo> recuperaSaldosTotaisEmConta(int ano){
+	public List<SaldoBo> recuperaSaldosTotaisEmConta(){
 
 		String query = "select month(s.data), sum(s.valor) "+
 				"from Saldo as s "+
-				"where year(s.data)=:year "+
 				"group by month(s.data)";
-		
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("year", ano);
-		
+				
 		Query q = getEntityManager().createQuery(query);
 		
-		for (String chave : params.keySet()) {
-			q.setParameter(chave, params.get(chave));
-		}
-
 		List results = q.getResultList();
 		if(results!=null && !results.isEmpty()){
 			List<SaldoBo> saldos = new ArrayList<SaldoBo>();

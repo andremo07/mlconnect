@@ -9,6 +9,6 @@ import br.com.mpconnect.model.ContaBancaria;
 public interface ContaBancariaManagerBo {
 	
 	public void salvarConta(ContaBancaria conta) throws DaoException;
-	public List<SaldoBo> retornaSaldosTotaisEmConta(int ano);
+	public List<SaldoBo> retornaSaldosTotaisEmConta();
 	
 }

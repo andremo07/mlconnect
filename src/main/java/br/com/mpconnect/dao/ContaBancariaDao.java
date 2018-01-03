@@ -7,5 +7,5 @@ import br.com.mpconnect.model.ContaBancaria;
 
 public interface ContaBancariaDao extends DaoCrud<ContaBancaria>{
 	
-	public List<SaldoBo> recuperaSaldosTotaisEmConta(int ano);
+	public List<SaldoBo> recuperaSaldosTotaisEmConta();
 }

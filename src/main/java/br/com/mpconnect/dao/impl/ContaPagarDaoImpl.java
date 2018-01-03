@@ -28,7 +28,7 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 	
 	
 	@Override
-	public List<ContaBo> obterDespesasAgrupadas(Integer ano){
+	public List<ContaBo> obterDespesasAnuais(Integer ano){
 		String query = "select month(cp.dataBaixa),ccp.nome,sum(cp.valor) "+
 						"from ContaPagar as cp "+
 						"inner join cp.categoria as ccp "+
@@ -68,6 +68,29 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 		}
 		
 		return pagamentos;
+	}
+	
+	@Override
+	public Double obterTotalDespesasMes(Integer mes){
+		String query = "select month(cp.dataBaixa),sum(cp.valor) "+
+						"from ContaPagar as cp "+
+						"inner join cp.categoria as ccp "+
+						"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:month "+
+						"group by month(cp.dataBaixa)";
+		
+		Query q = getEntityManager().createQuery(query);
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("month", mes);
+		
+		for (String chave : params.keySet()) {
+			q.setParameter(chave, params.get(chave));
+		}
+		
+		List results = q.getResultList();
+		System.out.println();
+		
+		return null;
 	}
 	
 	@Override

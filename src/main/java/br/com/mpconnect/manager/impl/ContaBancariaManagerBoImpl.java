@@ -26,9 +26,9 @@ public class ContaBancariaManagerBoImpl implements ContaBancariaManagerBo{
 	}
 	
 	@Override
-	public List<SaldoBo> retornaSaldosTotaisEmConta(int ano){
+	public List<SaldoBo> retornaSaldosTotaisEmConta(){
 		
-		return contaDao.recuperaSaldosTotaisEmConta(ano);
+		return contaDao.recuperaSaldosTotaisEmConta();
 		
 	}
 	

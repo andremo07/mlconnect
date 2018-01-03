@@ -74,18 +74,18 @@ public class FluxoDeCaixaController {
 		for(int i=0; i < mesesEnum.length;i++)
 			meses.add(mesesEnum[i].getValue());
 
-		recebimentos = contaReceberDao.obterRecebimentosAgrupados(DateUtils.getAno(new Date()));
+		recebimentos = contaReceberDao.obterRecebimentosAnuais(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeEntrada = populaFluxoDeCaixa(recebimentos, totaisRecebimentos,"Total das Entradas");
 		fluxoDeCaixas.add(fluxoDeEntrada);
 
-		pagamentos = contaPagarDao.obterDespesasAgrupadas(DateUtils.getAno(new Date()));
+		pagamentos = contaPagarDao.obterDespesasAnuais(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeSaida = populaFluxoDeCaixa(pagamentos, totaisPagamentos,"Total das Saidas");
 		fluxoDeCaixas.add(fluxoDeSaida);
 
-		saldos = contaManager.retornaSaldosTotaisEmConta(DateUtils.getAno(new Date()));
-		
-		if(saldos==null)
-			
+		contaPagarDao.obterTotalDespesasMes(DateUtils.getMes(DateUtils.adicionaMes(new Date(), -1)));
+		contaReceberDao.obterTotalRecebimentosMes(DateUtils.getMes(DateUtils.adicionaMes(new Date(), -1)));
+		//saldos = contaManager.retornaSaldosTotaisEmConta(DateUtils.getAno(new Date()));
+		saldos = contaManager.retornaSaldosTotaisEmConta();			
 
 		calculaResultadoOperacional();
 		calculaSaldoFinalDeCaixa();

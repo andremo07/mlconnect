@@ -8,7 +8,8 @@ import br.com.mpconnect.model.ContaPagar;
 
 public interface ContaPagarDao extends DaoCrud<ContaPagar>{
 	
-	public List<ContaBo> obterDespesasAgrupadas(Integer ano);
+	public List<ContaBo> obterDespesasAnuais(Integer ano);
+	public Double obterTotalDespesasMes(Integer mes);
 	public List<ContaPagar> recuperarContaPorNrTransacao(String nrTransacao);
 	@Override
 	public List<ContaPagar> recuperaTodosPorIntervalo(int first, int max, Map<String,Object> filters) throws DaoException;
