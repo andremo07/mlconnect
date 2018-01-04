@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -25,25 +26,25 @@ import br.com.mpconnect.model.ContaPagar;
 
 @Service("contaPagarDao")
 public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements ContaPagarDao{
-	
-	
+
+
 	@Override
 	public List<ContaBo> obterDespesasAnuais(Integer ano){
 		String query = "select month(cp.dataBaixa),ccp.nome,sum(cp.valor) "+
-						"from ContaPagar as cp "+
-						"inner join cp.categoria as ccp "+
-						"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:year "+
-						"group by ccp.nome,month(cp.dataBaixa)";
-		
+				"from ContaPagar as cp "+
+				"inner join cp.categoria as ccp "+
+				"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:year "+
+				"group by ccp.nome,month(cp.dataBaixa)";
+
 		Query q = getEntityManager().createQuery(query);
-		
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("year", ano);
-		
+
 		for (String chave : params.keySet()) {
 			q.setParameter(chave, params.get(chave));
 		}
-		
+
 		List results = q.getResultList();
 		List<ContaBo> pagamentos = new ArrayList<ContaBo>();
 		for(int index=0;index<results.size();index++){
@@ -66,33 +67,34 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 			valoresMensais.put((Integer)resultado[0],(Double) bd.doubleValue());
 			pagamento.setValoresMensais(valoresMensais);
 		}
-		
+
 		return pagamentos;
 	}
-	
+
 	@Override
-	public Double obterTotalDespesasMes(Integer mes){
-		String query = "select month(cp.dataBaixa),sum(cp.valor) "+
-						"from ContaPagar as cp "+
-						"inner join cp.categoria as ccp "+
-						"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:month "+
-						"group by month(cp.dataBaixa)";
-		
-		Query q = getEntityManager().createQuery(query);
-		
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("month", mes);
-		
-		for (String chave : params.keySet()) {
-			q.setParameter(chave, params.get(chave));
+	public Double obterTotalDespesasMes(Integer year){
+		try{
+			String query = "select sum(cp.valor) "+
+					"from ContaPagar as cp "+
+					"inner join cp.categoria as ccp "+
+					"where cp.status = 'PAGO' AND year(cp.dataBaixa)=:year "+
+					"group by year(cp.dataBaixa)";
+
+			Query q = getEntityManager().createQuery(query);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("year", year);
+
+			for (String chave : params.keySet()) {
+				q.setParameter(chave, params.get(chave));
+			}
+
+			return (Double) q.getSingleResult();
+		}catch (NoResultException nre){
+			return null;
 		}
-		
-		List results = q.getResultList();
-		System.out.println();
-		
-		return null;
 	}
-	
+
 	@Override
 	public List<ContaPagar> recuperaTodosPorIntervalo(int first, int max, Map<String,Object> filters) throws DaoException {
 		String msg = new String("Erro ao realizar o recuperar todos no DAO.");
@@ -109,16 +111,16 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 				else
 					criteria.add(Restrictions.eq(filterProperty, filterValue.toString()));
 			}
-			
+
 			criteria.addOrder(Order.desc("dataVencimento"));
-			
+
 			return criteria.list();
 		} catch (Exception e) {
 			throw new DaoException(e.getMessage(), e.getCause(), null);
 		}
 	}
-	
-	
+
+
 	@Override
 	public List<ContaPagar> recuperarContaPorNrTransacao(String nrTransacao){
 		try {
@@ -131,5 +133,5 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 			return null;
 		}
 	}
-	
+
 }

@@ -150,7 +150,7 @@ public class DateUtils {
 	public static Integer getMes(Date data){
 		Calendar cal = Calendar.getInstance(); 
 		cal.setTime(data);
-		return cal.get(Calendar.MONTH);
+		return cal.get(Calendar.MONTH)+1;
 	}
 	
 	public static Integer getDia(Date data){

@@ -6,6 +6,11 @@ public class SaldoBo {
 	private int mes;
 	private double valor;
 	
+	public SaldoBo(int mes, double valor) {
+		super();
+		this.mes = mes;
+		this.valor = valor;
+	}
 	public int getMes() {
 		return mes;
 	}

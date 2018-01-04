@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Service;
@@ -25,9 +26,9 @@ public class ContaBancariaDaoImpl extends DaoCrudImpJpa<ContaBancaria> implement
 		String query = "select month(s.data), sum(s.valor) "+
 				"from Saldo as s "+
 				"group by month(s.data)";
-				
+
 		Query q = getEntityManager().createQuery(query);
-		
+
 		List results = q.getResultList();
 		if(results!=null && !results.isEmpty()){
 			List<SaldoBo> saldos = new ArrayList<SaldoBo>();
@@ -37,15 +38,28 @@ public class ContaBancariaDaoImpl extends DaoCrudImpJpa<ContaBancaria> implement
 				double valor = (Double) resultado[1];
 				BigDecimal bd = new BigDecimal(valor);
 				bd = bd.setScale(2, RoundingMode.HALF_UP);
-				SaldoBo saldo = new SaldoBo();
-				saldo.setMes(mes);
-				saldo.setValor(bd.doubleValue());
+				SaldoBo saldo = new SaldoBo(mes,bd.doubleValue());
 				saldos.add(saldo);
 			}
 			return saldos;
 		}
 		else
 			return null;
+	}
+
+	@Override
+	public Double recuperaSaldoTotalEmConta(){
+		try{
+			String query = "select sum(s.valor) "+
+					"from Saldo as s "+
+					"group by month(s.data)";
+
+			Query q = getEntityManager().createQuery(query);
+
+			return (Double) q.getSingleResult();
+		}catch (NoResultException nre){
+			return null;
+		}
 	}
 
 }

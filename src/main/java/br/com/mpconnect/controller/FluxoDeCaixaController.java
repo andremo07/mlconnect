@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import br.com.mpconnect.bo.ContaBo;
 import br.com.mpconnect.bo.FluxoDeCaixaBo;
 import br.com.mpconnect.bo.SaldoBo;
+import br.com.mpconnect.dao.ContaBancariaDao;
 import br.com.mpconnect.dao.ContaPagarDao;
 import br.com.mpconnect.dao.ContaReceberDao;
 import br.com.mpconnect.manager.ContaBancariaManagerBo;
@@ -39,7 +40,7 @@ public class FluxoDeCaixaController {
 	private List<Double> totaisRecebimentos;
 
 	private List<Double> resultadosOperacionais;
-	
+
 	private List<Double> saldosFinaisDeCaixa;
 
 	private List<FluxoDeCaixaBo> fluxoDeCaixas;
@@ -49,6 +50,9 @@ public class FluxoDeCaixaController {
 
 	@Autowired
 	public ContaReceberDao contaReceberDao;
+	
+	@Autowired
+	public ContaBancariaDao contaBancariaDao;
 
 	@Autowired
 	private ContaBancariaManagerBo contaManager;
@@ -82,11 +86,7 @@ public class FluxoDeCaixaController {
 		FluxoDeCaixaBo fluxoDeSaida = populaFluxoDeCaixa(pagamentos, totaisPagamentos,"Total das Saidas");
 		fluxoDeCaixas.add(fluxoDeSaida);
 
-		contaPagarDao.obterTotalDespesasMes(DateUtils.getMes(DateUtils.adicionaMes(new Date(), -1)));
-		contaReceberDao.obterTotalRecebimentosMes(DateUtils.getMes(DateUtils.adicionaMes(new Date(), -1)));
-		//saldos = contaManager.retornaSaldosTotaisEmConta(DateUtils.getAno(new Date()));
-		saldos = contaManager.retornaSaldosTotaisEmConta();			
-
+		calculaSaldoInicial();
 		calculaResultadoOperacional();
 		calculaSaldoFinalDeCaixa();
 	}
@@ -115,6 +115,17 @@ public class FluxoDeCaixaController {
 		return fluxoDeCaixa;
 	}
 
+	private void calculaSaldoInicial(){
+		Date dtAtual = new Date();
+		double totalEmConta = contaBancariaDao.recuperaSaldoTotalEmConta();
+		double totalRecebido = contaReceberDao.obterTotalRecebimentosMes(DateUtils.getAno(dtAtual)-1);
+		double totalGasto = contaPagarDao.obterTotalDespesasMes(DateUtils.getAno(dtAtual)-1);
+		BigDecimal bd = new BigDecimal(totalEmConta+(totalRecebido-totalGasto));
+		bd = bd.setScale(2, RoundingMode.HALF_UP);
+		SaldoBo saldoIncial = new SaldoBo(0,bd.doubleValue());
+		saldos.add(saldoIncial);
+	}
+
 	private void calculaResultadoOperacional(){
 
 		for(int index=0; index<totaisRecebimentos.size();index++){
@@ -124,7 +135,7 @@ public class FluxoDeCaixaController {
 			resultadosOperacionais.add(bd.doubleValue());
 		}		
 	}
-	
+
 	private void calculaSaldoFinalDeCaixa(){
 
 		for(int index=0; index<meses.size();index++){
@@ -134,9 +145,7 @@ public class FluxoDeCaixaController {
 			BigDecimal bd = new BigDecimal(valor);
 			bd = bd.setScale(2, RoundingMode.HALF_UP);
 			saldosFinaisDeCaixa.add(bd.doubleValue());
-			saldo = new SaldoBo();
-			saldo.setValor(bd.doubleValue());
-			saldo.setMes(index+2);
+			saldo = new SaldoBo(index+2,bd.doubleValue());
 			saldos.add(saldo);
 		}		
 	}

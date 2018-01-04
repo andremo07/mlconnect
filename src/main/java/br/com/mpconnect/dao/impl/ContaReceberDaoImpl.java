@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -33,16 +34,16 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 				"inner join cr.categoria as ccp "+
 				"where cr.status = 'RECEBIDO' AND year(cr.dataBaixa)=:year "+
 				"group by ccp.nome, month(cr.dataBaixa)";
-		
+
 		Query q = getEntityManager().createQuery(query);
-		
+
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("year", ano);
-		
+
 		for (String chave : params.keySet()) {
 			q.setParameter(chave, params.get(chave));
 		}
-		
+
 		List results = q.getResultList();
 		List<ContaBo> recebimentos = new ArrayList<ContaBo>();
 		for(int index=0;index<results.size();index++){
@@ -67,28 +68,29 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 		}
 		return recebimentos;
 	}
-	
+
 	@Override
-	public Double obterTotalRecebimentosMes(Integer mes){
-		String query = "select month(cr.dataBaixa),sum(cr.valor) "+
-				"from ContaReceber as cr "+
-				"inner join cr.categoria as ccp "+
-				"where cr.status = 'RECEBIDO' AND month(cr.dataBaixa)=:month "+
-				"group by month(cr.dataBaixa)";
-		
-		Query q = getEntityManager().createQuery(query);
-		
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("month", mes);
-		
-		for (String chave : params.keySet()) {
-			q.setParameter(chave, params.get(chave));
+	public Double obterTotalRecebimentosMes(Integer year){
+		try{
+			String query = "select sum(cr.valor) as total "+
+					"from ContaReceber as cr "+
+					"inner join cr.categoria as ccp "+
+					"where cr.status = 'RECEBIDO' AND year(cr.dataBaixa)=:year "+
+					"group by year(cr.dataBaixa)";
+
+			Query q = getEntityManager().createQuery(query);
+
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("year", year);
+
+			for (String chave : params.keySet()) {
+				q.setParameter(chave, params.get(chave));
+			}
+
+			return (Double) q.getSingleResult();
+		}catch (NoResultException nre){
+			return null;
 		}
-		
-		List results = q.getResultList();
-		System.out.println();
-		
-		return null;
 	}
 
 	@Override
@@ -107,16 +109,16 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 				else
 					criteria.add(Restrictions.eq(filterProperty, filterValue.toString()));
 			}
-			
+
 			criteria.addOrder(Order.desc("dataVencimento"));
-			
+
 			return criteria.list();
 		} catch (Exception e) {
 			throw new DaoException(e.getMessage(), e.getCause(), null);
 		}
 	}
-	
-	
+
+
 	@Override
 	public List<ContaReceber> recuperarContaPorNrTransacao(String nrTransacao){
 		try {
