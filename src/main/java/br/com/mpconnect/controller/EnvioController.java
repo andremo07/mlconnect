@@ -32,7 +32,6 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.file.utils.ZipUtils;
-import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiVendas;
@@ -65,9 +64,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	@Autowired
 	private OrderBusiness orderBusiness;
-	
-	@Autowired
-	private FluxoDeCaixaManagerBo fluxoDeCaixaManager;
 
 	private List<Venda> vendasSelecionadas;
 
@@ -89,15 +85,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -1), new Date());
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
-/*			for(Iterator<VendaML> it = vendasMl.iterator();it.hasNext();){
-				VendaML vendaMl = it.next();
-				Venda venda = vendaDao.recuperaUm(vendaMl.getId());
-				if(venda!=null)
-					vendas.add(venda);
-			}
-
-			Collections.sort(vendas,new VendaComparator());*/
-
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
 		}
