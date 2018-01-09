@@ -83,8 +83,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -1), new Date());
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			//orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -1), new Date());
+			Venda venda = orderBusiness.listOrderById("1599137067");
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.SHIPPED, ShippingSubStatus.READY_TO_PRINT);
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
 		}

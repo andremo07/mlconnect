@@ -359,6 +359,31 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 
 	}
+	
+	public Venda listOrderById(String id) throws BusinessException{
+		
+		getLogger().debug("carregando venda"+ id);
+
+		try {
+
+			Usuario usuario = getSessionUserLogin();
+
+			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
+
+			Response response = orderProvider.searchOrderById(id, accessToken);
+			Order order = (Order) response.getData();
+
+			Venda venda = MlParser.parseOrder(order);
+
+			return venda;
+
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
+			throw new BusinessException(exception);
+		}
+		
+	}
 
 	@Override
 	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException{
