@@ -17,6 +17,12 @@ public class NfeConfig implements Persistente {
 
 	@Column(name="NR_SERIE")
 	private String nrSerie;
+	
+	@Column(name="NR_LOTE")
+	private String nrLote;
+	
+	@Column(name="TX_SIMPLES_NACIONAL")
+	private String txSimplesNacional;
 
 	@Column(name="NR_NOTA")
 	private String nrNota;
@@ -100,4 +106,21 @@ public class NfeConfig implements Persistente {
 	public void setVendedor(Vendedor vendedor) {
 		this.vendedor = vendedor;
 	}
+
+	public String getNrLote() {
+		return nrLote;
+	}
+
+	public void setNrLote(String nrLote) {
+		this.nrLote = nrLote;
+	}
+
+	public String getTxSimplesNacional() {
+		return txSimplesNacional;
+	}
+
+	public void setTxSimplesNacional(String txSimplesNacional) {
+		this.txSimplesNacional = txSimplesNacional;
+	}
+
 }
