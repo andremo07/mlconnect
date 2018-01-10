@@ -50,6 +50,7 @@ import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
+import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.ItemProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
@@ -330,22 +331,29 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
 
 			int offset = 0;
-			Response response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
+			//Response response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
+			//MUDAR FUTURAMENTE
+			Response response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -3), new Date(), OrderStatus.PAID, offset, 10, accessToken);
 			OrderList orderList = (OrderList) response.getData();
 
 			List<Order> orders = new ArrayList<Order>();
 
-			while(orderList.getPaging().getTotal() > orders.size()){
+			while(!orderList.getOrders().isEmpty()){
 				orders.addAll(orderList.getOrders());				
 				offset=offset+10;
-				response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
+				//response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
+				//MUDAR FUTURAMENTE
+				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -3), new Date(), OrderStatus.PAID, offset, 10, accessToken);
 				orderList = (OrderList) response.getData();
 			}
 
 			List<Venda> vendas = new ArrayList<Venda>();
 			for(Order order: orders){
-				Venda venda = MlParser.parseOrder(order);
-				vendas.add(venda);
+				if(shippingStatus.equals(ShippingStatus.lookup(order.getShipping().getStatus())) && 
+						shippingSubStatus.equals(ShippingSubStatus.lookup(order.getShipping().getSubstatus()))){
+					Venda venda = MlParser.parseOrder(order);
+					vendas.add(venda);
+				}
 			}
 
 			getLogger().debug("foram carregadas "+vendas.size()+" vendas");
