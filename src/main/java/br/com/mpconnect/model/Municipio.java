@@ -10,11 +10,14 @@ import javax.persistence.Table;
 public class Municipio implements Persistente{
 	
 	@Id
-	@Column(name="CD_MUNICIPIO")
+	@Column(name="CD_MUNICIPO")
 	private Long id;
 	
 	@Column(name="NM_MUNICIPIO")
 	private String nmMunicipio;
+	
+	@Column(name="COD_UF")
+	private String cdUf;
 
 	public Long getId() {
 		return id;
@@ -31,5 +34,13 @@ public class Municipio implements Persistente{
 	public void setNmMunicipio(String nmMunicipio) {
 		this.nmMunicipio = nmMunicipio;
 	}
-	
+
+	public String getCdUf() {
+		return cdUf;
+	}
+
+	public void setCdUf(String cdUf) {
+		this.cdUf = cdUf;
+	}
+
 }

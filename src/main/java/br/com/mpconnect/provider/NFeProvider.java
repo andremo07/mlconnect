@@ -79,6 +79,7 @@ import com.fincatto.nfe310.webservices.WSFacade;
 import br.com.mpconnect.dao.MunicipioDao;
 import br.com.mpconnect.dao.TabelaSimplesNacionalDao;
 import br.com.mpconnect.holder.NfeConfigurationHolder;
+import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.nfe.generator.GerarNotaConsumidor;
 import br.com.mpconnect.provider.exception.NfeProviderException;
@@ -101,10 +102,10 @@ public class NFeProvider {
 		config = NfeConfigurationHolder.getInstance();		
 	}	
 
-	public String gerarNFe(Venda venda) throws Exception{
+	public String gerarNFe(Venda venda, NfeConfig userNfeConfig) throws Exception{
 		NFNota nota = new NFNota();
 		
-		nota.setInfo(getNFeInfo(venda));
+		nota.setInfo(getNFeInfo(venda,userNfeConfig));
 		
 		NFGeraChave ch = new NFGeraChave(nota);
     	
@@ -134,7 +135,7 @@ public class NFeProvider {
 		return null;
 	}
 
-	public NFNotaInfo getNFeInfo(Venda venda) throws NfeProviderException{
+	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig) throws NfeProviderException{
 		NFNotaInfo nfeInfo = new NFNotaInfo();
 		
 		//SET IDENTIFIÇÃO
@@ -144,7 +145,7 @@ public class NFeProvider {
 					
 		nfeInfo.setVersao(new BigDecimal("3.10"));
 		
-		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda));
+		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda,userNfeConfig));
 		nfeInfo.setEmitente(getNFNotaInfoEmitente(venda));
 		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda));
 		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda)));
@@ -243,7 +244,7 @@ public class NFeProvider {
 	}
 	
 	
-	public NFNotaInfoIdentificacao getNFNotaInfoIdentificacao(Venda venda) {
+	public NFNotaInfoIdentificacao getNFNotaInfoIdentificacao(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoIdentificacao identificacao = new NFNotaInfoIdentificacao();
         identificacao.setAmbiente(NFAmbiente.HOMOLOGACAO);
          
@@ -262,12 +263,14 @@ public class NFeProvider {
         identificacao.setNaturezaOperacao("Venda de Mercadoria");
         
         // Criar sequence para numero da nota.... dado armazenado na tabela NFE_CONFIG
-        identificacao.setNumeroNota("46");
+        Long nrNote = new Long(userNfeConfig.getNrNota());
+        nrNote++;
+        identificacao.setNumeroNota(nrNote.toString());
         
         identificacao.setProgramaEmissor(NFProcessoEmissor.CONTRIBUINTE);
         
         // Dado armazenado na tabela NFE_CONFIG 
-        identificacao.setSerie("1");
+        identificacao.setSerie(userNfeConfig.getNrSerie());
         
         identificacao.setTipo(NFTipo.SAIDA);
         identificacao.setTipoEmissao(NFTipoEmissao.EMISSAO_NORMAL);
@@ -275,7 +278,7 @@ public class NFeProvider {
         identificacao.setUf(NFUnidadeFederativa.RJ);
         
      // Dado armazenado na tabela NFE_CONFIG
-        identificacao.setVersaoEmissor("3.10");
+        identificacao.setVersaoEmissor(userNfeConfig.getNrVersaoEmissor());
         
         if (venda.getVendedor().getUf() == venda.getEnvio().getUf())
         	identificacao.setIdentificadorLocalDestinoOperacao(NFIdentificadorLocalDestinoOperacao.OPERACAO_INTERNA);
