@@ -116,10 +116,14 @@ public class App
     	
     	NFLoteConsultaRetorno retc = new WSFacade(config).consultaLote(retorno.getInfoRecebimento().getRecibo(), NFModelo.NFE);
     	for (NFProtocolo prot : retc.getProtocolos()) {
-    	    System.out.println("Chave: "+prot.getProtocoloInfo().getChave());
+    		System.out.println("Ambiente: "+prot.getProtocoloInfo().getAmbiente());
+    		System.out.println("Chave: "+prot.getProtocoloInfo().getChave());
+    		System.out.println("Data Recebimento: "+prot.getProtocoloInfo().getDataRecebimento());
     	    System.out.println("Número Protocolo: "+prot.getProtocoloInfo().getNumeroProtocolo());
-    	    System.out.println("Status: "+prot.getProtocoloInfo().getStatus());
+    	    System.out.println("Validador: "+prot.getProtocoloInfo().getValidador());
     	    System.out.println("Motivo: "+prot.getProtocoloInfo().getMotivo());
+    	    System.out.println("Status: "+prot.getProtocoloInfo().getStatus());
+    	    
     	}
     	
     }

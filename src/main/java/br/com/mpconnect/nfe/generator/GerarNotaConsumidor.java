@@ -49,6 +49,7 @@ import com.fincatto.nfe310.classes.nota.NFNotaInfoTotal;
 import com.fincatto.nfe310.classes.nota.NFNotaInfoTransportador;
 import com.fincatto.nfe310.classes.nota.NFNotaInfoTransporte;
 import com.fincatto.nfe310.classes.nota.NFNotaInfoVolume;
+import com.fincatto.nfe310.classes.nota.NFNotaProcessada;
 import com.fincatto.nfe310.classes.nota.NFOperacaoConsumidorFinal;
 import com.fincatto.nfe310.classes.nota.NFViaTransporteInternacional;
 
@@ -89,7 +90,7 @@ public class GerarNotaConsumidor {
         identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_VISTA);
         identificacao.setModelo(NFModelo.NFE);
         identificacao.setNaturezaOperacao("Venda de Mercadoria");
-        identificacao.setNumeroNota("40");
+        identificacao.setNumeroNota("42");
         identificacao.setProgramaEmissor(NFProcessoEmissor.CONTRIBUINTE);
         identificacao.setSerie("1");
         identificacao.setTipo(NFTipo.SAIDA);
@@ -364,5 +365,13 @@ public class GerarNotaConsumidor {
         endereco.setUf(NFUnidadeFederativa.RJ);
         return endereco;
     }
+	
+//	public static NFNotaProcessada getNFNotaProcessada() {
+//        final NFNotaProcessada notaProcessada = new NFNotaProcessada();
+//        notaProcessada.setNota(nota);
+//        notaProcessada.setProtocolo(FabricaDeObjetosFake.getNFProtocolo());
+//        notaProcessada.setVersao(new BigDecimal("3.10"));
+//        return notaProcessada;
+//    }
 	
 }
