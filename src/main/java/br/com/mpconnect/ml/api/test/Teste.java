@@ -27,11 +27,11 @@ public class Teste {
 			
 			Venda venda = orderBusiness.recuperarVenda("1578171083");
 			
-			Municipio mun = munDao.findMunicipioByNameAndUf("IBIAPINA", "CE");
+			Municipio mun = munDao.findMunicipioByNameAndUf(venda.getEnvio().getMunicipio(), venda.getEnvio().getUf());
 			
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 			
-			nfeProvider.gerarNFe(venda,userNfeConfig);
+			nfeProvider.gerarNFe(venda,userNfeConfig,mun);
 			
 		} catch (NfeProviderException e) {
 			// TODO Auto-generated catch block
