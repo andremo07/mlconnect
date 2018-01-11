@@ -128,10 +128,13 @@ public class MlParser {
 		Envio envio = new Envio();
 		if(shipping.getShippingOption()!=null)
 			if(shipping.getShippingOption().getCost()==0){
-				envio.setCusto(shipping.getShippingOption().getListCost());
+				envio.setCustoVendedor(shipping.getShippingOption().getListCost());
+				envio.setCustoComprador(0.00);
 			}
-			else
-				envio.setCusto(0.00);
+			else{
+				envio.setCustoVendedor(0.00);
+				envio.setCustoComprador(shipping.getShippingOption().getCost());
+			}
 
 		envio.setIdMl(shipping.getId() != null ? shipping.getId().toString() : null);
 		envio.setMetodo(shipping.getShippingOption() != null ? shipping.getShippingOption().getName() : null);

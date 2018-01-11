@@ -29,8 +29,11 @@ public class Envio implements Persistente{
 	@Column(name="METODO")
 	private String metodo;
 	
-	@Column(name="CUSTO")
-	private Double custo;
+	@Column(name="CUSTO_VENDEDOR")
+	private Double custoVendedor;
+	
+	@Column(name="CUSTO_COMPRADOR")
+	private Double custoComprador;
 	
 	@Column(name="DATA")
 	private Date data;
@@ -105,12 +108,20 @@ public class Envio implements Persistente{
 		this.metodo = metodo;
 	}
 
-	public Double getCusto() {
-		return custo;
+	public Double getCustoVendedor() {
+		return custoVendedor;
 	}
 
-	public void setCusto(Double custo) {
-		this.custo = custo;
+	public void setCustoVendedor(Double custoVendedor) {
+		this.custoVendedor = custoVendedor;
+	}
+
+	public Double getCustoComprador() {
+		return custoComprador;
+	}
+
+	public void setCustoComprador(Double custoComprador) {
+		this.custoComprador = custoComprador;
 	}
 
 	public Date getData() {

@@ -83,10 +83,10 @@ public class FluxoDeCaixaManagerBoImpl implements FluxoDeCaixaManagerBo{
 				ContaPagar contaPagarComissao = criarContaPagar(venda, categoriaComissao, bdComissao.doubleValue());
 				contaPagarDao.gravar(contaPagarComissao);
 
-				if(venda.getEnvio() !=null && venda.getEnvio().getCusto()!=null){
-					if(venda.getEnvio().getCusto()>0.0){
+				if(venda.getEnvio() !=null && venda.getEnvio().getCustoVendedor()!=null){
+					if(venda.getEnvio().getCustoVendedor()>0.0){
 						if(venda.getEnvio().getModo()!= null && (venda.getEnvio().getModo().equals("pagseguro")||venda.getEnvio().getModo().equals("me2"))){
-							ContaPagar contaPagarFrete = criarContaPagar(venda, categoriaFrete, venda.getEnvio().getCusto());
+							ContaPagar contaPagarFrete = criarContaPagar(venda, categoriaFrete, venda.getEnvio().getCustoVendedor());
 							contaPagarDao.gravar(contaPagarFrete);
 						}
 					}

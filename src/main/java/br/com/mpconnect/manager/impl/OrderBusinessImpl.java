@@ -455,20 +455,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	public void atualizarCustoEnvio(Venda venda){
-
-		DetalheVenda detalheVenda = venda.getDetalhesVenda().get(0);
-		Anuncio anuncio = detalheVenda.getAnuncio();
-		Envio envio = venda.getEnvio();
-		Vendedor vendedor = venda.getVendedor();
-		if(envio.getCusto() != null && envio.getCusto()==0){
-			Double custoEnvio = apiEnvios.calculaValorEnvio(vendedor.getIdMl(),anuncio.getCategoria());
-			envio.setCusto(custoEnvio);
-		}
-		else
-			envio.setCusto(0.0);
-	}
-
 	@Override
 	public Venda recuperarVenda(String id) {
 		try {
