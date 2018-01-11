@@ -138,7 +138,7 @@ public class FluxoDeCaixaController {
 
 	private void calculaSaldoFinalDeCaixa(){
 
-		for(int index=0; index<meses.size();index++){
+		for(int index=0; index<meses.size()-1;index++){
 			SaldoBo saldo = saldos.get(index);
 			double resultadoOperacional = resultadosOperacionais.get(index);
 			double valor = resultadoOperacional+saldo.getValor();
