@@ -83,6 +83,7 @@ import com.fincatto.nfe310.webservices.WSFacade;
 import br.com.mpconnect.dao.MunicipioDao;
 import br.com.mpconnect.dao.TabelaSimplesNacionalDao;
 import br.com.mpconnect.holder.NfeConfigurationHolder;
+import br.com.mpconnect.model.Municipio;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.nfe.generator.GerarNotaConsumidor;
@@ -106,10 +107,10 @@ public class NFeProvider {
 		config = NfeConfigurationHolder.getInstance();		
 	}	
 
-	public String gerarNFe(Venda venda, NfeConfig userNfeConfig) throws Exception{
+	public String gerarNFe(Venda venda, NfeConfig userNfeConfig, Municipio mun) throws Exception{
 		NFNota nota = new NFNota();
 		
-		nota.setInfo(getNFeInfo(venda,userNfeConfig));
+		nota.setInfo(getNFeInfo(venda,userNfeConfig, mun));
 		
 		NFGeraChave ch = new NFGeraChave(nota);
     	
@@ -126,6 +127,7 @@ public class NFeProvider {
 		notaProcessada.setProtocolo(getNotaProt(retc));
 		notaProcessada.setVersao(new BigDecimal("3.10"));
 		
+		
 		//String notaProc = notaProcessada.toString();
 		//System.out.println(notaProcessada.toString());
 		
@@ -138,7 +140,7 @@ public class NFeProvider {
 		baos.close();
 		
 		NFDanfeReport danfe = new NFDanfeReport(notaProcessada);
-		final byte[] fileByte = danfe.gerarDanfeNFe(null);
+		final byte[] fileByte = danfe.gerarDanfeNFe(imageInByte);
 		Assert.assertTrue(fileByte.length > 0);
 		OutputStream out = new FileOutputStream("nfe.pdf");
 		out.write(fileByte);
@@ -147,7 +149,7 @@ public class NFeProvider {
 		return null;
 	}
 
-	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig) throws NfeProviderException{
+	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig, Municipio mun) throws NfeProviderException{
 		NFNotaInfo nfeInfo = new NFNotaInfo();
 		
 		//SET IDENTIFIÇÃO
@@ -159,7 +161,7 @@ public class NFeProvider {
 		
 		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda,userNfeConfig));
 		nfeInfo.setEmitente(getNFNotaInfoEmitente(venda));
-		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda));
+		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda,mun));
 		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda,userNfeConfig)));
 		nfeInfo.setTotal(getNFNotaInfoTotal(venda,userNfeConfig));
 		nfeInfo.setTransporte(getNFNotaInfoTransporte());
@@ -331,12 +333,12 @@ public class NFeProvider {
         return endereco;
     }
 	
-	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda) {
+	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda, Municipio mun) {
         final NFNotaInfoDestinatario destinatario = new NFNotaInfoDestinatario();
         destinatario.setCpf(venda.getCliente().getNrDocumento());
         //destinatario.setRazaoSocial(venda.getCliente().getNome());
         destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
-        destinatario.setEndereco(getNFEnderecoDest(venda));
+        destinatario.setEndereco(getNFEnderecoDest(venda,mun));
         
         
         //destinatario.setInscricaoEstadual("13245678901234");
@@ -347,12 +349,12 @@ public class NFeProvider {
         return destinatario;
     }
 	
-	public NFEndereco getNFEnderecoDest(Venda venda) {
+	public NFEndereco getNFEnderecoDest(Venda venda, Municipio mun) {
 		final NFEndereco endereco = new NFEndereco();
         endereco.setBairro(venda.getEnvio().getBairro()==null||venda.getEnvio().getBairro().length()<2? "NI":venda.getEnvio().getBairro());
         endereco.setCep(venda.getEnvio().getCep().toString());
         // Criar rotina para carregar o código do município na tabela de envio no momento da importação da venda. O cadastro dos códigos estão na tabela MUNICIPIO.
-        endereco.setCodigoMunicipio(venda.getEnvio().getCodMunicipio()==null?"9999999":venda.getEnvio().getCodMunicipio().toString());  
+        endereco.setCodigoMunicipio(venda.getEnvio().getCodMunicipio()==null?"9999999":mun.getId().toString());  
         // Criar rotina para carregar o código do país na tabela de envio no momento da importação da venda. Como só temos venda dentro do Brasil o código é 1058. 
         //endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
         endereco.setCodigoPais("1058");
