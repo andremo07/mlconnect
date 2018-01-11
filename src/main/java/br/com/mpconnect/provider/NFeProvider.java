@@ -1,5 +1,8 @@
 package br.com.mpconnect.provider;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.imageio.ImageIO;
 
 import org.joda.time.DateTime;
 import org.junit.Assert;
@@ -114,7 +118,7 @@ public class NFeProvider {
     	nota.getInfo().getIdentificacao().setDigitoVerificador(ch.getDV());
 				
     	nota = assinarNFe(nota);
-		NFLoteConsultaRetorno retc = consultarLoteNFe(gerarLoteEnvioNfe(nota));
+		NFLoteConsultaRetorno retc = consultarLoteNFe(gerarLoteEnvioNfe(nota,userNfeConfig));
 		
 		
 		final NFNotaProcessada notaProcessada = new NFNotaProcessada();
@@ -124,6 +128,14 @@ public class NFeProvider {
 		
 		//String notaProc = notaProcessada.toString();
 		//System.out.println(notaProcessada.toString());
+		
+		BufferedImage originalImage =
+		ImageIO.read(new File("trend-store.png"));
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write( originalImage, "png", baos );
+		baos.flush();
+		byte[] imageInByte = baos.toByteArray();
+		baos.close();
 		
 		NFDanfeReport danfe = new NFDanfeReport(notaProcessada);
 		final byte[] fileByte = danfe.gerarDanfeNFe(null);
@@ -148,15 +160,15 @@ public class NFeProvider {
 		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda,userNfeConfig));
 		nfeInfo.setEmitente(getNFNotaInfoEmitente(venda));
 		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda));
-		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda)));
-		nfeInfo.setTotal(getNFNotaInfoTotal(venda));
+		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda,userNfeConfig)));
+		nfeInfo.setTotal(getNFNotaInfoTotal(venda,userNfeConfig));
 		nfeInfo.setTransporte(getNFNotaInfoTransporte());
 		nfeInfo.setInformacoesAdicionais(getNFNotaInfoInformacoesAdicionais());
 
 		return nfeInfo;
 	}
 
-	public NFLoteEnvioRetorno gerarLoteEnvioNfe(List<NFNota> notas) throws NfeProviderException{
+	public NFLoteEnvioRetorno gerarLoteEnvioNfe(List<NFNota> notas, NfeConfig userNfeConfig) throws NfeProviderException{
 		try{
 			final NFLoteEnvio loteEnvio = new NFLoteEnvio();
 			loteEnvio.setIdLote("333972757970401");
@@ -182,11 +194,13 @@ public class NFeProvider {
 		}
 	}
 
-	public NFLoteEnvioRetorno gerarLoteEnvioNfe(NFNota nota) throws NfeProviderException{
+	public NFLoteEnvioRetorno gerarLoteEnvioNfe(NFNota nota, NfeConfig userNfeConfig) throws NfeProviderException{
 		try {
 			final NFLoteEnvio loteEnvio = new NFLoteEnvio();
 			// VERIFICAR COMO GERAR O SEQUENCIAL DO LOTE
-			loteEnvio.setIdLote("333972757970401");
+			Long nrLote = new Long(userNfeConfig.getNrLote());
+	        nrLote++;
+			loteEnvio.setIdLote(nrLote.toString());
 			loteEnvio.setVersao("3.10");
 			loteEnvio.setNotas(Collections.singletonList(nota));
 			loteEnvio.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
@@ -246,7 +260,7 @@ public class NFeProvider {
 	
 	public NFNotaInfoIdentificacao getNFNotaInfoIdentificacao(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoIdentificacao identificacao = new NFNotaInfoIdentificacao();
-        identificacao.setAmbiente(NFAmbiente.HOMOLOGACAO);
+        identificacao.setAmbiente(NFAmbiente.valueOfCodigo(userNfeConfig.getIndAmbiente()));
          
         identificacao.setCodigoMunicipio(venda.getVendedor().getCodMunicipio().toString());
         //identificacao.setCodigoRandomico("45000050");
@@ -259,7 +273,7 @@ public class NFeProvider {
         else
         	identificacao.setFormaPagamento(NFFormaPagamentoPrazo.A_PRAZO);
         
-        identificacao.setModelo(NFModelo.NFE);
+        identificacao.setModelo(NFModelo.valueOfCodigo(userNfeConfig.getIndModelo()));
         identificacao.setNaturezaOperacao("Venda de Mercadoria");
         
         // Criar sequence para numero da nota.... dado armazenado na tabela NFE_CONFIG
@@ -298,12 +312,7 @@ public class NFeProvider {
         emitente.setInscricaoMunicipal(venda.getVendedor().getIncriMunicipal());
         //emitente.setNomeFantasia("Trend Store");
         emitente.setRazaoSocial(venda.getVendedor().getRazaoSocial());
-        if (venda.getVendedor().getRegimeTributario() == 1)
-        	emitente.setRegimeTributario(NFRegimeTributario.SIMPLES_NACIONAL);
-        else if (venda.getVendedor().getRegimeTributario() == 2)
-        	emitente.setRegimeTributario(NFRegimeTributario.SIMPLES_NACIONAL_EXCESSO_RECEITA);
-        else
-        	emitente.setRegimeTributario(NFRegimeTributario.NORMAL);
+        emitente.setRegimeTributario(NFRegimeTributario.valueOfCodigo(venda.getVendedor().getRegimeTributario().toString()));
         return emitente;
     }
 	
@@ -347,6 +356,7 @@ public class NFeProvider {
         // Criar rotina para carregar o código do país na tabela de envio no momento da importação da venda. Como só temos venda dentro do Brasil o código é 1058. 
         //endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
         endereco.setCodigoPais("1058");
+        endereco.setDescricaoPais("Brasil");
         endereco.setComplemento(venda.getEnvio().getComplemento());
         endereco.setDescricaoMunicipio(venda.getEnvio().getMunicipio());
         endereco.setLogradouro(venda.getEnvio().getLogradouro());
@@ -355,22 +365,23 @@ public class NFeProvider {
         return endereco;
     }
 	
-	public NFNotaInfoItem getNFNotaInfoItem(Venda venda) {
+	public NFNotaInfoItem getNFNotaInfoItem(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoItem item = new NFNotaInfoItem();
-        item.setImposto(getNFNotaInfoItemImposto(venda));
-        item.setNumeroItem(Integer.valueOf(990));
+        item.setImposto(getNFNotaInfoItemImposto(venda, userNfeConfig));
+        item.setNumeroItem(Integer.valueOf(1));
         item.setProduto(getNFNotaInfoItemProduto(venda));
         return item;
     }
 	
-	public NFNotaInfoItemImposto getNFNotaInfoItemImposto(Venda venda) {
+	public NFNotaInfoItemImposto getNFNotaInfoItemImposto(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoItemImposto imposto = new NFNotaInfoItemImposto();
         imposto.setCofins(getNFNotaInfoItemImpostoCOFINS());
         imposto.setIcms(getNFNotaInfoItemImpostoICMS());
         imposto.setPis(getNFNotaInfoItemImpostoPIS());
         
         // Criar método para retornar a alíquota de imposto do Simples Nacional
-        imposto.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) * 0.0754).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        imposto.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) 
+        		* Double.parseDouble(userNfeConfig.getTxSimplesNacional())).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         
       //imposto.setValorTotalTributos(new BigDecimal("10.93"));
         return imposto;
@@ -448,20 +459,20 @@ public class NFeProvider {
         //produto.setValorOutrasDespesasAcessorias(new BigDecimal("999999999999.99"));
         //produto.setValorSeguro(new BigDecimal("999999999999.99"));
 
-        produto.setValorTotalBruto(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()));
+        produto.setValorTotalBruto(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         produto.setValorUnitario(new BigDecimal(venda.getDetalhesVenda().get(0).getAnuncio().getValor()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         //produto.setNomeclaturaValorAduaneiroEstatistica(Collections.singletonList("AZ0123"));
         produto.setValorUnitarioTributavel(new BigDecimal(venda.getDetalhesVenda().get(0).getAnuncio().getValor()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         return produto;
     }
 	
-	public NFNotaInfoTotal getNFNotaInfoTotal(Venda venda) {
+	public NFNotaInfoTotal getNFNotaInfoTotal(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoTotal total = new NFNotaInfoTotal();
-        total.setIcmsTotal(getNFNotaInfoICMSTotal(venda));
+        total.setIcmsTotal(getNFNotaInfoICMSTotal(venda,userNfeConfig));
         return total;
     }
 	
-	public NFNotaInfoICMSTotal getNFNotaInfoICMSTotal(Venda venda) {
+	public NFNotaInfoICMSTotal getNFNotaInfoICMSTotal(Venda venda, NfeConfig userNfeConfig) {
         final NFNotaInfoICMSTotal icmsTotal = new NFNotaInfoICMSTotal();
         icmsTotal.setBaseCalculoICMS(new BigDecimal("0"));
         icmsTotal.setOutrasDespesasAcessorias(new BigDecimal("0"));
@@ -469,7 +480,7 @@ public class NFeProvider {
         icmsTotal.setValorCOFINS(new BigDecimal("0"));
         icmsTotal.setValorPIS(new BigDecimal("0"));
         icmsTotal.setValorTotalDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-        icmsTotal.setValorTotalDosProdutosServicos(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()));
+        icmsTotal.setValorTotalDosProdutosServicos(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         icmsTotal.setValorTotalFrete(new BigDecimal("0"));
         icmsTotal.setValorTotalICMS(new BigDecimal("0"));
         icmsTotal.setValorTotalICMSST(new BigDecimal("0"));
@@ -481,7 +492,8 @@ public class NFeProvider {
         icmsTotal.setValorICMSFundoCombatePobreza(new BigDecimal("0"));
         icmsTotal.setValorICMSPartilhaDestinatario(new BigDecimal("0"));
         icmsTotal.setValorICMSPartilhaRementente(new BigDecimal("0"));
-        icmsTotal.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) * 0.0754).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        icmsTotal.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) 
+        		* Double.parseDouble(userNfeConfig.getTxSimplesNacional())).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         return icmsTotal;
     }
 	
@@ -499,11 +511,11 @@ public class NFeProvider {
 	// CRIAR TABELA COM OS DADOS DOS TRANSPORTADORES (MERCADO ENVIOS, B2W ENTREGAS, CORREIOS, ETC.)
 	public NFNotaInfoTransportador getNFNotaInfoTransportador() {
         final NFNotaInfoTransportador transportador = new NFNotaInfoTransportador();
-        transportador.setCnpj("34843274000164");
-        transportador.setEnderecoComplemento("D8nOWsHxI5K4RgYTUGwWgIKajhiUf4Q7aOOmaTV2wnYV0kQ5MezOjqfoPcNY");
+        transportador.setCnpj("20121850000155");
+        transportador.setEnderecoComplemento("AV MARTE,489 ANDAR TERREO PARTE B");
         transportador.setInscricaoEstadual("ISENTO");
-        transportador.setNomeMunicipio("4lb4Qv5yi9oYq7s8fF98a0EEv98oAxl0CIs5gzyKNVp1skE3IHD9Z7JbjHCn");
-        transportador.setRazaoSocial("4lb4Qv5yi9oYq7s8fF98a0EEv98oAxl0CIs5gzyKNVp1skE3IHD9Z7JbjHCn");
+        transportador.setNomeMunicipio("Sao Paulo");
+        transportador.setRazaoSocial("Mercado Envios Serviços de Logística Ltda");
         transportador.setUf(NFUnidadeFederativa.SP);
         return transportador;
     }
@@ -511,8 +523,8 @@ public class NFeProvider {
 	public NFNotaInfoVolume getNFNotaInfoVolume() {
         final NFNotaInfoVolume volume = new NFNotaInfoVolume();
         volume.setEspecieVolumesTransportados("Caixa de papelão");
-        volume.setPesoBruto(new BigDecimal("0.45"));
-        volume.setPesoLiquido(new BigDecimal("0.27"));
+        volume.setPesoBruto(new BigDecimal("0.50"));
+        volume.setPesoLiquido(new BigDecimal("0.30"));
         volume.setQuantidadeVolumesTransportados(new BigInteger("1"));
         return volume;
     }
@@ -549,7 +561,7 @@ public class NFeProvider {
 	        info.setNumeroProtocolo(prot.getProtocoloInfo().getNumeroProtocolo());
 	        info.setStatus(prot.getProtocoloInfo().getStatus());
 	        info.setValidador(prot.getProtocoloInfo().getValidador());
-	        info.setVersaoAplicacao("3.10");
+	        info.setVersaoAplicacao("1.0");
 	        info.setIdentificador(prot.getProtocoloInfo().getIdentificador());
         }
         return info;

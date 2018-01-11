@@ -10,7 +10,7 @@ import javax.persistence.Table;
 public class Municipio implements Persistente{
 	
 	@Id
-	@Column(name="CD_MUNICIPO")
+	@Column(name="CD_MUNICIPIO")
 	private Long id;
 	
 	@Column(name="NM_MUNICIPIO")
