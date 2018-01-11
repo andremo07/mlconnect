@@ -144,7 +144,7 @@ public class MlParser {
 		if(shipping.getReceiverAddress()!=null){
 			ReceiverAddress address = shipping.getReceiverAddress();
 			envio.setLogradouro(address.getStreetName());
-			envio.setMunicipio(address.getMunicipality() != null ? address.getMunicipality().getName() : null);
+			envio.setMunicipio(address.getCity() != null ? address.getCity().getName() : null);
 			envio.setCep(Long.valueOf(address.getZipCode()));
 			envio.setPais(address.getCountry() != null ? address.getCountry().getName() : null);
 			envio.setNumero(address.getStreetNumber());
