@@ -25,7 +25,7 @@ public class Teste {
 			NfeConfigDao nfeConfidDao = (NfeConfigDao) ctx.getBean("nfeConfidDao");
 			MunicipioDao munDao = (MunicipioDao) ctx.getBean("municipioDao");
 			
-			Venda venda = orderBusiness.recuperarVenda("1578171083");
+			Venda venda = orderBusiness.recuperarVenda("1601889869");
 			
 			Municipio mun = munDao.findMunicipioByNameAndUf(venda.getEnvio().getMunicipio(), venda.getEnvio().getUf());
 			
