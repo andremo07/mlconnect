@@ -23,3 +23,5 @@ applicationContext.xml
 target
 src/main/resources/log
 src/main/resources/dev
+
+nfe\.pdf

@@ -29,7 +29,7 @@ public class Teste {
 			
 			Municipio mun = munDao.findMunicipioByNameAndUf(venda.getEnvio().getMunicipio(), venda.getEnvio().getUf());
 			
-			venda.getEnvio().setCodMunicipio(new Integer(mun.getCdUf()));
+			venda.getEnvio().setCodMunicipio(mun.getId().intValue());
 			
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 			
