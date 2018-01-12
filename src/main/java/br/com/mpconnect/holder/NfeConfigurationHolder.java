@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 import com.fincatto.nfe310.NFeConfig;
+import com.fincatto.nfe310.classes.NFAmbiente;
 import com.fincatto.nfe310.classes.NFUnidadeFederativa;
 
 public class NfeConfigurationHolder extends NFeConfig
@@ -93,5 +94,10 @@ public class NfeConfigurationHolder extends NFeConfig
 	public void setCadeiaCertificadosSenha(String cadeiaCertificadosSenha) {
 		this.cadeiaCertificadosSenha = cadeiaCertificadosSenha;
 	}
+	
+	@Override
+    public NFAmbiente getAmbiente() {
+        return NFAmbiente.PRODUCAO;
+    }
 	
 }
