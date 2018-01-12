@@ -124,7 +124,7 @@ public class NFeProvider {
 		
 		final NFNotaProcessada notaProcessada = new NFNotaProcessada();
 		notaProcessada.setNota(nota);
-		notaProcessada.setProtocolo(getNotaProt(retc));
+		notaProcessada.setProtocolo(getNotaProt(retc, userNfeConfig));
 		notaProcessada.setVersao(new BigDecimal("3.10"));
 		
 		
@@ -336,8 +336,8 @@ public class NFeProvider {
 	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda, Municipio mun) {
         final NFNotaInfoDestinatario destinatario = new NFNotaInfoDestinatario();
         destinatario.setCpf(venda.getCliente().getNrDocumento());
-        //destinatario.setRazaoSocial(venda.getCliente().getNome());
-        destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
+        destinatario.setRazaoSocial(venda.getCliente().getNome());
+        //destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
         destinatario.setEndereco(getNFEnderecoDest(venda,mun));
         
         
@@ -354,7 +354,7 @@ public class NFeProvider {
         endereco.setBairro(venda.getEnvio().getBairro()==null||venda.getEnvio().getBairro().length()<2? "NI":venda.getEnvio().getBairro());
         endereco.setCep(venda.getEnvio().getCep().toString());
         // Criar rotina para carregar o código do município na tabela de envio no momento da importação da venda. O cadastro dos códigos estão na tabela MUNICIPIO.
-        endereco.setCodigoMunicipio(venda.getEnvio().getCodMunicipio()==null?"9999999":mun.getId().toString());  
+        endereco.setCodigoMunicipio(mun.getId().toString()==null?"9999999":mun.getId().toString());  
         // Criar rotina para carregar o código do país na tabela de envio no momento da importação da venda. Como só temos venda dentro do Brasil o código é 1058. 
         //endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
         endereco.setCodigoPais("1058");
@@ -382,7 +382,9 @@ public class NFeProvider {
         imposto.setPis(getNFNotaInfoItemImpostoPIS());
         
         // Criar método para retornar a alíquota de imposto do Simples Nacional
-        imposto.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) 
+        imposto.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() + venda.getEnvio().getCustoComprador() 
+        		- venda.getDetalhesVenda().get(0).getTarifaVenda()
+        		- venda.getEnvio().getCustoVendedor() - venda.getEnvio().getCustoComprador())
         		* Double.parseDouble(userNfeConfig.getTxSimplesNacional())).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         
       //imposto.setValorTotalTributos(new BigDecimal("10.93"));
@@ -455,9 +457,10 @@ public class NFeProvider {
         produto.setUnidadeComercial("UN");
         produto.setUnidadeTributavel("UN");
         
-        produto.setValorDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        produto.setValorDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()
+        		+ venda.getEnvio().getCustoVendedor() + venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         
-        //produto.setValorFrete(new BigDecimal("999999999999.99"));
+        produto.setValorFrete(new BigDecimal(venda.getEnvio().getCustoVendedor() + venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         //produto.setValorOutrasDespesasAcessorias(new BigDecimal("999999999999.99"));
         //produto.setValorSeguro(new BigDecimal("999999999999.99"));
 
@@ -481,20 +484,25 @@ public class NFeProvider {
         icmsTotal.setBaseCalculoICMSST(new BigDecimal("0"));
         icmsTotal.setValorCOFINS(new BigDecimal("0"));
         icmsTotal.setValorPIS(new BigDecimal("0"));
-        icmsTotal.setValorTotalDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        icmsTotal.setValorTotalDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()
+        		+ venda.getEnvio().getCustoVendedor() + venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         icmsTotal.setValorTotalDosProdutosServicos(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-        icmsTotal.setValorTotalFrete(new BigDecimal("0"));
+        icmsTotal.setValorTotalFrete(new BigDecimal(venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         icmsTotal.setValorTotalICMS(new BigDecimal("0"));
         icmsTotal.setValorTotalICMSST(new BigDecimal("0"));
         icmsTotal.setValorTotalII(new BigDecimal("0"));
         icmsTotal.setValorTotalIPI(new BigDecimal("0"));
-        icmsTotal.setValorTotalNFe(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+        icmsTotal.setValorTotalNFe(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao() + venda.getEnvio().getCustoComprador() 
+        		- venda.getDetalhesVenda().get(0).getTarifaVenda()
+        		- venda.getEnvio().getCustoVendedor() - venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         icmsTotal.setValorTotalSeguro(new BigDecimal("0"));
         icmsTotal.setValorICMSDesonerado(new BigDecimal("0"));
         icmsTotal.setValorICMSFundoCombatePobreza(new BigDecimal("0"));
         icmsTotal.setValorICMSPartilhaDestinatario(new BigDecimal("0"));
         icmsTotal.setValorICMSPartilhaRementente(new BigDecimal("0"));
-        icmsTotal.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() - venda.getDetalhesVenda().get(0).getTarifaVenda()) 
+        icmsTotal.setValorTotalTributos(new BigDecimal((venda.getPagamentos().get(0).getValorTransacao() + venda.getEnvio().getCustoComprador() 
+        		- venda.getDetalhesVenda().get(0).getTarifaVenda()
+        		- venda.getEnvio().getCustoVendedor() - venda.getEnvio().getCustoComprador()) 
         		* Double.parseDouble(userNfeConfig.getTxSimplesNacional())).setScale(2, BigDecimal.ROUND_HALF_EVEN));
         return icmsTotal;
     }
@@ -538,18 +546,18 @@ public class NFeProvider {
         return infoAdicionais;
     }
 	
-	public NFProtocolo getNotaProt(NFLoteConsultaRetorno retc) {
+	public NFProtocolo getNotaProt(NFLoteConsultaRetorno retc, NfeConfig userNfeConfig) {
 		
 		final NFProtocolo protocolo = new NFProtocolo();
 		
-        protocolo.setProtocoloInfo(getNFProtocoloInfo(retc));
+        protocolo.setProtocoloInfo(getNFProtocoloInfo(retc, userNfeConfig));
         protocolo.setVersao("3.10");
         return protocolo;
 	}
 	
-	public NFProtocoloInfo getNFProtocoloInfo(NFLoteConsultaRetorno retc) {
+	public NFProtocoloInfo getNFProtocoloInfo(NFLoteConsultaRetorno retc, NfeConfig userNfeConfig) {
         final NFProtocoloInfo info = new NFProtocoloInfo();
-        info.setAmbiente(NFAmbiente.HOMOLOGACAO);
+        info.setAmbiente(NFAmbiente.valueOfCodigo(userNfeConfig.getIndAmbiente()));
         
         for (NFProtocolo prot : retc.getProtocolos()) {
 	        info.setChave(prot.getProtocoloInfo().getChave());
