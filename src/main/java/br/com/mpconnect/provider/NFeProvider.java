@@ -94,7 +94,7 @@ import br.com.mpconnect.provider.exception.NfeProviderException;
 @DependsOn("nfeConfHolder")
 public class NFeProvider {
 
-	private NFeConfig config;
+	private NfeConfigurationHolder config;
 
 	@Autowired
 	private TabelaSimplesNacionalDao tabSimplesDao;
