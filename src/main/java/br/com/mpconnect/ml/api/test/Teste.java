@@ -29,9 +29,11 @@ public class Teste {
 			
 			Municipio mun = munDao.findMunicipioByNameAndUf(venda.getEnvio().getMunicipio(), venda.getEnvio().getUf());
 			
+			venda.getEnvio().setCodMunicipio(new Integer(mun.getCdUf()));
+			
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 			
-			nfeProvider.gerarNFe(venda,userNfeConfig,mun);
+			nfeProvider.gerarNFe(venda,userNfeConfig);
 			
 		} catch (NfeProviderException e) {
 			// TODO Auto-generated catch block

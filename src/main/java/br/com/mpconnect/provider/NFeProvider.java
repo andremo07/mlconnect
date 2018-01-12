@@ -107,10 +107,10 @@ public class NFeProvider {
 		config = NfeConfigurationHolder.getInstance();		
 	}	
 
-	public String gerarNFe(Venda venda, NfeConfig userNfeConfig, Municipio mun) throws Exception{
+	public String gerarNFe(Venda venda, NfeConfig userNfeConfig) throws Exception{
 		NFNota nota = new NFNota();
 		
-		nota.setInfo(getNFeInfo(venda,userNfeConfig, mun));
+		nota.setInfo(getNFeInfo(venda,userNfeConfig));
 		
 		NFGeraChave ch = new NFGeraChave(nota);
     	
@@ -149,7 +149,7 @@ public class NFeProvider {
 		return null;
 	}
 
-	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig, Municipio mun) throws NfeProviderException{
+	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig) throws NfeProviderException{
 		NFNotaInfo nfeInfo = new NFNotaInfo();
 		
 		//SET IDENTIFIÇÃO
@@ -161,7 +161,7 @@ public class NFeProvider {
 		
 		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda,userNfeConfig));
 		nfeInfo.setEmitente(getNFNotaInfoEmitente(venda));
-		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda,mun));
+		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda));
 		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda,userNfeConfig)));
 		nfeInfo.setTotal(getNFNotaInfoTotal(venda,userNfeConfig));
 		nfeInfo.setTransporte(getNFNotaInfoTransporte());
@@ -333,12 +333,12 @@ public class NFeProvider {
         return endereco;
     }
 	
-	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda, Municipio mun) {
+	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda) {
         final NFNotaInfoDestinatario destinatario = new NFNotaInfoDestinatario();
         destinatario.setCpf(venda.getCliente().getNrDocumento());
         destinatario.setRazaoSocial(venda.getCliente().getNome());
         //destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
-        destinatario.setEndereco(getNFEnderecoDest(venda,mun));
+        destinatario.setEndereco(getNFEnderecoDest(venda));
         
         
         //destinatario.setInscricaoEstadual("13245678901234");
@@ -349,12 +349,12 @@ public class NFeProvider {
         return destinatario;
     }
 	
-	public NFEndereco getNFEnderecoDest(Venda venda, Municipio mun) {
+	public NFEndereco getNFEnderecoDest(Venda venda) {
 		final NFEndereco endereco = new NFEndereco();
         endereco.setBairro(venda.getEnvio().getBairro()==null||venda.getEnvio().getBairro().length()<2? "NI":venda.getEnvio().getBairro());
         endereco.setCep(venda.getEnvio().getCep().toString());
         // Criar rotina para carregar o código do município na tabela de envio no momento da importação da venda. O cadastro dos códigos estão na tabela MUNICIPIO.
-        endereco.setCodigoMunicipio(mun.getId().toString()==null?"9999999":mun.getId().toString());  
+        endereco.setCodigoMunicipio(venda.getEnvio().getCodMunicipio()==null?"9999999":venda.getEnvio().getCodMunicipio().toString());  
         // Criar rotina para carregar o código do país na tabela de envio no momento da importação da venda. Como só temos venda dentro do Brasil o código é 1058. 
         //endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
         endereco.setCodigoPais("1058");
