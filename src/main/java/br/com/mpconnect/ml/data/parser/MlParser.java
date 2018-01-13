@@ -20,6 +20,7 @@ import br.com.trendsoftware.mlProvider.dto.ListingType;
 import br.com.trendsoftware.mlProvider.dto.Order;
 import br.com.trendsoftware.mlProvider.dto.OrderItem;
 import br.com.trendsoftware.mlProvider.dto.Payment;
+import br.com.trendsoftware.mlProvider.dto.PaymentStatus;
 import br.com.trendsoftware.mlProvider.dto.ReceiverAddress;
 import br.com.trendsoftware.mlProvider.dto.Seller;
 import br.com.trendsoftware.mlProvider.dto.Shipping;
@@ -54,31 +55,31 @@ public class MlParser {
 		return anuncio;
 
 	}
-	
+
 	public static DetalheVenda parseOrderItem(OrderItem orderItem, Double valorTotalTransacao){
 
 		DetalheVenda detalheVenda = new DetalheVenda();
-		
+
 		ItemResponse item = orderItem.getItem();
-		
+
 		Anuncio anuncio = parseItem(item);
-		
+
 		double comissão = 0.0;
 		if(item.getListingTypeId().equals(ListingType.PREMIUM.getName()))
 			comissão = Math.round(valorTotalTransacao * 16) / 100.0;	
 		else
 			comissão = Math.round(valorTotalTransacao * 11) / 100.0;
-		
+
 		Produto produto = new Produto();
 		produto.setSku(item.getSellerCustomField());
-		
+
 		detalheVenda.setProduto(produto);
 		detalheVenda.setTarifaVenda(comissão);
 		detalheVenda.setAnuncio(anuncio);
 		detalheVenda.setQuantidade(orderItem.getQuantity().intValue());
-		
+
 		return detalheVenda;
-		
+
 	}
 
 	public static Cliente parseClient(Buyer buyer){
@@ -89,7 +90,7 @@ public class MlParser {
 		cliente.setApelido(buyer.getNickname());
 		cliente.setIdMl(buyer.getId().toString());
 		cliente.setEmail(buyer.getEmail());
-		
+
 		if(buyer.getPhone()!=null)
 			if(buyer.getPhone().getNumber()!=null)
 				if(buyer.getPhone().getAreaCode() != null && !buyer.getPhone().getAreaCode().equals("null"))
@@ -120,7 +121,7 @@ public class MlParser {
 		vendedor.setApelido(seller.getNickname());
 
 		return vendedor;
-		
+
 	}
 
 	public static Envio parseShipping(Shipping shipping){
@@ -152,49 +153,51 @@ public class MlParser {
 			envio.setUf(address.getState() != null ? address.getState().getId().split("-")[1] : null);
 			envio.setBairro(address.getNeighborhood() != null ? address.getNeighborhood().getName() : null);
 		}	
-		
+
 		return envio;
-		
+
 	}
 
 	public static Venda parseOrder(Order order){
 
 		Venda venda = new Venda(); 
-		
+
 		venda.setId(order.getId().toString());
 		venda.setStatus(order.getStatus());
 
 		String dataVendaString = order.getDateCreated();
 		Date dataVenda = DateUtils.getDataFormatada(dataVendaString, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		venda.setData(dataVenda);
-		
+
 		List<Pagamento> pagamentos = new ArrayList<Pagamento>();
 		Double valorTotalTransacao = 0.0;
 		for(Payment payment : order.getPayments()){
-			Pagamento pagamento = parsePayment(payment);
-			pagamentos.add(pagamento);
-			valorTotalTransacao = valorTotalTransacao+payment.getTransactionAmount();
+			if(PaymentStatus.APPROVED.equals(PaymentStatus.lookup(payment.getStatus()))){
+				Pagamento pagamento = parsePayment(payment);
+				pagamentos.add(pagamento);
+				valorTotalTransacao = valorTotalTransacao+payment.getTransactionAmount();
+			}
 		}
 		venda.setPagamentos(pagamentos);
-		
+
 		List<DetalheVenda> detalhesVenda = new ArrayList<DetalheVenda>();
 		for(OrderItem orderItem : order.getOrderItems()){			
 			DetalheVenda detalheVenda = parseOrderItem(orderItem, valorTotalTransacao);
 			detalhesVenda.add(detalheVenda);	
 		}
 		venda.setDetalhesVenda(detalhesVenda);
-		
+
 		Envio envio = parseShipping(order.getShipping());
 		venda.setEnvio(envio);
-		
+
 		Cliente cliente = parseClient(order.getBuyer());
 		venda.setCliente(cliente);
-		
+
 		Vendedor vendedor = parseSeller(order.getSeller());
 		venda.setVendedor(vendedor);
-		
+
 		return venda;
-		
+
 	}
 
 }
