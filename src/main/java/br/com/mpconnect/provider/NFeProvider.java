@@ -15,6 +15,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -129,12 +130,13 @@ public class NFeProvider {
 		NFLoteConsultaRetorno retc = consultarLoteNFe(gerarLoteEnvioNfe(notas,userNfeConfig));
 
 		List<NFNotaProcessada> notasProcessadas = new ArrayList<NFNotaProcessada>();
-
+		Iterator<NFNota> it = notas.iterator();
+		
 		for(NFProtocolo protocolo: retc.getProtocolos()) {
 
 			final NFNotaProcessada notaProcessada = new NFNotaProcessada();
 
-			notaProcessada.setNota(notas.iterator().next());
+			notaProcessada.setNota(it.next());
 			//notaProcessada.setProtocolo(getNotaProt(retc, userNfeConfig));
 			protocolo.getProtocoloInfo().setAmbiente(NFAmbiente.valueOfCodigo(userNfeConfig.getIndAmbiente()));
 			protocolo.getProtocoloInfo().setVersaoAplicacao("1.0");
