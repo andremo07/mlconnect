@@ -1,5 +1,9 @@
 package br.com.mpconnect.ml.api.test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import br.com.mpconnect.dao.DaoException;
@@ -25,15 +29,33 @@ public class Teste {
 			NfeConfigDao nfeConfidDao = (NfeConfigDao) ctx.getBean("nfeConfidDao");
 			MunicipioDao munDao = (MunicipioDao) ctx.getBean("municipioDao");
 			
-			Venda venda = orderBusiness.recuperarVenda("1601889869");
+			//Venda venda = orderBusiness.recuperarVenda("1601889869");
+			Venda venda1 = orderBusiness.recuperarVenda("1602982050");
+			Venda venda2 = orderBusiness.recuperarVenda("1602818445");
+			Venda venda3 = orderBusiness.recuperarVenda("1602789565");
 			
-			Municipio mun = munDao.findMunicipioByNameAndUf(venda.getEnvio().getMunicipio(), venda.getEnvio().getUf());
+			Municipio mun;
+						
+			mun = munDao.findMunicipioByNameAndUf(venda1.getEnvio().getMunicipio(), venda1.getEnvio().getUf());
+			venda1.getEnvio().setCodMunicipio(mun.getId().intValue());
 			
-			venda.getEnvio().setCodMunicipio(mun.getId().intValue());
+			mun = munDao.findMunicipioByNameAndUf(venda2.getEnvio().getMunicipio(), venda2.getEnvio().getUf());
+			venda2.getEnvio().setCodMunicipio(mun.getId().intValue());
+			
+			mun = munDao.findMunicipioByNameAndUf(venda3.getEnvio().getMunicipio(), venda3.getEnvio().getUf());
+			venda3.getEnvio().setCodMunicipio(mun.getId().intValue());
+			
+			List<Venda> vendas = new ArrayList<Venda>();
+			vendas.add(venda1);
+			vendas.add(venda2);
+			vendas.add(venda3);
+			
+			
+			//venda.getEnvio().setCodMunicipio(mun.getId().intValue());
 			
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 			
-			nfeProvider.gerarNFe(venda,userNfeConfig);
+			nfeProvider.gerarNFe(vendas,userNfeConfig);
 			
 		} catch (NfeProviderException e) {
 			// TODO Auto-generated catch block

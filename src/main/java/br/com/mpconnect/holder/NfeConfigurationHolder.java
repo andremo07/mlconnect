@@ -97,7 +97,7 @@ public class NfeConfigurationHolder extends NFeConfig
 	
 	@Override
     public NFAmbiente getAmbiente() {
-        return NFAmbiente.PRODUCAO;
+        return NFAmbiente.HOMOLOGACAO;
     }
 	
 }
