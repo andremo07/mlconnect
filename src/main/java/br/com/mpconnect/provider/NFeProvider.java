@@ -1,11 +1,11 @@
 package br.com.mpconnect.provider;
 
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.KeyManagementException;
@@ -21,9 +21,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
@@ -80,15 +79,12 @@ import com.fincatto.nfe310.danfe.NFDanfeReport;
 import com.fincatto.nfe310.parsers.NotaParser;
 import com.fincatto.nfe310.utils.NFGeraChave;
 import com.fincatto.nfe310.webservices.WSFacade;
-
-import br.com.mpconnect.dao.MunicipioDao;
-import br.com.mpconnect.dao.TabelaSimplesNacionalDao;
 import br.com.mpconnect.holder.NfeConfigurationHolder;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.nfe.generator.GerarNotaConsumidor;
 import br.com.mpconnect.provider.exception.NfeProviderException;
-
+import br.com.trendsoftware.restProvider.util.ExceptionUtil;
 
 @Service(value="nfeProvider")
 @DependsOn("nfeConfHolder")
@@ -96,23 +92,29 @@ public class NFeProvider {
 
 	private NfeConfigurationHolder config;
 
-	@Autowired
-	private TabelaSimplesNacionalDao tabSimplesDao;
+	private Logger logger;
 
-	@Autowired
-	private MunicipioDao municipioDao;
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
 
 	@PostConstruct
 	public void setUp(){		
 		config = NfeConfigurationHolder.getInstance();		
 	}	
 
-	public String gerarNFe(List<Venda> vendas, NfeConfig userNfeConfig) throws Exception{
+	public List<NFNotaProcessada> generateNFes(List<Venda> vendas, NfeConfig userNfeConfig) throws NfeProviderException{
+
+		getLogger().trace("Iniciando geração das NFes");
 
 		List<NFNota> notas = new ArrayList<NFNota>();
 
 		Long nrUltimaNota = new Long(userNfeConfig.getNrNota());
-		
+
 		for(Venda venda : vendas) {
 
 			NFNota nota = new NFNota();
@@ -131,13 +133,12 @@ public class NFeProvider {
 
 		List<NFNotaProcessada> notasProcessadas = new ArrayList<NFNotaProcessada>();
 		Iterator<NFNota> it = notas.iterator();
-		
+
 		for(NFProtocolo protocolo: retc.getProtocolos()) {
 
 			final NFNotaProcessada notaProcessada = new NFNotaProcessada();
 
 			notaProcessada.setNota(it.next());
-			//notaProcessada.setProtocolo(getNotaProt(retc, userNfeConfig));
 			protocolo.getProtocoloInfo().setAmbiente(NFAmbiente.valueOfCodigo(userNfeConfig.getIndAmbiente()));
 			protocolo.getProtocoloInfo().setVersaoAplicacao("1.0");
 			notaProcessada.setProtocolo(protocolo);
@@ -145,29 +146,42 @@ public class NFeProvider {
 			notasProcessadas.add(notaProcessada);
 		}
 
-		
-		BufferedImage originalImage = ImageIO.read(new File("trend-store.png"));
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ImageIO.write(originalImage, "png", baos);
-		baos.flush();
-		byte[] imageInByte = baos.toByteArray();
-		baos.close();
-		
-		NFDanfeReport danfe;
-		for (NFNotaProcessada notaProc : notasProcessadas) {
-
-			// String notaProc = notaProcessada.toString();
-			// System.out.println(notaProcessada.toString());
-			danfe = new NFDanfeReport(notaProc);
-			final byte[] fileByte = danfe.gerarDanfeNFe(imageInByte);
-//			Assert.assertTrue(fileByte.length > 0);
-			OutputStream out = new FileOutputStream("NFe_" + notaProc.getNota().getInfo().getIdentificacao().getNumeroNota() + ".pdf");
-			out.write(fileByte);
-			out.close();
-		}
-		
-		return null;
+		return notasProcessadas;
 	}
+
+	public List<InputStream>	 generateNFePdf(List<NFNotaProcessada> notasProcessadas) throws NfeProviderException{
+
+		try {
+			
+			BufferedImage originalImage = ImageIO.read(new File("trend-store.png"));
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ImageIO.write(originalImage, "png", baos);
+			baos.flush();
+			byte[] imageInByte = baos.toByteArray();
+			baos.close();
+
+			NFDanfeReport danfe;
+			List<InputStream> inputStreams = new ArrayList<InputStream>();
+			for (NFNotaProcessada notaProc : notasProcessadas) {
+
+				// String notaProc = notaProcessada.toString();
+				// System.out.println(notaProcessada.toString());
+				danfe = new NFDanfeReport(notaProc);
+				final byte[] fileByte = danfe.gerarDanfeNFe(imageInByte);
+				InputStream is = new ByteArrayInputStream(fileByte);
+				inputStreams.add(is);
+			}
+			getLogger().trace("Geração das NFes finalizado");
+			return inputStreams;
+		} catch (IOException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			throw new NfeProviderException();
+		} catch (Exception e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			throw new NfeProviderException();
+		}
+	}
+
 
 	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig) throws NfeProviderException{
 		NFNotaInfo nfeInfo = new NFNotaInfo();
@@ -356,7 +370,7 @@ public class NFeProvider {
 	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda) {
 		final NFNotaInfoDestinatario destinatario = new NFNotaInfoDestinatario();
 		destinatario.setCpf(venda.getCliente().getNrDocumento());
-//		destinatario.setRazaoSocial(venda.getCliente().getNome());
+		//		destinatario.setRazaoSocial(venda.getCliente().getNome());
 		destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
 		destinatario.setEndereco(getNFEnderecoDest(venda));
 

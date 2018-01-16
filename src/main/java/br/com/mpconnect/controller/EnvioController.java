@@ -32,6 +32,7 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.file.utils.ZipUtils;
+import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiVendas;
@@ -63,6 +64,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	private ApiPerguntas apiPerguntas;
 
 	@Autowired
+	private LogisticBusiness logisticBusiness;
+	
+	@Autowired
 	private OrderBusiness orderBusiness;
 
 	private List<Venda> vendasSelecionadas;
@@ -83,7 +87,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -3), new Date());
+			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -121,7 +125,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 			Collections.sort(vendasSelecionadas, new VendaComparator());
 			//GERAÇÂO DO ARQUIVO PDF		
-			InputStream pdfInputStream = orderBusiness.printShippingTags(vendasSelecionadas);
+			InputStream pdfInputStream = logisticBusiness.printShippingTags(vendasSelecionadas);
 			
 			//LEITURA PDF
 			if(pdfInputStream!=null){
@@ -133,7 +137,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				pdfInputStream = new FileInputStream(filePdf);
 				pdfFile.close();
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
-				//
+				//GERAÇÃO DAS NFes
 
 				//GERAÇAO PLANILHA EXCEL
 				if(vendasSelecionadas.size()==codigosNf.size()){
@@ -162,13 +166,10 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			addMessage("Erro!", "Problema na geração de etiqueta.");
 		} catch (BusinessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
-
 	}
 
 	public void criarPlanilhaExcelEnvio(XSSFWorkbook workbook, List<String> codigosNf){

@@ -1,6 +1,5 @@
 package br.com.mpconnect.manager;
 
-import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +15,8 @@ import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
 
 public interface OrderBusiness {
 	
-	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException;
 	public void save(String userId, String orderId) throws BusinessException;
 	public void salvarVenda(Venda venda);
-	public void cadastrarVenda(Venda venda);
 	public void cadastrarVendaUnitaria(Venda venda, Produto produto);
 	public void loadOrdersByDate(Date fromDate, Date toDate) throws BusinessException;
 	public Venda listOrderById(String id) throws BusinessException;

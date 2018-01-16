@@ -1,6 +1,5 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,17 +15,15 @@ import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;
-import br.com.mpconnect.dao.CategoriaContaPagarDao;
-import br.com.mpconnect.dao.CategoriaContaReceberDao;
 import br.com.mpconnect.dao.ClienteDao;
 import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.EnvioDao;
+import br.com.mpconnect.dao.MunicipioDao;
+import br.com.mpconnect.dao.NfeConfigDao;
 import br.com.mpconnect.dao.OrigemDao;
 import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.dao.VendaDao;
@@ -36,25 +33,21 @@ import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
-import br.com.mpconnect.ml.api.ApiEnvios;
-import br.com.mpconnect.ml.api.ApiUsuario;
 import br.com.mpconnect.ml.data.parser.MlParser;
 import br.com.mpconnect.ml.dto.VendaML;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
-import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
+import br.com.mpconnect.provider.NFeProvider;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
-import br.com.trendsoftware.mlProvider.dataprovider.ItemProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
-import br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.Order;
 import br.com.trendsoftware.mlProvider.dto.OrderList;
@@ -72,27 +65,21 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	 * 
 	 */
 	private static final long serialVersionUID = -6462524421141281130L;
-
-	@Autowired
-	private ResourceBundleMessageSource messageSource;
-
+	
 	@Resource
 	public AnuncioDao anuncioDao;
-
-	@Autowired
-	public ApiEnvios apiEnvios;
-
-	@Autowired
-	public ApiUsuario apiUsuario;
+	
+	@Resource
+	public NfeConfigDao nfeConfidDao;
+	
+	@Resource
+	public MunicipioDao munDao;
 
 	@Resource
 	public ClienteDao clienteDao;
 
 	@Resource
 	public VendedorDao vendedorDao;
-
-	@Resource
-	public EnvioDao envioDao;
 
 	@Resource
 	public AcessoMlDao acessoDao;
@@ -106,12 +93,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	@Resource
 	public OrigemDao origemDao;
 
-	@Resource
-	public CategoriaContaPagarDao categoriaContaPagarDao;
-
-	@Resource
-	public CategoriaContaReceberDao categoriaContaReceberDao;
-
 	@Autowired
 	public FluxoDeCaixaManagerBo fluxoDeCaixaManager;
 
@@ -120,52 +101,16 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	@Autowired
 	private OrderProvider orderProvider;
-
+	
 	@Autowired
-	private ItemProvider itemProvider;
-
-	@Autowired
-	private ShippingProvider shippingProvider;
+	private NFeProvider nfeProvider;
 
 	@PostConstruct
 	public void init(){
 		getUserProvider().setLogger(logger);
-		getItemProvider().setLogger(logger);
 		getOrderProvider().setLogger(logger);
-		getShippingProvider().setLogger(logger);
+		getNfeProvider().setLogger(logger);
 	}
-
-	@Override
-	@Transactional
-	public void cadastrarVenda(Venda venda){
-		Venda vendaExistente =null;
-		if(venda.getId()!=null)
-			vendaExistente = recuperarVenda(venda.getId());
-
-		//		if(vendaExistente!=null){
-		//			int index =0;
-		//			for(Pagamento pagamento :vendaExistente.getPagamentos()){
-		//				venda.getPagamentos().get(index).setId(pagamento.getId());
-		//				index++;
-		//			}
-		//
-		//			index=0;
-		//			for(DetalheVenda detalheVenda :vendaExistente.getDetalhesVenda()){
-		//				venda.getDetalhesVenda().get(index).setId(detalheVenda.getId());
-		//				index++;
-		//			}
-		//
-		//			venda.getEnvio().setId(vendaExistente.getEnvio().getId());
-		//			venda.getEnvio().setData(vendaExistente.getEnvio().getData());
-		//
-		//			venda.getCliente().setId(vendaExistente.getCliente().getId());
-		//			venda.getVendedor().setId(vendaExistente.getVendedor().getId());
-		//			atualizarVenda(venda);
-		//		}
-		//		else
-		//			salvarVenda(venda);
-	}
-
 
 	@Override
 	@Transactional
@@ -179,7 +124,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		} catch (DaoException e) {
 			e.printStackTrace();
 		}		
-
 	}
 
 	@Override
@@ -271,12 +215,16 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		} catch (ProviderException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
-			throw new BusinessException(exception);
+			throw new BusinessProviderException(exception);
 		} catch (DaoException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("");
 			throw new BusinessException(exception);
 		}
+	}
+	
+	public void gerarNfe(List<Venda> vendas){
+		
 	}
 
 	public void saveOrder(Venda venda) throws BusinessException
@@ -333,7 +281,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			int offset = 0;
 			//Response response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
 			//MUDAR FUTURAMENTE
-			Response response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -3), new Date(), OrderStatus.PAID, offset, 10, accessToken);
+			Response response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), new Date(), OrderStatus.PAID, offset, 10, accessToken);
 			OrderList orderList = (OrderList) response.getData();
 
 			List<Order> orders = new ArrayList<Order>();
@@ -343,7 +291,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 				offset=offset+10;
 				//response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
 				//MUDAR FUTURAMENTE
-				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -3), new Date(), OrderStatus.PAID, offset, 10, accessToken);
+				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), new Date(), OrderStatus.PAID, offset, 10, accessToken);
 				orderList = (OrderList) response.getData();
 			}
 
@@ -390,28 +338,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
 			throw new BusinessException(exception);
 		}
-		
-	}
-
-	@Override
-	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException{
-
-		try {
-			Usuario usuario = getSessionUserLogin();
-			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-
-			List<String> shippingIds = new ArrayList<String>();
-
-			for(Venda venda: vendas)
-				shippingIds.add(venda.getEnvio().getIdMl());
-
-			return shippingProvider.printTags(shippingIds, accessToken);
-		} catch (ProviderException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
-			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
-			throw new BusinessProviderException(exception);
-		}
-
 	}
 
 	@Override
@@ -484,7 +410,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 
 		return vendasNaoExistentes;
-
 	}
 
 	public List<Order> retornaVendasNaoExistentes(List<Order> vendas){
@@ -504,35 +429,18 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 
 		return vendasNaoExistentes;
-
 	}
 
 	public UserProvider getUserProvider() {
 		return userProvider;
 	}
 
-	public void setUserProvider(UserProvider userProvider) {
-		this.userProvider = userProvider;
-	}
-
 	public OrderProvider getOrderProvider() {
 		return orderProvider;
 	}
 
-	public void setOrderProvider(OrderProvider orderProvider) {
-		this.orderProvider = orderProvider;
-	}
-
-	public ItemProvider getItemProvider() {
-		return itemProvider;
-	}
-
-	public void setItemProvider(ItemProvider itemProvider) {
-		this.itemProvider = itemProvider;
-	}
-
-	public ShippingProvider getShippingProvider() {
-		return shippingProvider;
+	public NFeProvider getNfeProvider() {
+		return nfeProvider;
 	}
 
 	@Override

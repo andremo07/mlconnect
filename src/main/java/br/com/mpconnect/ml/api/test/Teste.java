@@ -1,14 +1,20 @@
 package br.com.mpconnect.ml.api.test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.fincatto.nfe310.classes.nota.NFNotaProcessada;
+
 import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.MunicipioDao;
 import br.com.mpconnect.dao.NfeConfigDao;
+import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.model.Municipio;
 import br.com.mpconnect.model.NfeConfig;
@@ -54,8 +60,17 @@ public class Teste {
 			//venda.getEnvio().setCodMunicipio(mun.getId().intValue());
 			
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
+						
+			List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(vendas,userNfeConfig);
 			
-			nfeProvider.gerarNFe(vendas,userNfeConfig);
+			File nfeFile = new File("NFes.pdf");
+			nfeFile.createNewFile();
+			FileOutputStream fos = new FileOutputStream(nfeFile);
+			
+			List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
+			
+			PdfUtils pdfUtils = new PdfUtils();
+			pdfUtils.merge(inputStreams,fos);
 			
 		} catch (NfeProviderException e) {
 			// TODO Auto-generated catch block
