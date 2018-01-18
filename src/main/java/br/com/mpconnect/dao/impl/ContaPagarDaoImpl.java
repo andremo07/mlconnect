@@ -72,7 +72,7 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 	}
 
 	@Override
-	public Double obterTotalDespesasMes(Integer year){
+	public double obterTotalDespesasMes(Integer year){
 		try{
 			String query = "select sum(cp.valor) "+
 					"from ContaPagar as cp "+
@@ -89,9 +89,9 @@ public class ContaPagarDaoImpl extends DaoCrudImpJpa<ContaPagar> implements Cont
 				q.setParameter(chave, params.get(chave));
 			}
 
-			return (Double) q.getSingleResult();
+			return q.getSingleResult()==null? 0.0 : (double) q.getSingleResult();
 		}catch (NoResultException nre){
-			return null;
+			return 0;
 		}
 	}
 

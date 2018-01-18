@@ -70,7 +70,7 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 	}
 
 	@Override
-	public Double obterTotalRecebimentosMes(Integer year){
+	public double obterTotalRecebimentosMes(Integer year){
 		try{
 			String query = "select sum(cr.valor) as total "+
 					"from ContaReceber as cr "+
@@ -87,9 +87,9 @@ public class ContaReceberDaoImpl extends DaoCrudImpJpa<ContaReceber> implements 
 				q.setParameter(chave, params.get(chave));
 			}
 
-			return (Double) q.getSingleResult();
+			return q.getSingleResult()==null? 0.0 : (double) q.getSingleResult();
 		}catch (NoResultException nre){
-			return null;
+			return 0;
 		}
 	}
 
