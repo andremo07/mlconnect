@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	@Autowired
 	private LogisticBusiness logisticBusiness;
-	
+
 	@Autowired
 	private OrderBusiness orderBusiness;
 
@@ -89,6 +89,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
 		}
@@ -126,11 +127,20 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			Collections.sort(vendasSelecionadas, new VendaComparator());
 			//GERAÇÂO DO ARQUIVO PDF		
 			InputStream pdfInputStream = logisticBusiness.printShippingTags(vendasSelecionadas);
-			
+
 			//LEITURA PDF
 			if(pdfInputStream!=null){
+				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
+				for(Venda venda : vendasSelecionadas){
+					InputStream is = logisticBusiness.printShippingTags(Collections.singletonList(venda));
+					PdfUtils etiquetaPdf = new PdfUtils(is);
+					List<String> codigosNf = etiquetaPdf.localizarString("(NF: )(\\d+)");
+					mapEnvios.put(codigosNf.get(0), venda);
+					etiquetaPdf.close();
+					is.close();		
+				}
+
 				PdfUtils pdfFile = new PdfUtils(pdfInputStream);
-				List<String> codigosNf = pdfFile.localizarString("(NF: )(\\d+)");
 				File filePdf = new File(path+"\\etiquetas.pdf");
 				filePdf.createNewFile();
 				pdfFile.save(filePdf);
@@ -139,20 +149,17 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
 				//GERAÇÃO DAS NFes
 
-				//GERAÇAO PLANILHA EXCEL
-				if(vendasSelecionadas.size()==codigosNf.size()){
-					XSSFWorkbook workbook = new XSSFWorkbook();
-					criarPlanilhaExcelEnvio(workbook,codigosNf);
-					File fileExcel = new File(path+"\\planilhaTemp.xlsx");
-					fileExcel.createNewFile();
-					FileOutputStream fos = new FileOutputStream(fileExcel);
-					workbook.write(fos);
-					workbook.close();
-					fos.flush();
-					fos.close();
-					InputStream excelInputStream = new BufferedInputStream(new FileInputStream(fileExcel));
-					zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
-				}
+				//GERAÇAO PLANILHA EXCEL				
+				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(mapEnvios);
+				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
+				fileExcel.createNewFile();
+				FileOutputStream fos = new FileOutputStream(fileExcel);
+				workbook.write(fos);
+				workbook.close();
+				fos.flush();
+				fos.close();
+				InputStream excelInputStream = new BufferedInputStream(new FileInputStream(fileExcel));
+				zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
 
 				//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
 				zipUtils.finalizarGravacao();
@@ -172,8 +179,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		}
 	}
 
-	public void criarPlanilhaExcelEnvio(XSSFWorkbook workbook, List<String> codigosNf){
+	public XSSFWorkbook criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios){
 
+		XSSFWorkbook workbook = new XSSFWorkbook();
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
 		XSSFSheet sheet = excelUtils.criarFolha("FirstSheet");  
 
@@ -181,8 +189,24 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "NF", 0);
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 1);
 
-		int index =0;
-		for(Iterator<Venda> i = vendasSelecionadas.iterator(); i.hasNext();){
+		int rowIndex=0;
+		for (Map.Entry<String, Venda> entry : mapEnvios.entrySet())
+		{
+			String codNf = entry.getKey();
+			Venda venda = entry.getValue();
+			DetalheVenda dv = venda.getDetalhesVenda().get(0);
+			Produto produto = dv.getProduto();
+			if(produto==null||produto.getSku()==null){
+				produto=new Produto();
+				produto.setSku("");
+			}
+			XSSFRow row = sheet.createRow((short)rowIndex+1);
+			excelUtils.criarCelula(row, codNf, 0, true);
+			excelUtils.criarCelula(row, produto.getSku(), 1, true);
+			rowIndex++;
+		}
+
+		/*		for(Iterator<Venda> i = vendasSelecionadas.iterator(); i.hasNext();){
 			Venda venda = i.next();
 			DetalheVenda dv = venda.getDetalhesVenda().get(0);
 			Produto produto = dv.getProduto();
@@ -194,8 +218,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			excelUtils.criarCelula(row, codigosNf.get(index), 0, true);
 			excelUtils.criarCelula(row, produto.getSku(), 1, true);
 			index++;
-		}
+		}*/
 
+		return workbook;
 	}
 
 	public void adicionarVenda(Venda venda){
