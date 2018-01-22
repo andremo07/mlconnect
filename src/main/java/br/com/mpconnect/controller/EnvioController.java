@@ -124,12 +124,13 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			zipFile.createNewFile();
 			ZipUtils zipUtils = new ZipUtils(zipFile);
 
-			Collections.sort(vendasSelecionadas, new VendaComparator());
 			//GERAÇÂO DO ARQUIVO PDF		
 			InputStream pdfInputStream = logisticBusiness.printShippingTags(vendasSelecionadas);
 
 			//LEITURA PDF
 			if(pdfInputStream!=null){
+				
+				//GERANDO ETIQUETAS UMA A UMA PARA GARANTIA DE ORDEM
 				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
 				for(Venda venda : vendasSelecionadas){
 					InputStream is = logisticBusiness.printShippingTags(Collections.singletonList(venda));
@@ -141,6 +142,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				}
 
 				PdfUtils pdfFile = new PdfUtils(pdfInputStream);
+				List<String> codigosNfs = pdfFile.localizarString("(NF: )(\\d+)");
 				File filePdf = new File(path+"\\etiquetas.pdf");
 				filePdf.createNewFile();
 				pdfFile.save(filePdf);
@@ -150,7 +152,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				//GERAÇÃO DAS NFes
 
 				//GERAÇAO PLANILHA EXCEL				
-				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(mapEnvios);
+				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
 				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
 				fileExcel.createNewFile();
 				FileOutputStream fos = new FileOutputStream(fileExcel);
@@ -179,7 +181,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		}
 	}
 
-	public XSSFWorkbook criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios){
+	public XSSFWorkbook criarPlanilhaExcelEnvio(List<String> codigosNfs,Map<String,Venda> mapEnvios){
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
@@ -190,10 +192,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 1);
 
 		int rowIndex=0;
-		for (Map.Entry<String, Venda> entry : mapEnvios.entrySet())
-		{
-			String codNf = entry.getKey();
-			Venda venda = entry.getValue();
+		for (String codNf: codigosNfs)
+		{			
+			Venda venda = mapEnvios.get(codNf);
 			DetalheVenda dv = venda.getDetalhesVenda().get(0);
 			Produto produto = dv.getProduto();
 			if(produto==null||produto.getSku()==null){
