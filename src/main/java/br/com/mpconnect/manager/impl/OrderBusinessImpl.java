@@ -1,7 +1,13 @@
 package br.com.mpconnect.manager.impl;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +23,8 @@ import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.fincatto.nfe310.classes.nota.NFNotaProcessada;
 
 import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;
@@ -39,12 +47,15 @@ import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
+import br.com.mpconnect.model.Municipio;
+import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
 import br.com.mpconnect.provider.NFeProvider;
+import br.com.mpconnect.provider.exception.NfeProviderException;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
@@ -65,13 +76,13 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	 * 
 	 */
 	private static final long serialVersionUID = -6462524421141281130L;
-	
+
 	@Resource
 	public AnuncioDao anuncioDao;
-	
+
 	@Resource
 	public NfeConfigDao nfeConfidDao;
-	
+
 	@Resource
 	public MunicipioDao munDao;
 
@@ -101,7 +112,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	@Autowired
 	private OrderProvider orderProvider;
-	
+
 	@Autowired
 	private NFeProvider nfeProvider;
 
@@ -222,9 +233,9 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			throw new BusinessException(exception);
 		}
 	}
-	
+
 	public void gerarNfe(List<Venda> vendas){
-		
+
 	}
 
 	public void saveOrder(Venda venda) throws BusinessException
@@ -315,9 +326,9 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 
 	}
-	
+
 	public Venda listOrderById(String id) throws BusinessException{
-		
+
 		getLogger().debug("carregando venda"+ id);
 
 		try {
@@ -429,6 +440,46 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 
 		return vendasNaoExistentes;
+	}
+
+	public InputStream generateOrderNfes(List<Venda> orders) throws BusinessException{
+
+		try {
+			
+			orders.forEach(order ->
+			{ 
+				Municipio mun = munDao.findMunicipioByNameAndUf(order.getEnvio().getMunicipio(), order.getEnvio().getUf());
+				order.getEnvio().setCodMunicipio(mun.getId().intValue());
+			});
+
+			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
+
+			List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig);
+			
+			int index=0;
+			for(NFNotaProcessada notaProcessada: notasProcessadas){
+				orders.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
+				index++;
+			}
+
+			List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
+			 
+			userNfeConfig.setNrNota(new Integer(Integer.valueOf(userNfeConfig.getNrNota())+notasProcessadas.size()).toString());
+			userNfeConfig.setNrLote(new Integer(Integer.valueOf(userNfeConfig.getNrLote())+1).toString());
+			nfeConfidDao.alterar(userNfeConfig);
+			
+			InputStream mergedInputStream = new SequenceInputStream(Collections.enumeration(inputStreams));
+
+			return mergedInputStream;
+		} catch (DaoException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("Error generating Nfes - Database error");
+			throw new BusinessException(exception);
+		} catch (NfeProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("Error generating Nfes - Provider error");
+			throw new BusinessProviderException(exception);
+		}
 	}
 
 	public UserProvider getUserProvider() {

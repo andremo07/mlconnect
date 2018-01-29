@@ -149,8 +149,11 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				pdfInputStream = new FileInputStream(filePdf);
 				pdfFile.close();
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
-				//GERAÇÃO DAS NFes
-
+				
+				/*	GERAÇÃO DAS NFes
+				InputStream nfesInputStream = orderBusiness.generateOrderNfes(vendasSelecionadas);
+				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
+				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
 				File fileExcel = new File(path+"\\planilhaTemp.xlsx");

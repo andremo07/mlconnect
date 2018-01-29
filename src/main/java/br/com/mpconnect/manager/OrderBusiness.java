@@ -1,5 +1,6 @@
 package br.com.mpconnect.manager;
 
+import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -26,4 +27,5 @@ public interface OrderBusiness {
 	public Long getMaxIdVenda();
 	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl);
 	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni,Date dtFinal);
+	public InputStream generateOrderNfes(List<Venda> orders) throws BusinessException;
 }

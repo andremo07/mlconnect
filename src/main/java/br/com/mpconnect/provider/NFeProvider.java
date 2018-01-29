@@ -149,7 +149,7 @@ public class NFeProvider {
 		return notasProcessadas;
 	}
 
-	public List<InputStream>	 generateNFePdf(List<NFNotaProcessada> notasProcessadas) throws NfeProviderException{
+	public List<InputStream> generateNFePdf(List<NFNotaProcessada> notasProcessadas) throws NfeProviderException{
 
 		try {
 			
