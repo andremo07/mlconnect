@@ -193,6 +193,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		XSSFRow cabecalhoRow = sheet.createRow((short)0);
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "NF", 0);
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 1);
+		excelUtils.criarCelulaCabecalho(cabecalhoRow, "QTD", 2);
 
 		int rowIndex=0;
 		for (String codNf: codigosNfs)
@@ -207,22 +208,9 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			XSSFRow row = sheet.createRow((short)rowIndex+1);
 			excelUtils.criarCelula(row, codNf, 0, true);
 			excelUtils.criarCelula(row, produto.getSku(), 1, true);
+			excelUtils.criarCelula(row, dv.getQuantidade().toString(), 2, true);
 			rowIndex++;
 		}
-
-		/*		for(Iterator<Venda> i = vendasSelecionadas.iterator(); i.hasNext();){
-			Venda venda = i.next();
-			DetalheVenda dv = venda.getDetalhesVenda().get(0);
-			Produto produto = dv.getProduto();
-			if(produto==null||produto.getSku()==null){
-				produto=new Produto();
-				produto.setSku("");
-			}
-			XSSFRow row = sheet.createRow((short)index+1);
-			excelUtils.criarCelula(row, codigosNf.get(index), 0, true);
-			excelUtils.criarCelula(row, produto.getSku(), 1, true);
-			index++;
-		}*/
 
 		return workbook;
 	}
