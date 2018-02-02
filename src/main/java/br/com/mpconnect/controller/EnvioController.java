@@ -87,8 +87,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			//orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -128,31 +128,27 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
 				for(Venda venda : vendasSelecionadas){
 					InputStream is = logisticBusiness.printShippingTags(Collections.singletonList(venda));
-					PdfUtils etiquetaPdf = new PdfUtils(is);
-					List<String> codigosNf = etiquetaPdf.localizarString("(NF: )(\\d+)");
+					List<String> codigosNf = PdfUtils.localizarString(is,"(NF: )(\\d+)");
 					mapEnvios.put(codigosNf.get(0), venda);
-					etiquetaPdf.close();
 					is.close();		
 				}
 
-				PdfUtils pdfFile = new PdfUtils(pdfInputStream);
-				List<String> codigosNfs = pdfFile.localizarString("(NF: )(\\d+)");
+				List<String> codigosNfs = PdfUtils.localizarString(pdfInputStream,"(NF: )(\\d+)");
 				File filePdf = new File(path+"\\etiquetas.pdf");
 				filePdf.createNewFile();
-				pdfFile.save(filePdf);
+				pdfInputStream.reset();
+				PdfUtils.save(pdfInputStream,filePdf);
 				pdfInputStream = new FileInputStream(filePdf);
-				pdfFile.close();
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
 				
-/*				GERAÇÃO DAS NFes
-				InputStream nfesInputStream = orderBusiness.generateOrderNfes(vendasSelecionadas);
-				PdfUtils nfePdf = new PdfUtils(nfesInputStream);
-				File nfeFilePdf = new File(path+"\\nfes.pdf");
+				//GERAÇAO NFE PDF
+				List<InputStream> nfesInputStreams = orderBusiness.generateOrderNfes(vendasSelecionadas);
+				File nfeFilePdf = new File(path+"NFes.pdf");
 				nfeFilePdf.createNewFile();
-				nfePdf.save(nfeFilePdf);
-				nfesInputStream = new FileInputStream(nfeFilePdf);
-				nfePdf.close();
-				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
+				PdfUtils.merge(nfesInputStreams,nfeFilePdf);
+				FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
+				nfesInputStream.close();
+				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);
 				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);

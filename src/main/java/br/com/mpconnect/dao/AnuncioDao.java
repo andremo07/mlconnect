@@ -7,5 +7,6 @@ import br.com.mpconnect.model.Anuncio;
 public interface AnuncioDao extends DaoCrud<Anuncio>{
 	
 	public List<String> recuperaIdsAnunciosExistentes(List<String> ids);
+	public Anuncio recuperarAnuncioPorIdMl(String idMl);
 
 }

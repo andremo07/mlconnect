@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Query;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Service;
 
 import br.com.mpconnect.dao.AnuncioDao;
@@ -24,6 +26,16 @@ public class AnuncioDaoImpl extends DaoCrudImpJpa<Anuncio> implements AnuncioDao
 		Query query = getEntityManager().createQuery("select a.idMl from Anuncio a where a.idMl in (:ids)");
 		query.setParameter("ids", ids);
 		return query.getResultList();
+	}
+	
+	@Override
+	public Anuncio recuperarAnuncioPorIdMl(String idMl){
+
+		Criteria criteria = getSession().createCriteria(oClass)
+				.add(Restrictions.eq("idMl", idMl));
+
+		return (Anuncio) criteria.uniqueResult();
+
 	}
 
 }

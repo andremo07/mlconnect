@@ -27,5 +27,5 @@ public interface OrderBusiness {
 	public Long getMaxIdVenda();
 	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl);
 	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni,Date dtFinal);
-	public InputStream generateOrderNfes(List<Venda> orders) throws BusinessException;
+	public List<InputStream> generateOrderNfes(List<Venda> orders) throws BusinessException;
 }

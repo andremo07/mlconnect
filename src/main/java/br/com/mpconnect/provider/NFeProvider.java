@@ -479,7 +479,7 @@ public class NFeProvider {
 			produto.setCfop("5104");
 		else
 			produto.setCfop("6104");
-		produto.setCodigo(venda.getDetalhesVenda().get(0).getAnuncio().getId().toString());
+		produto.setCodigo(venda.getDetalhesVenda().get(0).getAnuncio().getId()!=null?venda.getDetalhesVenda().get(0).getAnuncio().getId().toString():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl());
 		produto.setCodigoDeBarras("");
 		produto.setCodigoDeBarrasTributavel("");
 		produto.setCampoeValorNota(NFProdutoCompoeValorNota.SIM);

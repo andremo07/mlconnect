@@ -1,8 +1,5 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
 import java.io.Serializable;
@@ -442,14 +439,20 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		return vendasNaoExistentes;
 	}
 
-	public InputStream generateOrderNfes(List<Venda> orders) throws BusinessException{
+	public List<InputStream> generateOrderNfes(List<Venda> orders) throws BusinessException{
 
 		try {
+			
+			
+			Vendedor vendedor = vendedorDao.recuperarVendedorPorIdMl(orders.get(0).getVendedor().getIdMl());
 			
 			orders.forEach(order ->
 			{ 
 				Municipio mun = munDao.findMunicipioByNameAndUf(order.getEnvio().getMunicipio(), order.getEnvio().getUf());
 				order.getEnvio().setCodMunicipio(mun.getId().intValue());
+				order.setVendedor(vendedor);
+				Anuncio anuncio = anuncioDao.recuperarAnuncioPorIdMl(order.getDetalhesVenda().get(0).getAnuncio().getIdMl());
+				order.getDetalhesVenda().get(0).setAnuncio(anuncio);
 			});
 
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
@@ -468,9 +471,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			userNfeConfig.setNrLote(new Integer(Integer.valueOf(userNfeConfig.getNrLote())+1).toString());
 			nfeConfidDao.alterar(userNfeConfig);
 			
-			InputStream mergedInputStream = new SequenceInputStream(Collections.enumeration(inputStreams));
-
-			return mergedInputStream;
+			return inputStreams;
 		} catch (DaoException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("Error generating Nfes - Database error");
