@@ -103,13 +103,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	@Override
 	public List<Venda> paginacao(int first, int pageSize, Map<String,Object> filters){
-		try{
-			this.getModel().setRowCount(vendaDao.recuperaTotalRegistros(filters).intValue());
-			return vendaDao.recuperaTodosPorIntervalo(first, pageSize, filters);
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return vendas;
 	}
 
 	public void gerarPlanilha(){
@@ -150,14 +144,20 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				pdfFile.close();
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
 				
-				/*	GERAÇÃO DAS NFes
+/*				GERAÇÃO DAS NFes
 				InputStream nfesInputStream = orderBusiness.generateOrderNfes(vendasSelecionadas);
+				PdfUtils nfePdf = new PdfUtils(nfesInputStream);
+				File nfeFilePdf = new File(path+"\\nfes.pdf");
+				nfeFilePdf.createNewFile();
+				nfePdf.save(nfeFilePdf);
+				nfesInputStream = new FileInputStream(nfeFilePdf);
+				nfePdf.close();
 				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
 				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
 				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
-				fileExcel.createNewFile();
+				//fileExcel.createNewFile();
 				FileOutputStream fos = new FileOutputStream(fileExcel);
 				workbook.write(fos);
 				workbook.close();
@@ -182,6 +182,10 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
+	}
+	
+	public void createPdFile(String path,InputStream is){
+		
 	}
 
 	public XSSFWorkbook criarPlanilhaExcelEnvio(List<String> codigosNfs,Map<String,Venda> mapEnvios){
