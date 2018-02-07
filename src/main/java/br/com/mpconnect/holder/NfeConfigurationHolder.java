@@ -50,7 +50,7 @@ public class NfeConfigurationHolder extends NFeConfig
 
 		if (this.keyStoreCadeia == null) {
             this.keyStoreCadeia = KeyStore.getInstance("JKS");
-            try (InputStream cadeia = new FileInputStream("certificado.jks")) {
+            try (InputStream cadeia = getClass().getResourceAsStream("/nfe/certificado.jks")) {
                 this.keyStoreCadeia.load(cadeia, this.getCadeiaCertificadosSenha().toCharArray());
             } catch (CertificateException | NoSuchAlgorithmException | IOException e) {
                 this.keyStoreCadeia = null;
@@ -66,7 +66,7 @@ public class NfeConfigurationHolder extends NFeConfig
 		if (this.keyStoreCertificado == null) {
             this.keyStoreCertificado = KeyStore.getInstance("PKCS12");
             
-            try (InputStream certificadoStream = new FileInputStream("certificado.pfx")) {
+            try (InputStream certificadoStream = getClass().getResourceAsStream("/nfe/certificado.pfx")) {
                 this.keyStoreCertificado.load(certificadoStream, this.getCertificadoSenha().toCharArray());
             } catch (CertificateException | NoSuchAlgorithmException | IOException e) {
                 this.keyStoreCadeia = null;

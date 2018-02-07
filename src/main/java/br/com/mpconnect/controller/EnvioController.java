@@ -109,6 +109,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	public void gerarPlanilha(){
 
 		try {
+			
 			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
 
@@ -143,11 +144,10 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				
 				//GERAÇAO NFE PDF
 				List<InputStream> nfesInputStreams = orderBusiness.generateOrderNfes(vendasSelecionadas);
-				File nfeFilePdf = new File(path+"NFes.pdf");
+				File nfeFilePdf = new File(path+"\\NFes.pdf");
 				nfeFilePdf.createNewFile();
 				PdfUtils.merge(nfesInputStreams,nfeFilePdf);
 				FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-				nfesInputStream.close();
 				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);
 				
 				//GERAÇAO PLANILHA EXCEL				
@@ -159,7 +159,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				workbook.close();
 				fos.flush();
 				fos.close();
-				InputStream excelInputStream = new BufferedInputStream(new FileInputStream(fileExcel));
+				InputStream excelInputStream = new FileInputStream(fileExcel);
 				zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
 
 				//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
@@ -168,6 +168,11 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				//PREPARA DOWNLOAD
 				InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
 				exportFile = new DefaultStreamedContent(zipInputStream, "application/zip", "Envio "+data+".zip");
+				
+				filePdf.delete();
+				nfeFilePdf.delete();
+				fileExcel.delete();
+				zipFile.delete();	
 			}
 			else{
 				addMessage("Erro!", "Problema na geração de etiqueta.");
