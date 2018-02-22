@@ -80,6 +80,7 @@ import com.fincatto.nfe310.utils.NFGeraChave;
 import com.fincatto.nfe310.webservices.WSFacade;
 
 import br.com.mpconnect.holder.NfeConfigurationHolder;
+import br.com.mpconnect.ml.api.enums.TipoPessoaEnum;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.nfe.generator.GerarNotaConsumidor;
@@ -378,8 +379,13 @@ public class NFeProvider {
 	public NFNotaInfoDestinatario getNFNotaInfoDestinatario(Venda venda) {
 		
 		final NFNotaInfoDestinatario destinatario = new NFNotaInfoDestinatario();
-		destinatario.setCpf(venda.getCliente().getNrDocumento());
+		
+		if(venda.getCliente().getTipo().equals(TipoPessoaEnum.FISICA.getValue()))
+			destinatario.setCpf(venda.getCliente().getNrDocumento());
+		else{
+			destinatario.setCnpj(venda.getCliente().getNrDocumento());
 		//		destinatario.setRazaoSocial(venda.getCliente().getNome());
+		}
 		destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
 		destinatario.setEndereco(getNFEnderecoDest(venda));
 
@@ -505,7 +511,7 @@ public class NFeProvider {
 			produto.setCfop("5104");
 		else
 			produto.setCfop("6104");
-		produto.setCodigo(venda.getDetalhesVenda().get(0).getProduto().getSku()!=null?venda.getDetalhesVenda().get(0).getProduto().getSku():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl());
+		produto.setCodigo(venda.getDetalhesVenda().get(0).getProduto()!=null?venda.getDetalhesVenda().get(0).getProduto().getSku():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl());
 		produto.setCodigoDeBarras("");
 		produto.setCodigoDeBarrasTributavel("");
 		produto.setCampoeValorNota(NFProdutoCompoeValorNota.SIM);

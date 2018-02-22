@@ -439,10 +439,10 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		return vendasNaoExistentes;
 	}
 
+	@Transactional
 	public List<InputStream> generateOrderNfes(List<Venda> orders) throws BusinessException{
 
 		try {
-			
 			
 			Vendedor vendedor = vendedorDao.recuperarVendedorPorIdMl(orders.get(0).getVendedor().getIdMl());
 			
