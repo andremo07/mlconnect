@@ -1,10 +1,8 @@
 package br.com.mpconnect.manager.impl;
 
 import java.io.InputStream;
-import java.io.SequenceInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +42,6 @@ import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
-import br.com.mpconnect.model.Municipio;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
@@ -56,6 +53,7 @@ import br.com.mpconnect.provider.exception.NfeProviderException;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
+import br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.Order;
 import br.com.trendsoftware.mlProvider.dto.OrderList;
@@ -109,6 +107,9 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	@Autowired
 	private OrderProvider orderProvider;
+	
+	@Autowired
+	private ShippingProvider shippingProvider;
 
 	@Autowired
 	private NFeProvider nfeProvider;
@@ -117,6 +118,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	public void init(){
 		getUserProvider().setLogger(logger);
 		getOrderProvider().setLogger(logger);
+		getShippingProvider().setLogger(logger);
 		getNfeProvider().setLogger(logger);
 	}
 
@@ -446,14 +448,13 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			
 			Vendedor vendedor = vendedorDao.recuperarVendedorPorIdMl(orders.get(0).getVendedor().getIdMl());
 			
-			orders.forEach(order ->
-			{ 
-				Municipio mun = munDao.findMunicipioByNameAndUf(order.getEnvio().getMunicipio(), order.getEnvio().getUf());
-				order.getEnvio().setCodMunicipio(mun.getId().intValue());
+			for(Venda order: orders){
+				Integer code = shippingProvider.searchMunicipyCodeByCep(order.getEnvio().getCep());
+				order.getEnvio().setCodMunicipio(code);
 				order.setVendedor(vendedor);
 				Anuncio anuncio = anuncioDao.recuperarAnuncioPorIdMl(order.getDetalhesVenda().get(0).getAnuncio().getIdMl());
 				order.getDetalhesVenda().get(0).setAnuncio(anuncio);
-			});
+			};
 
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 
@@ -480,6 +481,10 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("Error generating Nfes - Provider error");
 			throw new BusinessProviderException(exception);
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("Error generating Nfes - Querying municipy error");
+			throw new BusinessProviderException(exception);
 		}
 	}
 
@@ -493,6 +498,10 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	public NFeProvider getNfeProvider() {
 		return nfeProvider;
+	}
+	
+	public ShippingProvider getShippingProvider() {
+		return shippingProvider;
 	}
 
 	@Override

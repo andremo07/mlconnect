@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
@@ -517,7 +518,13 @@ public class NFeProvider {
 		produto.setCampoeValorNota(NFProdutoCompoeValorNota.SIM);
 		produto.setDescricao(venda.getDetalhesVenda().get(0).getAnuncio().getTitulo());
 		// POPULAR NCM DOS PRODUTOS NA BASE DE DADOS
-		produto.setNcm(venda.getDetalhesVenda().get(0).getAnuncio().getProdutos().iterator().next().getNcm().toString());
+		try{
+		produto.setNcm(!venda.getDetalhesVenda().get(0).getAnuncio().getProdutos().isEmpty()?
+				venda.getDetalhesVenda().get(0).getAnuncio().getProdutos().iterator().next().getNcm().toString():null);
+		}
+		catch(NoSuchElementException e){
+			produto.setNcm(null);
+		}
 		produto.setQuantidadeComercial(new BigDecimal(venda.getDetalhesVenda().get(0).getQuantidade()));
 		produto.setQuantidadeTributavel(new BigDecimal(venda.getDetalhesVenda().get(0).getQuantidade()));
 		produto.setUnidadeComercial("UN");

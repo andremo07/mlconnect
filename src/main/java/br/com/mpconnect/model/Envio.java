@@ -60,7 +60,7 @@ public class Envio implements Persistente{
 	private String uf;
 	
 	@Column(name="CEP")
-	private Long cep;
+	private String cep;
 	
 	@Column(name="CD_PAIS")
 	private Integer codPais;
@@ -188,11 +188,11 @@ public class Envio implements Persistente{
 		this.uf = uf;
 	}
 
-	public Long getCep() {
+	public String getCep() {
 		return cep;
 	}
 
-	public void setCep(Long cep) {
+	public void setCep(String cep) {
 		this.cep = cep;
 	}
 

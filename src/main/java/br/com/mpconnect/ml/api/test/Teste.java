@@ -28,14 +28,14 @@ public class Teste {
 		MunicipioDao munDao = (MunicipioDao) ctx.getBean("municipioDao");
 
 		//Venda venda = orderBusiness.recuperarVenda("1601889869");
-		Venda venda1 = orderBusiness.recuperarVenda("1602982050");
-		Venda venda2 = orderBusiness.recuperarVenda("1602818445");
-		Venda venda3 = orderBusiness.recuperarVenda("1602789565");
+		Venda venda1 = orderBusiness.recuperarVenda("1638070588");
+		//Venda venda2 = orderBusiness.recuperarVenda("1643929665");
+		//Venda venda3 = orderBusiness.recuperarVenda("1602789565");
 
 		List<Venda> vendas = new ArrayList<Venda>();
 		vendas.add(venda1);
-		vendas.add(venda2);
-		vendas.add(venda3);
+		//vendas.add(venda2);
+		//vendas.add(venda3);
 
 		List<InputStream> nfesInputStreams= orderBusiness.generateOrderNfes(vendas);
 

@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ExcelUtils;
@@ -87,8 +86,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
-			//orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
+			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), new Date());
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -142,13 +141,13 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				pdfInputStream = new FileInputStream(filePdf);
 				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
 				
-				//GERAÇAO NFE PDF
+/*				//GERAÇAO NFE PDF
 				List<InputStream> nfesInputStreams = orderBusiness.generateOrderNfes(vendasSelecionadas);
 				File nfeFilePdf = new File(path+"\\NFes.pdf");
 				nfeFilePdf.createNewFile();
 				PdfUtils.merge(nfesInputStreams,nfeFilePdf);
 				FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);
+				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
 				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
@@ -169,10 +168,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 				InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
 				exportFile = new DefaultStreamedContent(zipInputStream, "application/zip", "Envio "+data+".zip");
 				
-				filePdf.delete();
-				nfeFilePdf.delete();
-				fileExcel.delete();
-				zipFile.delete();	
+	
 			}
 			else{
 				addMessage("Erro!", "Problema na geração de etiqueta.");
