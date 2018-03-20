@@ -291,7 +291,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			int offset = 0;
 			//Response response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
 			//MUDAR FUTURAMENTE
-			Response response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), new Date(), OrderStatus.PAID, offset, 10, accessToken);
+			Response response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1), OrderStatus.PAID, offset, 10, accessToken);
 			OrderList orderList = (OrderList) response.getData();
 
 			List<Order> orders = new ArrayList<Order>();
@@ -301,7 +301,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 				offset=offset+10;
 				//response = orderProvider.listOrdersByShippingStatus(userId, shippingStatus, shippingSubStatus, offset, 10, accessToken);
 				//MUDAR FUTURAMENTE
-				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), new Date(), OrderStatus.PAID, offset, 10, accessToken);
+				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1), OrderStatus.PAID, offset, 10, accessToken);
 				orderList = (OrderList) response.getData();
 			}
 
