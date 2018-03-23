@@ -16,7 +16,6 @@ import br.com.mpconnect.model.Vendedor;
 import br.com.mpconnect.util.DateUtils;
 import br.com.trendsoftware.mlProvider.dto.Buyer;
 import br.com.trendsoftware.mlProvider.dto.ItemResponse;
-import br.com.trendsoftware.mlProvider.dto.ListingType;
 import br.com.trendsoftware.mlProvider.dto.Order;
 import br.com.trendsoftware.mlProvider.dto.OrderItem;
 import br.com.trendsoftware.mlProvider.dto.Payment;
@@ -64,17 +63,13 @@ public class MlParser {
 
 		Anuncio anuncio = parseItem(item);
 
-		double comissão = 0.0;
-		if(item.getListingTypeId().equals(ListingType.PREMIUM.getName()))
-			comissão = Math.round(valorTotalTransacao * 16) / 100.0;	
-		else
-			comissão = Math.round(valorTotalTransacao * 11) / 100.0;
+		double comissao = orderItem.getSaleFee();
 
 		Produto produto = new Produto();
 		produto.setSku(item.getSellerCustomField());
 
 		detalheVenda.setProduto(produto);
-		detalheVenda.setTarifaVenda(comissão);
+		detalheVenda.setTarifaVenda(comissao);
 		detalheVenda.setAnuncio(anuncio);
 		detalheVenda.setQuantidade(orderItem.getQuantity().intValue());
 
