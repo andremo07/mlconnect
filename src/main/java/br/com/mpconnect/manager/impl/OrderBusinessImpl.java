@@ -257,11 +257,11 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
 			UserCredencials token = (UserCredencials) response.getData();
 
-			response = orderProvider.searchOrderById(orderId, token.getAccessToken());
+			response = orderProvider.searchOrderById(userId,orderId, token.getAccessToken());
 			Order order = (Order) response.getData();
 
 			Venda venda = MlParser.parseOrder(order);
-			if(vendaDao.recuperaUm(new Long(venda.getId()))==null)
+			if(vendaDao.recuperaUm(venda.getId())==null)
 				saveOrder(venda);
 
 		} catch (DaoException e) {
@@ -336,7 +336,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
 
-			Response response = orderProvider.searchOrderById(id, accessToken);
+			Response response = orderProvider.searchOrderById("",id, accessToken);
 			Order order = (Order) response.getData();
 
 			Venda venda = MlParser.parseOrder(order);

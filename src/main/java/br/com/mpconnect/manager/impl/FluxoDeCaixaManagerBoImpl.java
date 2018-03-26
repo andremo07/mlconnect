@@ -105,7 +105,7 @@ public class FluxoDeCaixaManagerBoImpl implements FluxoDeCaixaManagerBo{
 		contaPagar.setNrTransacao(venda.getId());
 
 		Fornecedor fornecedor=null;
-		if(venda.getOrigem().getNome().equals("ML")){
+		if(venda.getOrigem().getId()==1L){
 			fornecedor = fornecedorDao.recuperaUm(new Long(15780));
 		}
 		else{
