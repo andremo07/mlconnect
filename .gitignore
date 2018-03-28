@@ -27,3 +27,5 @@ src/main/resources/dev
 nfe\.pdf
 
 dev\.xml
+
+\.externalToolBuilders/
