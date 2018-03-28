@@ -81,7 +81,7 @@ public class MlParser {
 
 		Cliente cliente = new Cliente();
 		cliente.setNome(buyer.getFirstName()+" "+buyer.getLastName());
-		cliente.setNrDocumento(buyer.getBillingInfo().getDocNumber().toString());
+		cliente.setNrDocumento(buyer.getBillingInfo().getDocNumber()!=null?buyer.getBillingInfo().getDocNumber().toString():null);
 		cliente.setApelido(buyer.getNickname());
 		cliente.setIdMl(buyer.getId().toString());
 		cliente.setEmail(buyer.getEmail());
