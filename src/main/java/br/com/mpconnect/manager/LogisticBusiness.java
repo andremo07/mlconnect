@@ -1,12 +1,12 @@
 package br.com.mpconnect.manager;
 
-import java.io.InputStream;
 import java.util.List;
+
+import org.primefaces.model.StreamedContent;
 
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.model.Venda;
 
 public interface LogisticBusiness {
-	
-	public InputStream printShippingTags(List<Venda> vendas) throws BusinessException;
+	public StreamedContent generateShippingSheetAndTags(List<Venda> vendasSelecionadas, String accessToken) throws BusinessException;
 }

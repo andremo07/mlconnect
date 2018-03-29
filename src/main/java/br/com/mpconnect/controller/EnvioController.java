@@ -1,26 +1,16 @@
 package br.com.mpconnect.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -28,17 +18,13 @@ import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.exception.BusinessException;
-import br.com.mpconnect.file.utils.ExcelUtils;
-import br.com.mpconnect.file.utils.PdfUtils;
-import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiPerguntas;
 import br.com.mpconnect.ml.api.ApiVendas;
 import br.com.mpconnect.ml.dto.MensagemVendaML;
 import br.com.mpconnect.ml.dto.PerguntaML;
-import br.com.mpconnect.model.DetalheVenda;
-import br.com.mpconnect.model.Produto;
+import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.VendaComparator;
@@ -87,7 +73,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	public void init(){
 		try{
 			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -108,112 +94,19 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	public void gerarPlanilha(){
 
 		try {
+			//MUDAR DEPOIS
+			Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+			Usuario usuario =  (Usuario) map.get("usuario");
+			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
 			
-			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
-			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-
-			File zipFile = new File(path+"\\envio.zip");
-			if(!zipFile.exists())
-				zipFile.getParentFile().mkdirs();
-			zipFile.createNewFile();
-			ZipUtils zipUtils = new ZipUtils(zipFile);
-
-			//GERAÇÂO DO ARQUIVO PDF		
-			InputStream pdfInputStream = logisticBusiness.printShippingTags(vendasSelecionadas);
-
-			//LEITURA PDF
-			if(pdfInputStream!=null){
-				
-				//GERANDO ETIQUETAS UMA A UMA PARA GARANTIA DE ORDEM
-				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
-				for(Venda venda : vendasSelecionadas){
-					InputStream is = logisticBusiness.printShippingTags(Collections.singletonList(venda));
-					List<String> codigosNf = PdfUtils.localizarString(is,"(NF: )(\\d+)");
-					mapEnvios.put(codigosNf.get(0), venda);
-					is.close();		
-				}
-
-				List<String> codigosNfs = PdfUtils.localizarString(pdfInputStream,"(NF: )(\\d+)");
-				File filePdf = new File(path+"\\etiquetas.pdf");
-				filePdf.createNewFile();
-				pdfInputStream.reset();
-				PdfUtils.save(pdfInputStream,filePdf);
-				pdfInputStream = new FileInputStream(filePdf);
-				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
-				
-/*				//GERAÇAO NFE PDF
-				List<InputStream> nfesInputStreams = orderBusiness.generateOrderNfes(vendasSelecionadas);
-				File nfeFilePdf = new File(path+"\\NFes.pdf");
-				nfeFilePdf.createNewFile();
-				PdfUtils.merge(nfesInputStreams,nfeFilePdf);
-				FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
-				
-				//GERAÇAO PLANILHA EXCEL				
-				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
-				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
-				//fileExcel.createNewFile();
-				FileOutputStream fos = new FileOutputStream(fileExcel);
-				workbook.write(fos);
-				workbook.close();
-				fos.flush();
-				fos.close();
-				InputStream excelInputStream = new FileInputStream(fileExcel);
-				zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
-
-				//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
-				zipUtils.finalizarGravacao();
-
-				//PREPARA DOWNLOAD
-				InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
-				exportFile = new DefaultStreamedContent(zipInputStream, "application/zip", "Envio "+data+".zip");
-				
-	
-			}
-			else{
-				addMessage("Erro!", "Problema na geração de etiqueta.");
-			}
-
-		} catch (IOException e) {
-			addMessage("Erro!", "Problema na geração de etiqueta.");
+			exportFile = logisticBusiness.generateShippingSheetAndTags(vendasSelecionadas, accessToken);
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
 	}
-	
+
 	public void createPdFile(String path,InputStream is){
-		
-	}
 
-	public XSSFWorkbook criarPlanilhaExcelEnvio(List<String> codigosNfs,Map<String,Venda> mapEnvios){
-
-		XSSFWorkbook workbook = new XSSFWorkbook();
-		ExcelUtils excelUtils = new ExcelUtils(workbook);
-		XSSFSheet sheet = excelUtils.criarFolha("FirstSheet");  
-
-		XSSFRow cabecalhoRow = sheet.createRow((short)0);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "NF", 0);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "CODIGO DO PRODUTO", 1);
-		excelUtils.criarCelulaCabecalho(cabecalhoRow, "QTD", 2);
-
-		int rowIndex=0;
-		for (String codNf: codigosNfs)
-		{			
-			Venda venda = mapEnvios.get(codNf);
-			DetalheVenda dv = venda.getDetalhesVenda().get(0);
-			Produto produto = dv.getProduto();
-			if(produto==null||produto.getSku()==null){
-				produto=new Produto();
-				produto.setSku("");
-			}
-			XSSFRow row = sheet.createRow((short)rowIndex+1);
-			excelUtils.criarCelula(row, codNf, 0, true);
-			excelUtils.criarCelula(row, produto.getSku(), 1, true);
-			excelUtils.criarCelula(row, dv.getQuantidade().toString(), 2, true);
-			rowIndex++;
-		}
-
-		return workbook;
 	}
 
 	public void adicionarVenda(Venda venda){
