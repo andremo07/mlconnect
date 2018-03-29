@@ -29,3 +29,5 @@ nfe\.pdf
 dev\.xml
 
 \.externalToolBuilders/
+
+*.log
