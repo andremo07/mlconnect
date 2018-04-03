@@ -92,21 +92,24 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	}
 
 	public void gerarPlanilha(){
-
 		try {
 			//MUDAR DEPOIS
 			Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 			Usuario usuario =  (Usuario) map.get("usuario");
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-			
+
 			exportFile = logisticBusiness.generateShippingSheetAndTags(vendasSelecionadas, accessToken);
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
 	}
-
-	public void createPdFile(String path,InputStream is){
-
+	
+	public void gerarNfe(){
+		try {
+			exportFile = orderBusiness.gerarNfe(vendasSelecionadas);
+		} catch (BusinessException e) {
+			addMessage("Erro!", "Problema na geração de etiqueta.");
+		}
 	}
 
 	public void adicionarVenda(Venda venda){

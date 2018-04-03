@@ -93,20 +93,11 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 				pdfInputStream.reset();
 				PdfUtils.save(pdfInputStream,filePdf);
 				pdfInputStream = new FileInputStream(filePdf);
-				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);
-				
-/*				//GERAÇAO NFE PDF
-				List<InputStream> nfesInputStreams = orderBusiness.generateOrderNfes(vendasSelecionadas);
-				File nfeFilePdf = new File(path+"\\NFes.pdf");
-				nfeFilePdf.createNewFile();
-				PdfUtils.merge(nfesInputStreams,nfeFilePdf);
-				FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-				zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);*/
+				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);		
 				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
 				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
-				//fileExcel.createNewFile();
 				FileOutputStream fos = new FileOutputStream(fileExcel);
 				workbook.write(fos);
 				workbook.close();

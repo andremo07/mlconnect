@@ -37,14 +37,6 @@ public class Teste {
 		//vendas.add(venda2);
 		//vendas.add(venda3);
 
-		List<InputStream> nfesInputStreams= orderBusiness.generateOrderNfes(vendas);
-
-		File nfeFilePdf = new File("NFes.pdf");
-		nfeFilePdf.createNewFile();
-		PdfUtils.merge(nfesInputStreams,nfeFilePdf);
-		FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-		nfesInputStream.close();
-
 		System.out.println();
 		System.exit(0);
 

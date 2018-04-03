@@ -1,5 +1,9 @@
 package br.com.mpconnect.manager.impl;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,9 +16,12 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.faces.context.FacesContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,8 @@ import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
+import br.com.mpconnect.file.utils.PdfUtils;
+import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
@@ -107,7 +116,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	@Autowired
 	private OrderProvider orderProvider;
-	
+
 	@Autowired
 	private ShippingProvider shippingProvider;
 
@@ -233,8 +242,36 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	public void gerarNfe(List<Venda> vendas){
+	public StreamedContent gerarNfe(List<Venda> vendas) throws BusinessException
+	{
+		try {
+			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
+			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
 
+			File zipFile = new File(path+"\\envio.zip");
+			if(!zipFile.exists())
+				zipFile.getParentFile().mkdirs();
+			zipFile.createNewFile();
+			ZipUtils zipUtils = new ZipUtils(zipFile);
+
+			List<InputStream> nfesInputStreams = generateOrderNfes(vendas);
+			File nfeFilePdf = new File(path+"\\NFes.pdf");
+			nfeFilePdf.createNewFile();
+			PdfUtils.merge(nfesInputStreams,nfeFilePdf);
+			FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
+			zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);
+
+			//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
+			zipUtils.finalizarGravacao();
+
+			InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
+			return new DefaultStreamedContent(zipInputStream, "application/zip", "Nfes "+data+".zip");
+
+		} catch (IOException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("FILE_MANIPULATION_ERROR");
+			throw new BusinessException(exception);
+		}
 	}
 
 	public void saveOrder(Venda venda) throws BusinessException
@@ -445,9 +482,9 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	public List<InputStream> generateOrderNfes(List<Venda> orders) throws BusinessException{
 
 		try {
-			
+
 			Vendedor vendedor = vendedorDao.recuperarVendedorPorIdMl(orders.get(0).getVendedor().getIdMl());
-			
+
 			for(Venda order: orders){
 				Integer code = shippingProvider.searchMunicipyCodeByCep(order.getEnvio().getCep());
 				order.getEnvio().setCodMunicipio(code);
@@ -459,7 +496,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
 
 			List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig);
-			
+
 			int index=0;
 			for(NFNotaProcessada notaProcessada: notasProcessadas){
 				orders.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
@@ -467,11 +504,11 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			}
 
 			List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
-			 
+
 			userNfeConfig.setNrNota(new Integer(Integer.valueOf(userNfeConfig.getNrNota())+notasProcessadas.size()).toString());
 			userNfeConfig.setNrLote(new Integer(Integer.valueOf(userNfeConfig.getNrLote())+1).toString());
 			nfeConfidDao.alterar(userNfeConfig);
-			
+
 			return inputStreams;
 		} catch (DaoException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
@@ -499,7 +536,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	public NFeProvider getNfeProvider() {
 		return nfeProvider;
 	}
-	
+
 	public ShippingProvider getShippingProvider() {
 		return shippingProvider;
 	}
