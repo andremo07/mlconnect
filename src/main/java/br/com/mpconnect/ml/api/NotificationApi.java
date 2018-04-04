@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.gson.Gson;
+
 import br.com.mpconnect.api.exception.custom.APIProviderException;
 import br.com.mpconnect.api.exception.custom.PreConditionFailedException;
 import br.com.mpconnect.exception.BusinessException;
@@ -29,6 +31,9 @@ public class NotificationApi
 
 	@Autowired
 	private OrderBusiness orderBusiness;
+	
+	@Autowired
+	private Gson parser;
 
 	@Context 
 	private HttpServletRequest servletRequest;
@@ -39,27 +44,26 @@ public class NotificationApi
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMlNotification(Notification notification)
 	{
+		getLogger().debug("ml notification received: "+notification.getTopic());
 
-		try {
+		try 
+		{
 			Topic topic = Topic.lookup(notification.getTopic());
 
-			if(topic!=null){
-
-				getLogger().debug("ml notification received: "+topic.getName());
-
+			if(topic!=null)
+			{
 				switch (topic) {
 				case ITEMS:{
 
 					break;
 				}
 				case ORDERS:
-
+					getLogger().debug(getParser().toJson(notification));
+					
 					String resource = notification.getResource();
 					String orderId = resource.split("/")[2];
 					String userId = notification.getUser_id();
-
 					getOrderBusiness().save(userId, orderId);
-					
 					break;
 				case QUESTIONS:
 
@@ -75,13 +79,16 @@ public class NotificationApi
 				}
 			}
 			return Response.ok().build();
-
 		} catch (BusinessProviderException e) {
 			throw new APIProviderException(e.getMessage());
 		} catch (BusinessException e) {
 			throw new PreConditionFailedException(e.getMessage());
 		}
 
+	}
+	
+	public Gson getParser() {
+		return parser;
 	}
 
 	public Logger getLogger() {
