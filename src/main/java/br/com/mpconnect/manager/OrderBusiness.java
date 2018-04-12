@@ -1,10 +1,9 @@
 package br.com.mpconnect.manager;
 
+import java.io.FileInputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import org.primefaces.model.StreamedContent;
 
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.ml.dto.VendaML;
@@ -28,5 +27,5 @@ public interface OrderBusiness {
 	public Long getMaxIdVenda();
 	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl);
 	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni,Date dtFinal);
-	public StreamedContent gerarNfe(List<Venda> vendas) throws BusinessException;
+	public FileInputStream generateNfeFileStream(List<Venda> vendas, String filePath) throws BusinessException;
 }

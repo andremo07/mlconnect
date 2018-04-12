@@ -1,6 +1,5 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,19 +8,15 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.faces.context.FacesContext;
 
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +24,10 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
-import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
@@ -55,19 +48,9 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		getShippingProvider().setLogger(logger);
 	}
 	
-	public StreamedContent generateShippingSheetAndTags(List<Venda> vendasSelecionadas, String accessToken) throws BusinessException{
-		
-		try {
-			
-			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
-			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-
-			File zipFile = new File(path+"\\envio.zip");
-			if(!zipFile.exists())
-				zipFile.getParentFile().mkdirs();
-			zipFile.createNewFile();
-			ZipUtils zipUtils = new ZipUtils(zipFile);
-			
+	public List<InputStream> generateShippingSheetAndTags(List<Venda> vendasSelecionadas,String tagsPathName,String sheetPathName,String accessToken) throws BusinessException
+	{
+		try {	
 			List<String> shippingIds = new ArrayList<String>();
 			for(Venda venda: vendasSelecionadas)
 				shippingIds.add(venda.getEnvio().getIdMl());
@@ -77,7 +60,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 
 			//LEITURA PDF
 			if(pdfInputStream!=null){
-				
+				List<InputStream> inputStreams = new ArrayList<InputStream>();
 				//GERANDO ETIQUETAS UMA A UMA PARA GARANTIA DE ORDEM
 				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
 				for(Venda venda : vendasSelecionadas){
@@ -88,31 +71,28 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 				}
 
 				List<String> codigosNfs = PdfUtils.localizarString(pdfInputStream,"(NF: )(\\d+)");
-				File filePdf = new File(path+"\\etiquetas.pdf");
+				File filePdf = new File(tagsPathName);
 				filePdf.createNewFile();
 				pdfInputStream.reset();
 				PdfUtils.save(pdfInputStream,filePdf);
-				pdfInputStream = new FileInputStream(filePdf);
-				zipUtils.adicionarArquivo("Etiquetas "+data+".pdf", pdfInputStream);		
+				pdfInputStream = new FileInputStream(filePdf);		
+				inputStreams.add(pdfInputStream);
 				
 				//GERAÇAO PLANILHA EXCEL				
 				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
-				File fileExcel = new File(path+"\\planilhaTemp.xlsx");
+				File fileExcel = new File(sheetPathName);
 				FileOutputStream fos = new FileOutputStream(fileExcel);
 				workbook.write(fos);
 				workbook.close();
 				fos.flush();
 				fos.close();
 				InputStream excelInputStream = new FileInputStream(fileExcel);
-				zipUtils.adicionarArquivo("Planilha envio "+data+".xlsx", excelInputStream);
-
-				//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
-				zipUtils.finalizarGravacao();
+				inputStreams.add(excelInputStream);
+				return inputStreams;
 			}
+			else
+				throw new BusinessException("EMPTY_INPUT_ERROR");
 			
-			InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
-			return new DefaultStreamedContent(zipInputStream, "application/zip", "Envio "+data+".zip");
-
 		} catch (IOException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("FILE_MANIPULATION_ERROR");

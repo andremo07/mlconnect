@@ -1,5 +1,9 @@
 package br.com.mpconnect.controller;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,6 +15,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -18,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.exception.BusinessException;
+import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.api.ApiPerguntas;
@@ -37,6 +43,15 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 {
 
 	private static final long serialVersionUID = -244605228849576075L;
+	
+	private static final String NFE_FILE_NAME_PREFIX = "Nfes";
+	private static final String ENVIOS_FILE_NAME_PREFIX = "Envio";
+	private static final String ETIQUETAS_FILE_NAME_PREFIX = "Etiquetas";
+	private static final String PLANILHA_FILE_NAME_PREFIX = "Planilha envio";
+	
+	private String data;
+	private String path;
+	
 	private List<Venda> vendas;
 
 	@Autowired
@@ -72,6 +87,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	@PostConstruct
 	public void init(){
 		try{
+			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
+			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
 			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
@@ -91,25 +108,56 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		return vendas;
 	}
 
-	public void gerarPlanilha(){
+	public void gerarPlanilha()
+	{
 		try {
 			//MUDAR DEPOIS
 			Map<String,Object> map = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
 			Usuario usuario =  (Usuario) map.get("usuario");
 			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-
-			exportFile = logisticBusiness.generateShippingSheetAndTags(vendasSelecionadas, accessToken);
+			
+			List<String> fileNames = new ArrayList<String>();
+			fileNames.add(String.format("%s %s.pdf",ETIQUETAS_FILE_NAME_PREFIX,data));
+			fileNames.add(String.format("%s %s.xlsx",PLANILHA_FILE_NAME_PREFIX,data));
+			List<InputStream> inputStreams = getLogisticBusiness().generateShippingSheetAndTags(vendasSelecionadas,String.format("%s/%s.pdf",path,ETIQUETAS_FILE_NAME_PREFIX),String.format("%s/%s.xlsx",path,PLANILHA_FILE_NAME_PREFIX), accessToken);
+			exportFile = buildZipFile(inputStreams,fileNames,path,String.format("%s %s.zip",ENVIOS_FILE_NAME_PREFIX,data));
 		} catch (BusinessException e) {
+			addMessage("Erro!", "Problema na geração de etiqueta.");
+		} catch (IOException e) {
 			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
 	}
 	
-	public void gerarNfe(){
+	public void gerarNfe()
+	{
 		try {
-			exportFile = orderBusiness.gerarNfe(vendasSelecionadas);
+			List<InputStream> inputStreams = Collections.singletonList(getOrderBusiness().generateNfeFileStream(vendasSelecionadas,String.format("%s/%s.pdf",path,NFE_FILE_NAME_PREFIX)));
+			List<String> fileNames = Collections.singletonList(String.format("%s %s.pdf",NFE_FILE_NAME_PREFIX,data));
+			exportFile = buildZipFile(inputStreams,fileNames,path,String.format("%s %s.zip",NFE_FILE_NAME_PREFIX,data));
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema na geração de etiqueta.");
+		} catch (IOException e) {
+			addMessage("Erro!", "Problema na geração de etiqueta.");
 		}
+	}
+	
+	private DefaultStreamedContent buildZipFile(List<InputStream> inputStreams,List<String> fileNames,String path, String zipFileName) throws IOException
+	{
+		File zipFile = new File(String.format("%s/%s",path,zipFileName));
+		if(!zipFile.exists())
+			zipFile.getParentFile().mkdirs();
+		zipFile.createNewFile();
+		ZipUtils zipUtils = new ZipUtils(zipFile);
+		
+		int index=0;
+		for(InputStream is: inputStreams){
+			zipUtils.adicionarArquivo(fileNames.get(index), is);
+			index++;
+		}
+		
+		zipUtils.finalizarGravacao();
+		InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
+		return new DefaultStreamedContent(zipInputStream, "application/zip", zipFileName);
 	}
 
 	public void adicionarVenda(Venda venda){
@@ -173,5 +221,13 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	public void setPerguntasVenda(List<PerguntaML> perguntasVenda) {
 		this.perguntasVenda = perguntasVenda;
+	}
+
+	public OrderBusiness getOrderBusiness() {
+		return orderBusiness;
+	}
+
+	public LogisticBusiness getLogisticBusiness() {
+		return logisticBusiness;
 	}
 }

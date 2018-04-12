@@ -1,6 +1,5 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -16,12 +15,9 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.faces.context.FacesContext;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Projections;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +37,6 @@ import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.file.utils.PdfUtils;
-import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
@@ -242,31 +237,19 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	public StreamedContent gerarNfe(List<Venda> vendas) throws BusinessException
+	public FileInputStream generateNfeFileStream(List<Venda> vendas, String pathName) throws BusinessException
 	{
+		getLogger().debug(String.format("iniciando geração de nfe"));
+		
 		try {
-			String path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
-			String data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-
-			File zipFile = new File(path+"\\envio.zip");
-			if(!zipFile.exists())
-				zipFile.getParentFile().mkdirs();
-			zipFile.createNewFile();
-			ZipUtils zipUtils = new ZipUtils(zipFile);
-
 			List<InputStream> nfesInputStreams = generateOrderNfes(vendas);
-			File nfeFilePdf = new File(path+"\\NFes.pdf");
+			File nfeFilePdf = new File(pathName);
 			nfeFilePdf.createNewFile();
 			PdfUtils.merge(nfesInputStreams,nfeFilePdf);
-			FileInputStream nfesInputStream = new FileInputStream(nfeFilePdf);
-			zipUtils.adicionarArquivo("Nfes "+data+".pdf", nfesInputStream);
-
-			//COMPACTAR OS DOIS ARQUIVOS EM UM ZIP
-			zipUtils.finalizarGravacao();
-
-			InputStream zipInputStream = new BufferedInputStream(new FileInputStream(zipFile));
-			return new DefaultStreamedContent(zipInputStream, "application/zip", "Nfes "+data+".zip");
-
+			
+			getLogger().debug(String.format("geração de nfe finalizada")); 
+			
+			return new FileInputStream(nfeFilePdf);
 		} catch (IOException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("FILE_MANIPULATION_ERROR");
@@ -511,15 +494,12 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 			return inputStreams;
 		} catch (DaoException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("Error generating Nfes - Database error");
 			throw new BusinessException(exception);
 		} catch (NfeProviderException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("Error generating Nfes - Provider error");
 			throw new BusinessProviderException(exception);
 		} catch (ProviderException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("Error generating Nfes - Querying municipy error");
 			throw new BusinessProviderException(exception);
 		}
