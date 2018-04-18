@@ -1,5 +1,6 @@
 package br.com.mpconnect.file.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -57,12 +58,28 @@ public class PdfUtils {
 		PDFMergerUtility pdfMerger = new PDFMergerUtility();
 		PDDocument mergedDoc = new PDDocument();
 		for(InputStream is : inputStreams){
+			is.reset();
 			PDDocument doc = PDDocument.load(is);
 			pdfMerger.appendDocument(mergedDoc, doc);
+			is.close();
 			doc.close();
 		}
 		mergedDoc.save(targetFile);
 		mergedDoc.close();
+	}
+
+	public static ByteArrayOutputStream removePages(InputStream inputStream,int[] pages) throws IOException{
+		inputStream.reset();
+		PDDocument doc = PDDocument.load(inputStream);
+		int totalRemovedPages=0;
+		for(int page: pages){
+			doc.removePage(page-totalRemovedPages);
+			totalRemovedPages++;
+		}
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		doc.save(out);
+		doc.close();
+		return out;
 	}
 
 	public PDDocument getPdfDocument() {

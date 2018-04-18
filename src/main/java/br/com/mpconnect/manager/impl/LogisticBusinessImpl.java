@@ -1,5 +1,6 @@
 package br.com.mpconnect.manager.impl;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -39,7 +40,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 	 * 
 	 */
 	private static final long serialVersionUID = -6462524421141281130L;
-	
+
 	@Autowired
 	private ShippingProvider shippingProvider;
 
@@ -47,52 +48,46 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 	public void init(){
 		getShippingProvider().setLogger(logger);
 	}
-	
-	public List<InputStream> generateShippingSheetAndTags(List<Venda> vendasSelecionadas,String tagsPathName,String sheetPathName,String accessToken) throws BusinessException
+
+	public List<InputStream> generateShippingSheetAndTags(List<Venda> vendas,String tagsPathName,String sheetPathName,String accessToken) throws BusinessException
 	{
 		try {	
 			List<String> shippingIds = new ArrayList<String>();
-			for(Venda venda: vendasSelecionadas)
+			for(Venda venda: vendas)
 				shippingIds.add(venda.getEnvio().getIdMl());
 
-			//GERAÇÂO DO ARQUIVO PDF		
-			InputStream pdfInputStream = shippingProvider.printTags(shippingIds, accessToken);
-
-			//LEITURA PDF
-			if(pdfInputStream!=null){
-				List<InputStream> inputStreams = new ArrayList<InputStream>();
-				//GERANDO ETIQUETAS UMA A UMA PARA GARANTIA DE ORDEM
-				Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
-				for(Venda venda : vendasSelecionadas){
-					InputStream is = shippingProvider.printTags(Collections.singletonList(venda.getEnvio().getIdMl()),accessToken);
-					List<String> codigosNf = PdfUtils.localizarString(is,"(NF: )(\\d+)");
+			List<InputStream> inputStreams = new ArrayList<InputStream>();
+			Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
+			for(Venda venda : vendas){
+				InputStream is = shippingProvider.printTags(Collections.singletonList(venda.getEnvio().getIdMl()),accessToken);
+				List<String> codigosNf = PdfUtils.localizarString(is,"(NF: )(\\d+)");
+				if(!mapEnvios.containsKey(codigosNf.get(0))){
 					mapEnvios.put(codigosNf.get(0), venda);
-					is.close();		
+					is = new ByteArrayInputStream(PdfUtils.removePages(is,new int[]{0,2}).toByteArray()); 
+					inputStreams.add(is);
 				}
-
-				List<String> codigosNfs = PdfUtils.localizarString(pdfInputStream,"(NF: )(\\d+)");
-				File filePdf = new File(tagsPathName);
-				filePdf.createNewFile();
-				pdfInputStream.reset();
-				PdfUtils.save(pdfInputStream,filePdf);
-				pdfInputStream = new FileInputStream(filePdf);		
-				inputStreams.add(pdfInputStream);
-				
-				//GERAÇAO PLANILHA EXCEL				
-				XSSFWorkbook workbook = criarPlanilhaExcelEnvio(codigosNfs,mapEnvios);
-				File fileExcel = new File(sheetPathName);
-				FileOutputStream fos = new FileOutputStream(fileExcel);
-				workbook.write(fos);
-				workbook.close();
-				fos.flush();
-				fos.close();
-				InputStream excelInputStream = new FileInputStream(fileExcel);
-				inputStreams.add(excelInputStream);
-				return inputStreams;
 			}
-			else
-				throw new BusinessException("EMPTY_INPUT_ERROR");
 			
+			File filePdf = new File(tagsPathName);
+			filePdf.createNewFile();
+			PdfUtils.merge(inputStreams,filePdf);
+			inputStreams.clear();
+			InputStream pdfInputStream = new FileInputStream(filePdf);		
+			inputStreams.add(pdfInputStream);
+
+			//GERAÇAO PLANILHA EXCEL				
+			XSSFWorkbook workbook = criarPlanilhaExcelEnvio(mapEnvios);
+			File fileExcel = new File(sheetPathName);
+			FileOutputStream fos = new FileOutputStream(fileExcel);
+			workbook.write(fos);
+			workbook.close();
+			fos.flush();
+			fos.close();
+			InputStream excelInputStream = new FileInputStream(fileExcel);
+			inputStreams.add(excelInputStream);
+			return inputStreams;
+
+
 		} catch (IOException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("FILE_MANIPULATION_ERROR");
@@ -103,8 +98,8 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 			throw new BusinessProviderException(exception);
 		}
 	}
-	
-	public XSSFWorkbook criarPlanilhaExcelEnvio(List<String> codigosNfs,Map<String,Venda> mapEnvios){
+
+	public XSSFWorkbook criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios){
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
@@ -116,7 +111,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "QTD", 2);
 
 		int rowIndex=0;
-		for (String codNf: codigosNfs)
+		for (String codNf: mapEnvios.keySet())
 		{			
 			Venda venda = mapEnvios.get(codNf);
 			DetalheVenda dv = venda.getDetalhesVenda().get(0);
@@ -138,5 +133,5 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 	public ShippingProvider getShippingProvider() {
 		return shippingProvider;
 	}
-	
+
 }
