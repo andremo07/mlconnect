@@ -54,7 +54,7 @@ public class PdfUtils {
 		is.close();
 	}
 
-	public static void merge(List<InputStream> inputStreams, File targetFile) throws IOException{
+	public static ByteArrayOutputStream merge(List<InputStream> inputStreams) throws IOException{
 		PDFMergerUtility pdfMerger = new PDFMergerUtility();
 		PDDocument mergedDoc = new PDDocument();
 		for(InputStream is : inputStreams){
@@ -64,8 +64,10 @@ public class PdfUtils {
 			is.close();
 			doc.close();
 		}
-		mergedDoc.save(targetFile);
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		mergedDoc.save(out);
 		mergedDoc.close();
+		return out;
 	}
 
 	public static ByteArrayOutputStream removePages(InputStream inputStream,int[] pages) throws IOException{

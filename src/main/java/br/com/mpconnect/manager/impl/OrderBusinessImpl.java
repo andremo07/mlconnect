@@ -1,7 +1,6 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -237,19 +236,17 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	public FileInputStream generateNfeFileStream(List<Venda> vendas, String pathName) throws BusinessException
+	public InputStream generateNfeFileStream(List<Venda> vendas, String pathName) throws BusinessException
 	{
 		getLogger().debug(String.format("iniciando geração de nfe"));
 		
 		try {
 			List<InputStream> nfesInputStreams = generateOrderNfes(vendas);
-			File nfeFilePdf = new File(pathName);
-			nfeFilePdf.createNewFile();
-			PdfUtils.merge(nfesInputStreams,nfeFilePdf);
+			InputStream pdfInputStream = new ByteArrayInputStream(PdfUtils.merge(nfesInputStreams).toByteArray());
 			
 			getLogger().debug(String.format("geração de nfe finalizada")); 
 			
-			return new FileInputStream(nfeFilePdf);
+			return pdfInputStream;
 		} catch (IOException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
 			String exception = String.format("FILE_MANIPULATION_ERROR");

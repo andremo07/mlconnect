@@ -1,9 +1,7 @@
 package br.com.mpconnect.manager.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -49,7 +47,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		getShippingProvider().setLogger(logger);
 	}
 
-	public List<InputStream> generateShippingSheetAndTags(List<Venda> vendas,String tagsPathName,String sheetPathName,String accessToken) throws BusinessException
+	public List<InputStream> generateShippingSheetAndTags(List<Venda> vendas,String accessToken) throws BusinessException
 	{
 		try {	
 			List<String> shippingIds = new ArrayList<String>();
@@ -68,25 +66,14 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 				}
 			}
 			
-			File filePdf = new File(tagsPathName);
-			filePdf.createNewFile();
-			PdfUtils.merge(inputStreams,filePdf);
+			InputStream pdfInputStream = new ByteArrayInputStream(PdfUtils.merge(inputStreams).toByteArray());		
 			inputStreams.clear();
-			InputStream pdfInputStream = new FileInputStream(filePdf);		
 			inputStreams.add(pdfInputStream);
 
 			//GERAÇAO PLANILHA EXCEL				
-			XSSFWorkbook workbook = criarPlanilhaExcelEnvio(mapEnvios);
-			File fileExcel = new File(sheetPathName);
-			FileOutputStream fos = new FileOutputStream(fileExcel);
-			workbook.write(fos);
-			workbook.close();
-			fos.flush();
-			fos.close();
-			InputStream excelInputStream = new FileInputStream(fileExcel);
+			InputStream excelInputStream = new ByteArrayInputStream(criarPlanilhaExcelEnvio(mapEnvios).toByteArray());
 			inputStreams.add(excelInputStream);
 			return inputStreams;
-
 
 		} catch (IOException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));
@@ -99,7 +86,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		}
 	}
 
-	public XSSFWorkbook criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios){
+	public ByteArrayOutputStream criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios) throws IOException{
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
@@ -126,8 +113,12 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 			excelUtils.criarCelula(row, dv.getQuantidade().toString(), 2, true);
 			rowIndex++;
 		}
-
-		return workbook;
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		workbook.write(out);
+		workbook.close();
+		out.close();
+		return out;
 	}
 
 	public ShippingProvider getShippingProvider() {

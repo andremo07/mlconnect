@@ -89,8 +89,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -119,12 +118,12 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 			List<String> fileNames = new ArrayList<String>();
 			fileNames.add(String.format("%s %s.pdf",ETIQUETAS_FILE_NAME_PREFIX,data));
 			fileNames.add(String.format("%s %s.xlsx",PLANILHA_FILE_NAME_PREFIX,data));
-			List<InputStream> inputStreams = getLogisticBusiness().generateShippingSheetAndTags(vendasSelecionadas,String.format("%s/%s.pdf",path,ETIQUETAS_FILE_NAME_PREFIX),String.format("%s/%s.xlsx",path,PLANILHA_FILE_NAME_PREFIX), accessToken);
+			List<InputStream> inputStreams = getLogisticBusiness().generateShippingSheetAndTags(vendasSelecionadas,accessToken);
 			exportFile = buildZipFile(inputStreams,fileNames,path,String.format("%s %s.zip",ENVIOS_FILE_NAME_PREFIX,data));
 		} catch (BusinessException e) {
-			addMessage("Erro!", "Problema na geração de etiqueta.");
+			addMessage("Erro!", "Problema na geração de etiqueta");
 		} catch (IOException e) {
-			addMessage("Erro!", "Problema na geração de etiqueta.");
+			addMessage("Erro!", "Problema na geração de etiqueta");
 		}
 	}
 	
