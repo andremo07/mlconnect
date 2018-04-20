@@ -89,7 +89,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.PRINTED);
+			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
