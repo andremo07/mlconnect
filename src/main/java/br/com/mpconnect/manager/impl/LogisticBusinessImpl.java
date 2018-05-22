@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -97,9 +98,9 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		excelUtils.criarCelulaCabecalho(cabecalhoRow, "QTD", 2);
 
 		int rowIndex=0;
-		for (String codNf: mapEnvios.keySet())
+		for (Map.Entry<String, Venda> entry : mapEnvios.entrySet())
 		{			
-			Venda venda = mapEnvios.get(codNf);
+			Venda venda = entry.getValue();
 			DetalheVenda dv = venda.getDetalhesVenda().get(0);
 			Produto produto = dv.getProduto();
 			if(produto==null||produto.getSku()==null){
@@ -107,7 +108,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 				produto.setSku("");
 			}
 			XSSFRow row = sheet.createRow((short)rowIndex+1);
-			excelUtils.criarCelula(row, codNf, 0, true);
+			excelUtils.criarCelula(row, entry.getKey(), 0, true);
 			excelUtils.criarCelula(row, produto.getSku(), 1, true);
 			excelUtils.criarCelula(row, dv.getQuantidade().toString(), 2, true);
 			rowIndex++;
