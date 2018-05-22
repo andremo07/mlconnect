@@ -7,9 +7,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -55,7 +54,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 				shippingIds.add(venda.getEnvio().getIdMl());
 
 			List<InputStream> inputStreams = new ArrayList<InputStream>();
-			Map<String, Venda> mapEnvios = new HashMap<String, Venda>();
+			LinkedHashMap<String, Venda> mapEnvios = new LinkedHashMap<String, Venda>();
 			for(Venda venda : vendas){
 				InputStream is = shippingProvider.printTags(Collections.singletonList(venda.getEnvio().getIdMl()),accessToken);
 				List<String> codigosNf = PdfUtils.localizarString(is,"(NF: )(\\d+)");
@@ -86,7 +85,7 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		}
 	}
 
-	public ByteArrayOutputStream criarPlanilhaExcelEnvio(Map<String,Venda> mapEnvios) throws IOException{
+	public ByteArrayOutputStream criarPlanilhaExcelEnvio(LinkedHashMap<String,Venda> mapEnvios) throws IOException{
 
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		ExcelUtils excelUtils = new ExcelUtils(workbook);
