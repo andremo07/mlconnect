@@ -395,9 +395,9 @@ public class NFeProvider {
 			destinatario.setCnpj(venda.getCliente().getNrDocumento());
 		//		destinatario.setRazaoSocial(venda.getCliente().getNome());
 		}
-		destinatario.setRazaoSocial(venda.getCliente().getNome());
+		//destinatario.setRazaoSocial(venda.getCliente().getNome());
 		destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
-		//destinatario.setEndereco(getNFEnderecoDest(venda));
+		destinatario.setEndereco(getNFEnderecoDest(venda));
 
 
 		//destinatario.setInscricaoEstadual("13245678901234");
