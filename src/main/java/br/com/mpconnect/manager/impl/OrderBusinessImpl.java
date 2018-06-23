@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fincatto.nfe310.classes.nota.NFNotaProcessada;
+import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
 
 import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;

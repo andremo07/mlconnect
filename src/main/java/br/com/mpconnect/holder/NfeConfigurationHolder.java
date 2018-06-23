@@ -1,6 +1,5 @@
 package br.com.mpconnect.holder;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -8,9 +7,9 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
-import com.fincatto.nfe310.NFeConfig;
-import com.fincatto.nfe310.classes.NFAmbiente;
-import com.fincatto.nfe310.classes.NFUnidadeFederativa;
+import com.fincatto.documentofiscal.DFAmbiente;
+import com.fincatto.documentofiscal.DFUnidadeFederativa;
+import com.fincatto.documentofiscal.nfe.NFeConfig;
 
 public class NfeConfigurationHolder extends NFeConfig
 {	
@@ -40,14 +39,13 @@ public class NfeConfigurationHolder extends NFeConfig
 	}
 	
 	@Override
-	public NFUnidadeFederativa getCUF() {
+	public DFUnidadeFederativa getCUF() {
 
-		return NFUnidadeFederativa.RJ;
+		return DFUnidadeFederativa.RJ;
 	}
 
 	@Override
 	public KeyStore getCadeiaCertificadosKeyStore() throws KeyStoreException {
-
 		if (this.keyStoreCadeia == null) {
             this.keyStoreCadeia = KeyStore.getInstance("JKS");
             try (InputStream cadeia = getClass().getResourceAsStream("/nfe/certificado.jks")) {
@@ -62,10 +60,8 @@ public class NfeConfigurationHolder extends NFeConfig
 
 	@Override
 	public KeyStore getCertificadoKeyStore() throws KeyStoreException {
-		
 		if (this.keyStoreCertificado == null) {
             this.keyStoreCertificado = KeyStore.getInstance("PKCS12");
-            
             try (InputStream certificadoStream = getClass().getResourceAsStream("/nfe/certificado.pfx")) {
                 this.keyStoreCertificado.load(certificadoStream, this.getCertificadoSenha().toCharArray());
             } catch (CertificateException | NoSuchAlgorithmException | IOException e) {
@@ -96,8 +92,8 @@ public class NfeConfigurationHolder extends NFeConfig
 	}
 	
 	@Override
-    public NFAmbiente getAmbiente() {
-        return NFAmbiente.HOMOLOGACAO;
+    public DFAmbiente getAmbiente() {
+        return DFAmbiente.HOMOLOGACAO;
     }
 	
 }
