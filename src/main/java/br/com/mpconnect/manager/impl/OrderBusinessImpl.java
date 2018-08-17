@@ -40,7 +40,6 @@ import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.ml.data.parser.MlParser;
-import br.com.mpconnect.ml.dto.VendaML;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
@@ -417,26 +416,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			e.printStackTrace();
 			return null;
 		}
-	}
-
-	@Override
-	public Set<VendaML> retornaVendasNaoExistentes(Set<VendaML> vendasMl){
-
-		List<String> idsVendas = new ArrayList<String>();
-		for(VendaML vendaMl : vendasMl)
-			idsVendas.add(vendaMl.getId());
-
-		List<String> idsVendasExistentes  = vendaDao.recuperaIdsVendasExistentes(idsVendas);
-		idsVendas.removeAll(idsVendasExistentes);
-
-		Set<VendaML> vendasNaoExistentes = new HashSet<VendaML>();
-		for(VendaML vendaMl : vendasMl){
-			String id = vendaMl.getId();
-			if(idsVendas.contains(id))
-				vendasNaoExistentes.add(vendaMl);
-		}
-
-		return vendasNaoExistentes;
 	}
 
 	public List<Order> retornaVendasNaoExistentes(List<Order> vendas){

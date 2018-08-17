@@ -19,7 +19,6 @@ import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.dao.UsuarioDao;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.AcessoManagerBo;
-import br.com.mpconnect.ml.api.ApiMl;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Usuario;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
@@ -51,10 +50,7 @@ public class LoginController implements Serializable{
 	
 	@Autowired
 	public UserProvider userProvider;
-		
-	@Autowired
-	private ApiMl apiMl;
-	
+			
 	final Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	public LoginController(){

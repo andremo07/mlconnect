@@ -17,8 +17,7 @@
 					selection="#{envioController.vendaSelecionada}"
 					rowKey="#{venda.id}">
 					<p:ajax event="rowSelect" oncomplete="PF('msgsVend').show()"
-						listener="#{envioController.recuperaMensagensVenda}"
-						update=":form:msgsDetail" />
+						listener="#{envioController.recuperaMensagensVenda}" />
 					<p:column style="width:30px;">
 						<p:selectBooleanCheckbox>
 							<p:ajax listener="#{envioController.adicionarVenda(venda)}" />
@@ -38,36 +37,6 @@
 					</p:column>
 				</p:dataTable>
 			</h:panelGrid>
-			<p:dialog header="Mensagens" widgetVar="msgsVend" modal="true"
-				showEffect="fade" hideEffect="fade" resizable="false"
-				draggable="false" position="center" width="800">
-
-				<p:tabView id="msgsDetail">
-					<p:tab title="Mensagens">
-						<p:outputPanel style="text-align:center;border:none;">
-							<ui:repeat value="#{envioController.msgsVenda}" var="msg">
-								<h:outputText value="#{msg.remetente}: #{msg.texto}"
-									style="display:block" />
-							</ui:repeat>
-							<h:outputText value="Venda sem mensagens"
-								rendered="#{empty envioController.msgsVenda}" />
-						</p:outputPanel>
-					</p:tab>
-					<p:tab title="Perguntas">
-						<p:outputPanel style="text-align:center;border:none;">
-							<ui:repeat value="#{envioController.perguntasVenda}"
-								var="pergunta">
-								<h:outputText value="Pergunta: #{pergunta.textoPergunta}"
-									style="display:block" />
-								<h:outputText value="Resposta: #{pergunta.textoResposta}"
-									style="display:block" />
-							</ui:repeat>
-							<h:outputText value="Venda sem perguntas"
-								rendered="#{empty envioController.perguntasVenda}" />
-						</p:outputPanel>
-					</p:tab>
-				</p:tabView>
-			</p:dialog>
 			<p:dialog widgetVar="statusDialog" draggable="false" closable="false"
 				resizable="false" showHeader="false">
 				<p:graphicImage value="/images/ajax-loader.gif" />

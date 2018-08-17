@@ -26,10 +26,6 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
-import br.com.mpconnect.ml.api.ApiPerguntas;
-import br.com.mpconnect.ml.api.ApiVendas;
-import br.com.mpconnect.ml.dto.MensagemVendaML;
-import br.com.mpconnect.ml.dto.PerguntaML;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.DateUtils;
@@ -58,12 +54,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	private VendaDao vendaDao;
 
 	@Autowired
-	private ApiVendas apiVendas;
-
-	@Autowired
-	private ApiPerguntas apiPerguntas;
-
-	@Autowired
 	private LogisticBusiness logisticBusiness;
 
 	@Autowired
@@ -75,10 +65,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	private Venda vendaSelecionada;
 
-	private List<MensagemVendaML> msgsVenda;
-
-	private List<PerguntaML> perguntasVenda;
-
 	public EnvioController(){
 		vendas = new ArrayList<Venda>();
 		vendasSelecionadas = new ArrayList<Venda>();
@@ -89,18 +75,11 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-			orderBusiness.loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
 			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
 		}
-	}
-
-	public void recuperaMensagensVenda(){
-		String id = vendaSelecionada.getId();
-		msgsVenda = apiVendas.obterMensagensPosVenda(id);
-		perguntasVenda = apiPerguntas.recuperarPerguntasVenda(vendaSelecionada.getDetalhesVenda().get(0).getAnuncio().getIdMl(), vendaSelecionada.getCliente().getIdMl());
 	}
 
 	@Override
@@ -205,22 +184,6 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 
 	public void setVendaSelecionada(Venda vendaSelecionada) {
 		this.vendaSelecionada = vendaSelecionada;
-	}
-
-	public List<MensagemVendaML> getMsgsVenda() {
-		return msgsVenda;
-	}
-
-	public void setMsgsVenda(List<MensagemVendaML> msgsVenda) {
-		this.msgsVenda = msgsVenda;
-	}
-
-	public List<PerguntaML> getPerguntasVenda() {
-		return perguntasVenda;
-	}
-
-	public void setPerguntasVenda(List<PerguntaML> perguntasVenda) {
-		this.perguntasVenda = perguntasVenda;
 	}
 
 	public OrderBusiness getOrderBusiness() {
