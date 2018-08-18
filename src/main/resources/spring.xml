@@ -27,13 +27,22 @@
   		<constructor-arg name="certificadoSenha" value="FPhone@2013soci" />
   		<constructor-arg name="cadeiaCertificadosSenha" value="123456" />
 	</bean>
+	
+	<bean id="b2wConfHolder" class="br.com.mpconnect.holder.B2wConfigurationHolder" factory-method="setInstance">
+  		<constructor-arg name="userEmail" value="wanderson@trendstore.com.br" />
+  		<constructor-arg name="apiKey" value="DxoxFus5r-Lcv1gTfZDX" />
+  		<constructor-arg name="accountManagerKey" value="FPhone@2013soci" />
+	</bean>
 
 	<!-- ML Beans -->
 	<bean id="userProvider" class="br.com.trendsoftware.mlProvider.dataprovider.UserProvider" scope="prototype"/>
 	<bean id="orderProvider" class="br.com.trendsoftware.mlProvider.dataprovider.OrderProvider" scope="prototype"/>
 	<bean id="shippingProvider" class="br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider" scope="prototype"/>
 	<bean id="itemProvider" class="br.com.trendsoftware.mlProvider.dataprovider.ItemProvider" scope="prototype"/>
-
+	
+	<!-- B2W Beans -->
+	<bean id="b2wItemProvider" class="br.com.trendsoftware.b2wprovider.dataprovider.B2wItemProvider" scope="prototype"/>
+	
 	<!-- Configuração Banco de Dados-->
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">

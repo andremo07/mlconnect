@@ -129,6 +129,12 @@
 			<artifactId>mlProvider</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>br.com.trendsoftware</groupId>
+			<artifactId>b2wProvider</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>
