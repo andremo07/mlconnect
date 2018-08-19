@@ -31,7 +31,7 @@
 	<bean id="b2wConfHolder" class="br.com.mpconnect.holder.B2wConfigurationHolder" factory-method="setInstance">
   		<constructor-arg name="userEmail" value="wanderson@trendstore.com.br" />
   		<constructor-arg name="apiKey" value="DxoxFus5r-Lcv1gTfZDX" />
-  		<constructor-arg name="accountManagerKey" value="FPhone@2013soci" />
+  		<constructor-arg name="accountManagerKey" value="xk21bPa9jQ" />
 	</bean>
 
 	<!-- ML Beans -->

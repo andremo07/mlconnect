@@ -16,7 +16,7 @@ public class Teste {
 
 	public static void main(String[] args) throws Exception, DaoException{
 
-		String fileName = "C:/Users/Andre_MO/workspace/mlconnect/src/main/resources/tmp/itens_nillkin.xlsx";	
+		String fileName = "C:/Wanderson/TrendStore/itens_nillkin2.xlsx";	
 		List<SkyHubItem> itens = B2WItemSheetLoader.load(ExcelUtils.read(fileName));
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
