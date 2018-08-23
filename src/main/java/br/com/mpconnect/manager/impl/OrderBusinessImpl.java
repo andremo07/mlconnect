@@ -7,10 +7,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -33,13 +31,13 @@ import br.com.mpconnect.dao.OrigemDao;
 import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.dao.VendedorDao;
+import br.com.mpconnect.data.parser.MlParser;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
-import br.com.mpconnect.ml.data.parser.MlParser;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
@@ -255,9 +253,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	public void saveOrder(Venda venda) throws BusinessException
 	{
-		Origem origem = new Origem();
-		origem.setId(1L);
-		venda.setOrigem(origem);
 		salvarVenda(venda);
 		fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(venda);
 	}
@@ -277,8 +272,12 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 			Order order = (Order) response.getData();
 
 			Venda venda = MlParser.parseOrder(order);
-			if(vendaDao.recuperaUm(venda.getId())==null)
+			if(vendaDao.recuperaUm(venda.getId())==null){
+				Origem origem = new Origem();
+				origem.setId(1L);
+				venda.setOrigem(origem);
 				saveOrder(venda);
+			}
 
 		} catch (DaoException e) {
 			getLogger().error(ExceptionUtil.getStackTrace(e));

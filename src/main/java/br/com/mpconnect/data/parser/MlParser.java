@@ -1,4 +1,4 @@
-package br.com.mpconnect.ml.data.parser;
+package br.com.mpconnect.data.parser;
 
 import java.util.ArrayList;
 import java.util.Date;

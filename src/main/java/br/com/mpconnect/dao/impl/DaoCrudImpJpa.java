@@ -477,13 +477,12 @@ public class DaoCrudImpJpa<P extends Persistente> implements DaoCrud<P> {
 
 		try {
 			Query q = getEntityManager().createQuery(query);
-
 			// Separa os parâmetros transmitidos
 			for (String chave : params.keySet()) {
 				q.setParameter(chave, params.get(chave));
 			}
 			try {
-				return (P) q.getSingleResult();
+				return (P) q.setMaxResults(1).getSingleResult();
 			} catch (NoResultException e) {
 				return null;
 			}
