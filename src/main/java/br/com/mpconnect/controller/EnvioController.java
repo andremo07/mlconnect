@@ -26,6 +26,7 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
+import br.com.mpconnect.manager.impl.OrderBusinessImpl;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.DateUtils;
@@ -75,7 +76,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-			vendas = orderBusiness.listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+			//getOrderBusiness().loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
+			vendas = getOrderBusiness().listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {
 			addMessage("Erro!", "Problema no carregamento das vendas recentes");
@@ -186,8 +188,8 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		this.vendaSelecionada = vendaSelecionada;
 	}
 
-	public OrderBusiness getOrderBusiness() {
-		return orderBusiness;
+	public OrderBusinessImpl getOrderBusiness() {
+		return (OrderBusinessImpl) orderBusiness;
 	}
 
 	public LogisticBusiness getLogisticBusiness() {

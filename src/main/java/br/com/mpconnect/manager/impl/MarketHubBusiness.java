@@ -10,7 +10,7 @@ import br.com.mpconnect.model.Usuario;
 
 public class MarketHubBusiness
 {	
-	final Logger logger = Logger.getLogger(this.getClass().getName());
+	public final Logger logger = Logger.getLogger(this.getClass().getName());
 	
 	public Logger getLogger() {
 		return logger;

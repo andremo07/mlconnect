@@ -1,8 +1,5 @@
 package br.com.mpconnect.manager.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -13,28 +10,17 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
-
-import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;
 import br.com.mpconnect.dao.ClienteDao;
 import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.MunicipioDao;
-import br.com.mpconnect.dao.NfeConfigDao;
 import br.com.mpconnect.dao.OrigemDao;
-import br.com.mpconnect.dao.ProdutoDao;
-import br.com.mpconnect.dao.VendaDao;
-import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.data.parser.MlParser;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
-import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
 import br.com.mpconnect.manager.OrderBusiness;
@@ -42,14 +28,10 @@ import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
-import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.Origem;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
-import br.com.mpconnect.provider.NFeProvider;
-import br.com.mpconnect.provider.exception.NfeProviderException;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
@@ -65,7 +47,7 @@ import br.com.trendsoftware.mlProvider.response.Response;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 @Service("orderBusiness")
-public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusiness, Serializable {
+public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 
 	/**
 	 * 
@@ -76,25 +58,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	public AnuncioDao anuncioDao;
 
 	@Resource
-	public NfeConfigDao nfeConfidDao;
-
-	@Resource
-	public MunicipioDao munDao;
-
-	@Resource
 	public ClienteDao clienteDao;
-
-	@Resource
-	public VendedorDao vendedorDao;
-
-	@Resource
-	public AcessoMlDao acessoDao;
-
-	@Resource
-	public VendaDao vendaDao;
-
-	@Resource
-	public ProdutoDao produtoDao;
 
 	@Resource
 	public OrigemDao origemDao;
@@ -108,32 +72,10 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 	@Autowired
 	private OrderProvider orderProvider;
 
-	@Autowired
-	private ShippingProvider shippingProvider;
-
-	@Autowired
-	private NFeProvider nfeProvider;
-
 	@PostConstruct
 	public void init(){
 		getUserProvider().setLogger(logger);
 		getOrderProvider().setLogger(logger);
-		getShippingProvider().setLogger(logger);
-		getNfeProvider().setLogger(logger);
-	}
-
-	@Override
-	@Transactional
-	public void cadastrarVendaUnitaria(Venda venda, Produto produto){
-
-		try {
-			salvarVenda(venda);
-			produto.setQuantidadeDisponivel(produto.getQuantidadeDisponivel()-1);
-			produtoDao.merge(produto);
-			fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(venda);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}		
 	}
 
 	@Override
@@ -233,23 +175,7 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	public InputStream generateNfeFileStream(List<Venda> vendas, String pathName) throws BusinessException
-	{
-		getLogger().debug(String.format("iniciando geração de nfe"));
-		
-		try {
-			List<InputStream> nfesInputStreams = generateOrderNfes(vendas);
-			InputStream pdfInputStream = new ByteArrayInputStream(PdfUtils.merge(nfesInputStreams).toByteArray());
-			
-			getLogger().debug(String.format("geração de nfe finalizada")); 
-			
-			return pdfInputStream;
-		} catch (IOException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
-			String exception = String.format("FILE_MANIPULATION_ERROR");
-			throw new BusinessException(exception);
-		}
-	}
+
 
 	public void saveOrder(Venda venda) throws BusinessException
 	{
@@ -291,7 +217,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
-	@Override
 	public List<Venda> listOrdersByShippingStatus(ShippingStatus shippingStatus, ShippingSubStatus shippingSubStatus) throws BusinessException{
 
 		getLogger().debug("carregando vendas com etiquetas para imprimir");
@@ -341,41 +266,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 
 	}
 
-	public Venda listOrderById(String id) throws BusinessException{
-
-		getLogger().debug("carregando venda"+ id);
-
-		try {
-
-			Usuario usuario = getSessionUserLogin();
-
-			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
-
-			Response response = orderProvider.searchOrderById("",id, accessToken);
-			Order order = (Order) response.getData();
-
-			Venda venda = MlParser.parseOrder(order);
-
-			return venda;
-
-		} catch (ProviderException e) {
-			getLogger().error(ExceptionUtil.getStackTrace(e));
-			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
-			throw new BusinessException(exception);
-		}
-	}
-
-	@Override
-	public Long getMaxIdVenda(){
-
-		Criteria criteria = vendaDao.getSession()
-				.createCriteria(Venda.class)
-				.setProjection(Projections.max("id"));
-		String maxAge = (String)criteria.uniqueResult();
-		return new Long(maxAge);
-
-	}
-
 	@Override
 	@Transactional
 	public void atualizarVenda(Venda venda){
@@ -406,17 +296,6 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		}
 	}
 
-	@Override
-	public Venda recuperarVenda(String id) {
-		try {
-			Venda venda = vendaDao.recuperaUm(id);
-			return venda;
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public List<Order> retornaVendasNaoExistentes(List<Order> vendas){
 
 		List<String> idsVendas = new ArrayList<String>();
@@ -436,69 +315,12 @@ public class OrderBusinessImpl extends MarketHubBusiness implements OrderBusines
 		return vendasNaoExistentes;
 	}
 
-	@Transactional
-	public List<InputStream> generateOrderNfes(List<Venda> orders) throws BusinessException{
-
-		try {
-
-			Vendedor vendedor = vendedorDao.recuperarVendedorPorIdMl(orders.get(0).getVendedor().getIdMl());
-
-			for(Venda order: orders){
-				Integer code = shippingProvider.searchMunicipyCodeByCep(order.getEnvio().getCep());
-				order.getEnvio().setCodMunicipio(code);
-				order.setVendedor(vendedor);
-				Anuncio anuncio = anuncioDao.recuperarAnuncioPorIdMl(order.getDetalhesVenda().get(0).getAnuncio().getIdMl());
-				order.getDetalhesVenda().get(0).setAnuncio(anuncio);
-			};
-
-			NfeConfig userNfeConfig = nfeConfidDao.recuperaUm(1L);
-
-			List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig);
-
-			int index=0;
-			for(NFNotaProcessada notaProcessada: notasProcessadas){
-				orders.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
-				index++;
-			}
-
-			List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
-
-			userNfeConfig.setNrNota(new Integer(Integer.valueOf(userNfeConfig.getNrNota())+notasProcessadas.size()).toString());
-			userNfeConfig.setNrLote(new Integer(Integer.valueOf(userNfeConfig.getNrLote())+1).toString());
-			nfeConfidDao.alterar(userNfeConfig);
-
-			return inputStreams;
-		} catch (DaoException e) {
-			String exception = String.format("Error generating Nfes - Database error");
-			throw new BusinessException(exception);
-		} catch (NfeProviderException e) {
-			String exception = String.format("Error generating Nfes - Provider error");
-			throw new BusinessProviderException(exception);
-		} catch (ProviderException e) {
-			String exception = String.format("Error generating Nfes - Querying municipy error");
-			throw new BusinessProviderException(exception);
-		}
-	}
-
 	public UserProvider getUserProvider() {
 		return userProvider;
 	}
 
 	public OrderProvider getOrderProvider() {
 		return orderProvider;
-	}
-
-	public NFeProvider getNfeProvider() {
-		return nfeProvider;
-	}
-
-	public ShippingProvider getShippingProvider() {
-		return shippingProvider;
-	}
-
-	@Override
-	public List<Venda> retornaVendasPorPerioSemNfe(Date dtIni, Date dtFinal) {
-		return vendaDao.recuperarVendasPorPeriodoSemNfe(dtIni, dtFinal);
 	}
 
 }

@@ -104,36 +104,7 @@ public class VendaController extends GenericCrudController<Venda> implements Ser
 	}
 
 	public String salvar(){
-		try {
-			Origem origem = origemDao.recuperaUm(new Long(2));
-			venda.setOrigem(origem);
-			venda.getEnvio().setTipo("shipping");
-			Double tarifa = 0.05*pagamento.getValorTransacao();
-			detalheVenda.setTarifaVenda(tarifa);
-			pagamento.setTotalPago(pagamento.getValorTransacao());
-			venda.getDetalhesVenda().add(detalheVenda);
-			venda.getPagamentos().add(pagamento);
-			venda.setStatus("paid");
-			Cliente cliente = venda.getCliente();
-			if(cliente.getTipo().equals(TipoPessoaEnum.FISICA.getValue()))
-				cliente.setTipoContribuinteIcms(9);
-			else
-				cliente.setTipoContribuinteIcms(9);
-			Long id = orderBusiness.getMaxIdVenda();
-			if (id!=null){
-				id = id+1;
-				venda.setId(id.toString());
-				orderBusiness.cadastrarVendaUnitaria(venda, produto); 
-				limparCampos();
-			}
-		} catch (DaoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-
 		return null;
-
 	}
 
 	public void limparCampos(){
