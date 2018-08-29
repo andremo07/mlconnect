@@ -49,6 +49,7 @@ public class B2WParser {
 
 		Produto produto = new Produto();
 		produto.setSku(orderItem.getProductId());
+		produto.setNome(orderItem.getName());
 
 		detalheVenda.setProduto(produto);
 		detalheVenda.setTarifaVenda(comissao);
