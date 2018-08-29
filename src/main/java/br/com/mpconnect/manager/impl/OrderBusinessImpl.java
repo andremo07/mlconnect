@@ -35,7 +35,6 @@ import br.com.mpconnect.model.Vendedor;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.util.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
-import br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.Order;
 import br.com.trendsoftware.mlProvider.dto.OrderList;

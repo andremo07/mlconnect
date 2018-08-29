@@ -41,7 +41,7 @@ public class Anuncio implements Persistente{
 	private String tipo;
 	
 	@JoinColumn(nullable=false)
-	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REMOVE,CascadeType.MERGE})
 	@JoinTable(name = "ANUNCIO_PRODUTO", joinColumns = {
 			@JoinColumn(name = "ANUNCIO_ID", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "PRODUTO_ID",

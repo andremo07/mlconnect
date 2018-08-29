@@ -16,12 +16,8 @@ import com.fincatto.documentofiscal.nfe400.classes.nota.NFNotaProcessada;
 
 import br.com.mpconnect.dao.AcessoMlDao;
 import br.com.mpconnect.dao.AnuncioDao;
-import br.com.mpconnect.dao.ClienteDao;
 import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.MunicipioDao;
 import br.com.mpconnect.dao.NfeConfigDao;
-import br.com.mpconnect.dao.OrigemDao;
-import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.dao.VendaDao;
 import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.exception.BusinessException;
@@ -30,17 +26,12 @@ import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.manager.impl.MarketHubBusiness;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.NfeConfig;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
 import br.com.mpconnect.provider.NFeProvider;
 import br.com.mpconnect.provider.exception.NfeProviderException;
 import br.com.mpconnect.util.ExceptionUtil;
-import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.ShippingProvider;
-import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
-import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
-import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 
 public abstract class OrderBusiness extends MarketHubBusiness {

@@ -41,27 +41,27 @@ public class Venda implements Persistente{
 	@Column(name="NR_SERIE_NFE_ST")
 	private Long nrSerieNfeSt;
 	
-	@OneToMany(fetch = FetchType.EAGER,cascade={CascadeType.ALL})
+	@OneToMany(fetch = FetchType.LAZY,cascade={CascadeType.ALL})
 	@JoinColumn(name="VENDA_ID", nullable=false)
 	private List<DetalheVenda> detalhesVenda;
 	
-	@OneToMany(fetch = FetchType.EAGER,cascade={CascadeType.ALL})
+	@OneToMany(fetch = FetchType.LAZY,cascade={CascadeType.ALL})
 	@JoinColumn(name="VENDA_ID", nullable=false)
 	private List<Pagamento> pagamentos;
 	
-	@OneToOne(fetch = FetchType.EAGER,cascade={CascadeType.ALL})
+	@OneToOne(fetch = FetchType.LAZY,cascade={CascadeType.ALL})
 	@JoinColumn(name="ENVIO_ID" , nullable=false)
 	private Envio envio;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	private Cliente cliente;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	private Vendedor vendedor;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(nullable=false)
 	private Origem origem;
 
