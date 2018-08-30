@@ -31,3 +31,5 @@ dev\.xml
 \.externalToolBuilders/
 
 *.log
+
+src/main/resources/tmp/
