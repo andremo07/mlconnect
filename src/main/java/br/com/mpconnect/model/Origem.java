@@ -18,6 +18,14 @@ public class Origem implements Persistente{
 	@Column(name="NOME")
 	private String nome;
 
+	public Origem(){
+		
+	}
+	
+	public Origem(Long id) {
+		this.id = id;
+	}
+	
 	public Long getId() {
 		return id;
 	}

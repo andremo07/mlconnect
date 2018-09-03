@@ -24,7 +24,10 @@ import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.file.utils.ExcelUtils;
 import br.com.mpconnect.file.utils.PdfUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
+import br.com.mpconnect.manager.MarketHubBusiness;
+import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.DetalheVenda;
+import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.ExceptionUtil;
@@ -125,4 +128,8 @@ public class LogisticBusinessImpl extends MarketHubBusiness implements LogisticB
 		return shippingProvider;
 	}
 
+	@Override
+	public Origem getChannel() {
+		return Channel.ML.getOrigem();
+	}
 }

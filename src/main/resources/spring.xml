@@ -2,15 +2,19 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
-	xsi:schemaLocation="
- http://www.springframework.org/schema/beans
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
  http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
  http://www.springframework.org/schema/context
  http://www.springframework.org/schema/context/spring-context-4.0.xsd
  http://www.springframework.org/schema/tx
- http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+ http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+ http://www.springframework.org/schema/data/jpa
+ http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-	<context:component-scan base-package="br.com.mpconnect" />
+	<context:component-scan base-package="br.com" />
+	
+	<jpa:repositories base-package="br.com.trendsoftware.markethub.repository"/>
 
 	<bean id="gson" class="com.google.gson.Gson" factory-bean="gsonFactory" factory-method="create" />
 
@@ -48,7 +52,7 @@
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://144.217.91.108:3306/trendERP_db" />
+		<property name="url" value="jdbc:mysql://144.217.91.108:3306/trendERP_db2" />
 		<property name="username" value="wcontaifer" />
 		<property name="password" value="wcm@1234" />
 	</bean>

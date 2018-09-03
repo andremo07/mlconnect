@@ -1,25 +1,20 @@
 package br.com.mpconnect.executor.job;
 
-import javax.annotation.Resource;
-
 import org.apache.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 
-import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.VendaDao;
-import br.com.mpconnect.dao.VendedorDao;
 import br.com.mpconnect.data.parser.B2WParser;
+import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.holder.B2wConfigurationHolder;
 import br.com.mpconnect.manager.OrderBusiness;
-import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.model.Vendedor;
 import br.com.trendsoftware.b2wprovider.dataprovider.B2wOrderProvider;
 import br.com.trendsoftware.b2wprovider.dto.OrderStatus;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrder;
@@ -34,13 +29,8 @@ public class B2WQueueConsumerJob implements Job
 	private B2wOrderProvider b2wOrderProvider;
 
 	@Autowired
+	@Qualifier("b2WOrderBusiness")
 	private OrderBusiness orderBusiness;
-
-	@Resource
-	public VendaDao vendaDao;
-
-	@Resource
-	public VendedorDao vendedorDao;
 
 	@Autowired
 	private Gson parser;
@@ -56,15 +46,8 @@ public class B2WQueueConsumerJob implements Job
 			SkyHubOrder skyHubOrder = parser.fromJson(response.getBody(), SkyHubOrder.class);
 			if(skyHubOrder!=null){
 				if(skyHubOrder.getStatus().getCode().equals(OrderStatus.APPROVED.getName())){
-					if(vendaDao.recuperaUm(skyHubOrder.getCode().split("-")[1])==null){
-						Venda marketHubOrder = B2WParser.parseOrder(skyHubOrder);
-						Origem origem = new Origem();
-						origem.setId(3L);
-						marketHubOrder.setOrigem(origem);
-						Vendedor vendedor = vendedorDao.recuperaUm(1L);
-						marketHubOrder.setVendedor(vendedor);
-						orderBusiness.salvarVenda(marketHubOrder);
-					}
+					Venda marketHubOrder = B2WParser.parseOrder(skyHubOrder);
+					orderBusiness.save(marketHubOrder);
 					logger.debug("Aprovando pedido "+skyHubOrder.getCode());
 					System.out.println("Aprovando pedido "+skyHubOrder.getCode());
 				}
@@ -73,9 +56,8 @@ public class B2WQueueConsumerJob implements Job
 		} catch (ProviderException e) {
 			logger.debug("Erro");
 			System.out.println("Erro!");
-		} catch (DaoException e) {
-			logger.debug("Erro");
-			System.out.println("Erro!");;
+		} catch (BusinessException e) {
+			e.printStackTrace();
 		}
 	}
 

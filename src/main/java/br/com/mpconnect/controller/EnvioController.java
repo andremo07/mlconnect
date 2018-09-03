@@ -18,6 +18,7 @@ import javax.faces.context.FacesContext;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +27,11 @@ import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.file.utils.ZipUtils;
 import br.com.mpconnect.manager.LogisticBusiness;
 import br.com.mpconnect.manager.OrderBusiness;
-import br.com.mpconnect.manager.impl.OrderBusinessImpl;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.util.DateUtils;
 import br.com.mpconnect.utils.comparator.VendaComparator;
+import br.com.trendsoftware.markethub.ml.business.impl.OrderBusinessImpl;
 import br.com.trendsoftware.mlProvider.dto.ShippingStatus;
 import br.com.trendsoftware.mlProvider.dto.ShippingSubStatus;
 
@@ -58,6 +59,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 	private LogisticBusiness logisticBusiness;
 
 	@Autowired
+	@Qualifier("mlOrderBusiness")
 	private OrderBusiness orderBusiness;
 
 	private List<Venda> vendasSelecionadas;
@@ -76,7 +78,7 @@ public class EnvioController extends GenericCrudController<Venda> implements Ser
 		try{
 			path = FacesContext.getCurrentInstance().getExternalContext().getRealPath("/tmp");
 			data = DateUtils.getDataFormatada(new Date(), "dd-MM-YYYY");
-			//getOrderBusiness().loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
+			getOrderBusiness().loadOrdersByDate(DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1));
 			vendas = getOrderBusiness().listOrdersByShippingStatus(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
 			Collections.sort(vendas, new VendaComparator());
 		} catch (BusinessException e) {

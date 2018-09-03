@@ -11,6 +11,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -20,6 +21,7 @@ import br.com.mpconnect.api.exception.custom.PreConditionFailedException;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.manager.OrderBusiness;
+import br.com.mpconnect.model.Venda;
 import br.com.trendsoftware.mlProvider.dto.Notification;
 import br.com.trendsoftware.mlProvider.dto.Topic;
 
@@ -30,6 +32,7 @@ public class NotificationApi
 	final Logger logger = Logger.getLogger(this.getClass().getName());
 
 	@Autowired
+	@Qualifier("mlOrderBusiness")
 	private OrderBusiness orderBusiness;
 	
 	@Autowired
@@ -63,7 +66,8 @@ public class NotificationApi
 					String resource = notification.getResource();
 					String orderId = resource.split("/")[2];
 					String userId = notification.getUser_id();
-					getOrderBusiness().save(userId, orderId);
+					Venda order = getOrderBusiness().searchPartnerOrder(userId, orderId);
+					getOrderBusiness().save(order);
 					break;
 				case QUESTIONS:
 
