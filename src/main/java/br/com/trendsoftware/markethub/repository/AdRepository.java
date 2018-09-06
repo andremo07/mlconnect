@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.com.mpconnect.model.Anuncio;
 
-public interface AdRepository extends JpaRepository<Anuncio, String> {
+public interface AdRepository extends JpaRepository<Anuncio, Long> {
 
 	public Anuncio findByIdMl(String partnerId);
 	

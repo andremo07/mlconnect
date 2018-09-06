@@ -4,17 +4,16 @@ import java.util.List;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.holder.B2wConfigurationHolder;
-import br.com.mpconnect.util.ExcelUtils;
 import br.com.trendsoftware.b2wprovider.dataprovider.B2wItemProvider;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubItem;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubUserCredencials;
 import br.com.trendsoftware.b2wprovider.util.B2WItemSheetLoader;
+import br.com.trendsoftware.markethub.utils.ExcelUtils;
 
 public class Teste {
 
-	public static void main(String[] args) throws Exception, DaoException{
+	public static void main(String[] args) throws Exception{
 
 		String fileName = "C:/Wanderson/TrendStore/itens_nillkin2.xlsx";	
 		List<SkyHubItem> itens = B2WItemSheetLoader.load(ExcelUtils.read(fileName));

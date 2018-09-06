@@ -2,6 +2,7 @@ package br.com.mpconnect.controller;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -14,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.AcessoMlDao;
-import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.UsuarioDao;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
-import br.com.mpconnect.manager.AcessoManagerBo;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Usuario;
+import br.com.trendsoftware.markethub.repository.AccessRepository;
+import br.com.trendsoftware.markethub.repository.UserRepository;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.User;
 import br.com.trendsoftware.mlProvider.dto.UserCredencials;
@@ -40,13 +39,10 @@ public class LoginController implements Serializable{
 	private String senha;
 
 	@Autowired
-	private AcessoManagerBo acessoManager;
-
-	@Autowired
-	private UsuarioDao usuarioDao;
+	private UserRepository userRepository;
 	
 	@Resource
-	public AcessoMlDao acessoDao;
+	public AccessRepository accessRepository ;
 	
 	@Autowired
 	public UserProvider userProvider;
@@ -66,11 +62,11 @@ public class LoginController implements Serializable{
 
 		try {
 			
-			Usuario usuario = usuarioDao.getUsuarioByLoginSenha(user, senha);
+			Usuario usuario = userRepository.findByLoginAndSenha(user, senha);
 
-			if(usuario!=null){
-				
-				AcessoMl acessoMl = acessoDao.recuperarUltimo();
+			if(usuario!=null)
+			{			
+				AcessoMl acessoMl = accessRepository.findByClientId(MeliConfigurationHolder.getInstance().getClientId());
 				
 				Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
 				UserCredencials token = (UserCredencials) response.getData(); 
@@ -91,11 +87,7 @@ public class LoginController implements Serializable{
 				return "paginas/paginaInicial?faces-redirect=true";
 			}
 		
-
-		} catch (DaoException e) {
-			addMessage(FacesMessage.SEVERITY_INFO,"Ocorreu um erro!", "Erro na consulta");
 		} catch (ProviderException e) {
-			
 			addMessage(FacesMessage.SEVERITY_INFO,"Ocorreu um erro!", "Erro Mercado Livre");
 		}
 
@@ -122,16 +114,7 @@ public class LoginController implements Serializable{
 		this.senha = senha;
 	}
 
-	public AcessoManagerBo getAcessoManager() {
-		return acessoManager;
-	}
-
-	public void setAcessoManager(AcessoManagerBo acessoManager) {
-		this.acessoManager = acessoManager;
-	}
-
 	public UserProvider getUserProvider() {
 		return userProvider;
 	}
-	
 }

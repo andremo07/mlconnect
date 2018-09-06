@@ -87,8 +87,8 @@ import com.fincatto.documentofiscal.nfe400.utils.NFGeraChave;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 
 import br.com.mpconnect.holder.NfeConfigurationHolder;
-import br.com.mpconnect.ml.api.enums.TipoPessoaEnum;
 import br.com.mpconnect.model.NfeConfig;
+import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.provider.exception.NfeProviderException;
 import br.com.trendsoftware.restProvider.util.ExceptionUtil;

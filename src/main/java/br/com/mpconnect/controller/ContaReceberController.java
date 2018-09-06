@@ -5,23 +5,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.CategoriaContaReceberDao;
-import br.com.mpconnect.dao.ContaReceberDao;
-import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.PessoaDao;
-import br.com.mpconnect.dao.VendedorDao;
-import br.com.mpconnect.ml.api.enums.StatusContaReceberEnum;
 import br.com.mpconnect.model.CategoriaContaReceber;
 import br.com.mpconnect.model.ContaReceber;
 import br.com.mpconnect.model.Pessoa;
+import br.com.mpconnect.model.StatusContaReceberEnum;
 import br.com.mpconnect.model.Vendedor;
+import br.com.trendsoftware.markethub.repository.PersonRepository;
+import br.com.trendsoftware.markethub.repository.ReceivingBillCategoryRepository;
+import br.com.trendsoftware.markethub.repository.ReceivingBillRepository;
+import br.com.trendsoftware.markethub.repository.SellerRepository;
 
 @Component
 @Scope(value="view")
@@ -33,18 +34,18 @@ public class ContaReceberController extends GenericCrudController<ContaReceber> 
 	private List<Pessoa> pessoas;
 	private CategoriaContaReceber categoria;
 	private List<CategoriaContaReceber> categorias;
+	
+	@Autowired
+	private ReceivingBillCategoryRepository receivingBillCategoryRepository;
 
 	@Autowired
-	private CategoriaContaReceberDao categoriaContaReceberDao;
+	private PersonRepository personRepository;
 
 	@Autowired
-	private PessoaDao pessoaDao;
+	private ReceivingBillRepository receivingBillRepository;
 
-	@Autowired
-	private ContaReceberDao contaReceberDao;
-
-	@Autowired
-	private VendedorDao vendedorDao;
+	@Resource
+	private SellerRepository sellerRepository;
 
 	public ContaReceberController(){
 		contaReceber = new ContaReceber();
@@ -53,75 +54,58 @@ public class ContaReceberController extends GenericCrudController<ContaReceber> 
 	}
 
 	@PostConstruct
-	public void init(){
-		try{
-			if(tipoOperacao==null||tipoOperacao==0){
-				this.getModel().setRowCount(contaReceberDao.recuperaTotalRegistros().intValue());
-				this.getModel().setDatasource(contaReceberDao.recuperaTodosPorIntervalo(0, this.getModel().getPageSize(), new HashMap<String, Object>()));
-			}
-			else if(tipoOperacao==1){
-				categorias = categoriaContaReceberDao.recuperaTodos();
-				pessoas = pessoaDao.recuperaTodos();
-			}
-			else{
-				categorias = categoriaContaReceberDao.recuperaTodos();
-				pessoas = pessoaDao.recuperaTodos();
-				Long idConta = (Long) getSessionAttribute("idContaReceber");
-				contaReceber = contaReceberDao.recuperaUm(idConta);
-			}
-			
-		} catch (DaoException e) {
-			e.printStackTrace();
+	public void init()
+	{
+		if(tipoOperacao==null||tipoOperacao==0){
+			this.getModel().setRowCount(new Long(receivingBillRepository.count()).intValue());
+			this.getModel().setDatasource(receivingBillRepository.findAllByPagingAndFilters(0, this.getModel().getPageSize(), new HashMap<String, Object>()));
+		}
+		else if(tipoOperacao==1){
+			categorias = receivingBillCategoryRepository.findAll();
+			pessoas = personRepository.findAll();
+		}
+		else{
+			categorias = receivingBillCategoryRepository.findAll();
+			pessoas = personRepository.findAll();
+			Long idConta = (Long) getSessionAttribute("idContaReceber");
+			Optional<ContaReceber> result = receivingBillRepository.findById(idConta);
+			if(result.isPresent())
+				contaReceber = result.get();
 		}
 	}
 
-	public String salvar(){
-		try {
-			if(tipoOperacao==1){
-				Vendedor vendedor = vendedorDao.recuperaUm(new Long(1));
-				contaReceber.setStatus(StatusContaReceberEnum.A_RECEBER.getValue());
-				contaReceber.setVendedor(vendedor);
-				contaReceberDao.gravar(contaReceber);
-			}
-			else
-				contaReceberDao.alterar(contaReceber);
-			
-
-			addSessionAttribute("tipoOperacao", 0);
-			return "listaContasReceber";
-
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
+	public String salvar()
+	{
+		if(tipoOperacao==1){
+			Optional<Vendedor> result = sellerRepository.findById(1L);
+			contaReceber.setStatus(StatusContaReceberEnum.A_RECEBER.getValue());
+			contaReceber.setVendedor(result.get());
 		}
+		
+		receivingBillRepository.save(contaReceber);
+
+		addSessionAttribute("tipoOperacao", 0);
+		return "listaContasReceber";
 	}
 
-	public void visualizar(ContaReceber contaPagar){
-		try {
-			this.contaReceber = contaReceberDao.recuperaUm(contaPagar.getId());
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
+	public void visualizar(ContaReceber contaPagar)
+	{
+		Optional<ContaReceber> result = receivingBillRepository.findById(contaPagar.getId());
+		if(result.isPresent())
+			contaReceber = result.get();
 	}
 
-	public void baixar(){
-
-		try {
-			contaReceber.setStatus(StatusContaReceberEnum.RECEBIDO.getValue());
-			contaReceberDao.alterar(contaReceber);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
+	public void baixar()
+	{
+		contaReceber.setStatus(StatusContaReceberEnum.RECEBIDO.getValue());
+		receivingBillRepository.save(contaReceber);
 	}
 
-	public void reverterBaixar(ContaReceber contaReceber){
-		try {
-			contaReceber.setStatus(StatusContaReceberEnum.RECEBIDO.getValue());
-			contaReceber.setDataBaixa(null);
-			contaReceberDao.alterar(contaReceber);
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
+	public void reverterBaixar(ContaReceber contaReceber)
+	{
+		contaReceber.setStatus(StatusContaReceberEnum.A_RECEBER.getValue());
+		contaReceber.setDataBaixa(null);
+		receivingBillRepository.save(contaReceber);
 	}
 
 	public String incluir(){
@@ -136,28 +120,21 @@ public class ContaReceberController extends GenericCrudController<ContaReceber> 
 		return "contasReceber?faces-redirect=true";
 	}
 
-	public void remover(){
-		try{
-			contaReceberDao.deletar(contaReceber);
-			addMessage("Sucesso!", "Conta removida com êxito.");
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
+	public void remover()
+	{
+		receivingBillRepository.delete(contaReceber);
+		addMessage("Sucesso!", "Conta removida com êxito.");
 	}
 
 	public void abrirPopupCadastro(){
 		categoria = new CategoriaContaReceber();
 	}
 
-	public void cadastrarCategoria(){
-		try {
-			categorias.add(categoria);
-			categoriaContaReceberDao.gravar(categoria);
-			addMessage("Sucesso!", "Gravação realizada com êxito.");
-		} catch (DaoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void cadastrarCategoria()
+	{
+		categorias.add(categoria);
+		receivingBillCategoryRepository.save(categoria);
+		addMessage("Sucesso!", "Gravação realizada com êxito.");
 	}
 
 	public void confirmaGravacao() {
@@ -197,14 +174,10 @@ public class ContaReceberController extends GenericCrudController<ContaReceber> 
 	}
 
 	@Override
-	public List<ContaReceber> paginacao(int first, int pageSize, Map<String,Object> filters){
-		try{
-			this.getModel().setRowCount(contaReceberDao.recuperaTotalRegistros(filters).intValue());
-			return contaReceberDao.recuperaTodosPorIntervalo(first, pageSize, filters);
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public List<ContaReceber> paginacao(int first, int pageSize, Map<String,Object> filters)
+	{
+		this.getModel().setRowCount(receivingBillRepository.count(filters).intValue());
+		return receivingBillRepository.findAllByPagingAndFilters(first, pageSize, filters);
 	}
 
 }

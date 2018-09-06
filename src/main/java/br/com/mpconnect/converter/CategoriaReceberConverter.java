@@ -1,5 +1,7 @@
 package br.com.mpconnect.converter;
 
+import java.util.Optional;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
@@ -9,10 +11,9 @@ import javax.faces.convert.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.CategoriaContaReceberDao;
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.model.CategoriaContaReceber;
 import br.com.mpconnect.model.Produto;
+import br.com.trendsoftware.markethub.repository.ReceivingBillCategoryRepository;
 
 @ManagedBean(name="categoriaReceberConverter")
 @RequestScoped
@@ -20,17 +21,15 @@ import br.com.mpconnect.model.Produto;
 public class CategoriaReceberConverter implements Converter {
 	
 	@Autowired
-	private CategoriaContaReceberDao categoriaContaReceberDao;
+	private ReceivingBillCategoryRepository receivingBillCategoryRepository;
 	
     @Override
 	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return categoriaContaReceberDao.recuperaUm(new Long(value));
+        		Optional<CategoriaContaReceber> result = receivingBillCategoryRepository.findById(new Long(value));
+				return result.isPresent()? result.get():null;
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DaoException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

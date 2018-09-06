@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import br.com.mpconnect.exception.BusinessException;
-import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
+import br.com.trendsoftware.markethub.business.OrderBusiness;
 
 @Service("b2WOrderBusiness")
 public class OrderBusinessImpl extends OrderBusiness implements Serializable {

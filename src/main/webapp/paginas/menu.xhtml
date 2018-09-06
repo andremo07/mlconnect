@@ -8,24 +8,11 @@
 <h:form id="menuForm">
 	<p:menubar autoDisplay="true">
 		<p:submenu label="Cadastro">
-			<p:menuitem value="Vendas"
-				action="cadastroVendas?faces-redirect=true"
-				actionListener="#{menuController.consultar}" ajax="false" />
 			<p:menuitem value="Anuncios"
 				action="listaAnuncios?faces-redirect=true"
 				actionListener="#{menuController.consultar}" ajax="false" />
 			<p:menuitem value="Produtos"
 				action="listaProdutos?faces-redirect=true"
-				actionListener="#{menuController.consultar}" ajax="false" />
-			<p:menuitem value="Conta Bancária"
-				action="cadastroContaBancaria?faces-redirect=true"
-				actionListener="#{menuController.consultar}" ajax="false" />
-		</p:submenu>
-		<p:submenu label="Estoque">
-			<p:menuitem value="Baixa" action="estoque?faces-redirect=true"
-				actionListener="#{menuController.consultar}" ajax="false" />
-			<p:menuitem value="Reposição"
-				action="reposicaoEstoque?faces-redirect=true"
 				actionListener="#{menuController.consultar}" ajax="false" />
 		</p:submenu>
 		<p:submenu label="Envios">

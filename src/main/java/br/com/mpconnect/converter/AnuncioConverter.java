@@ -1,5 +1,7 @@
 package br.com.mpconnect.converter;
 
+import java.util.Optional;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
@@ -9,9 +11,8 @@ import javax.faces.convert.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.AnuncioDao;
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.model.Anuncio;
+import br.com.trendsoftware.markethub.repository.AdRepository;
 
 @ManagedBean(name="anuncioConverter")
 @RequestScoped
@@ -19,17 +20,15 @@ import br.com.mpconnect.model.Anuncio;
 public class AnuncioConverter implements Converter {
 	
 	@Autowired
-	private AnuncioDao anuncioDao;
+	private AdRepository adRepository;
 	
     @Override
 	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
-        	try {
-				return anuncioDao.recuperaUm(new Long(value));
+        	try {     		
+        		Optional<Anuncio> result = adRepository.findById(new Long(value));
+				return result.isPresent()? result.get():null;
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DaoException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

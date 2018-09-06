@@ -5,13 +5,12 @@ import java.util.List;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import br.com.mpconnect.dao.DaoException;
 import br.com.mpconnect.model.Venda;
 import br.com.trendsoftware.markethub.repository.OrderRepository;
 
 public class Teste2 {
 
-	public static void main(String[] args) throws Exception, DaoException{
+	public static void main(String[] args) throws Exception{
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
 

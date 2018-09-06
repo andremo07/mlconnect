@@ -6,19 +6,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.AnuncioDao;
-import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Produto;
+import br.com.trendsoftware.markethub.repository.AdRepository;
+import br.com.trendsoftware.markethub.repository.ProductRepository;
 
 @Component
 @Scope(value="view")
@@ -30,57 +31,49 @@ public class ProdutoController extends GenericCrudController<Produto> implements
 	private Anuncio anuncioSelecionado;
 	private List<Anuncio> anuncios;
 	private String teste;
-
+	
 	@Autowired
-	private AnuncioDao anuncioDao;
-
+	private AdRepository adRepository;
+	
 	@Autowired
-	private ProdutoDao produtoDao;
+	private ProductRepository productRepository;
 
 	public ProdutoController(){
 		anuncios = new ArrayList<Anuncio>();		
 	}
 
 	@PostConstruct
-	public void init(){
-		try{
-			//anuncioSelecionado = new Anuncio();
-			produto = new Produto();
-			if(tipoOperacao==0){
-				this.getModel().setRowCount(produtoDao.recuperaTotalRegistros().intValue());
-				this.getModel().setDatasource(produtoDao.recuperaTodosPorIntervalo(0, this.getModel().getPageSize(), new HashMap<String, Object>()));
-			}
-			else if(tipoOperacao==1){
-				anuncios = anuncioDao.recuperaTodos();
-				Set<Anuncio> anuncios = new HashSet<Anuncio>();
-				produto.setAnuncios(anuncios);
-			}
-			else{
-				anuncios = anuncioDao.recuperaTodos();
-				Long idProduto = (Long) getSessionAttribute("idProduto");
-				produto = produtoDao.recuperaUm(idProduto);
-			}
-		} catch (DaoException e) {
-			e.printStackTrace();
+	public void init()
+	{
+		//anuncioSelecionado = new Anuncio();
+		produto = new Produto();
+		if(tipoOperacao==0){
+			Map<String,Object> filters = new HashMap<String, Object>();
+			this.getModel().setRowCount(new Long(productRepository.count()).intValue());
+			this.getModel().setDatasource(productRepository.findAllByPagingAndFilters(0, this.getModel().getPageSize(), filters));
+		}
+		else if(tipoOperacao==1){
+			anuncios = adRepository.findAll();
+			Set<Anuncio> anuncios = new HashSet<Anuncio>();
+			produto.setAnuncios(anuncios);
+		}
+		else{
+			adRepository.findAll();
+			Long idProduto = (Long) getSessionAttribute("idProduto");
+			Optional<Produto> result = productRepository.findById(idProduto);
+			produto = (result.isPresent() ? result.get() : null);
 		}
 	}
 
-	public String salvar(){
-		try {
-			if(tipoOperacao==1){
-				produto.setUnidadeComercial("UN");
-				produtoDao.gravar(produto);
-			}
-			else
-				produtoDao.alterar(produto);
+	public String salvar()
+	{
+		if(tipoOperacao==1)
+			produto.setUnidadeComercial("UN");
+		
+		productRepository.save(produto);
 
-			addSessionAttribute("tipoOperacao", 0);
-			return "listaProdutos";
-
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
-		}
+		addSessionAttribute("tipoOperacao", 0);
+		return "listaProdutos";
 	}
 
 	public String adicionaAnuncio(){
@@ -98,20 +91,17 @@ public class ProdutoController extends GenericCrudController<Produto> implements
 		return "cadastroProdutos?faces-redirect=true";
 	}
 
-	public String editar(){
-
+	public String editar()
+	{
 		addSessionAttribute("idProduto", produto.getId());
 		addSessionAttribute("tipoOperacao", 2);
 		return "cadastroProdutos?faces-redirect=true";
 	}
 
-	public void remover(){
-		try{
-			produtoDao.deletar(produto);
-			addMessage("Sucesso!", "Produto removido com êxito.");
-		} catch (DaoException e) {
-			e.printStackTrace();
-		}
+	public void remover()
+	{
+		productRepository.delete(produto);
+		addMessage("Sucesso!", "Produto removido com êxito.");
 	}
 
 	public void confirmaGravacao() {
@@ -160,23 +150,11 @@ public class ProdutoController extends GenericCrudController<Produto> implements
 		this.anuncios = anuncios;
 	}
 
-	public AnuncioDao getAnuncioDao() {
-		return anuncioDao;
-	}
-
-	public void setAnuncioDao(AnuncioDao anuncioDao) {
-		this.anuncioDao = anuncioDao;
-	}
-
 	@Override
-	public List<Produto> paginacao(int first, int pageSize, Map<String,Object> filters){
-		try{
-			this.getModel().setRowCount(produtoDao.recuperaTotalRegistros(filters).intValue());
-			return produtoDao.recuperaTodosPorIntervalo(first, pageSize, filters);
-		} catch (DaoException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public List<Produto> paginacao(int first, int pageSize, Map<String,Object> filters)
+	{
+		this.getModel().setRowCount(productRepository.count(filters).intValue());
+		return productRepository.findAllByPagingAndFilters(first, pageSize, filters);
 	}
 
 }

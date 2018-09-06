@@ -1,5 +1,7 @@
 package br.com.mpconnect.converter;
 
+import java.util.Optional;
+
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
@@ -9,9 +11,8 @@ import javax.faces.convert.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.DaoException;
-import br.com.mpconnect.dao.ProdutoDao;
 import br.com.mpconnect.model.Produto;
+import br.com.trendsoftware.markethub.repository.ProductRepository;
 
 @ManagedBean(name="produtoConverter")
 @RequestScoped
@@ -19,17 +20,15 @@ import br.com.mpconnect.model.Produto;
 public class ProdutoConverter implements Converter {
 	
 	@Autowired
-	private ProdutoDao produtoDao;
+	private ProductRepository productRepository;
 	
     @Override
 	public Object getAsObject(FacesContext facesContext, UIComponent uiComponent, String value) {
         if (value != null && !value.isEmpty()) {
         	try {
-				return produtoDao.recuperaUm(new Long(value));
+        		Optional<Produto> result = productRepository.findById(new Long(value));
+				return result.isPresent()? result.get():null;
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (DaoException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}

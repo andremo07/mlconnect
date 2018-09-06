@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.dao.EnvioDao;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Venda;
-import br.com.mpconnect.util.DateUtils;
+import br.com.trendsoftware.markethub.repository.ShippingRepository;
+import br.com.trendsoftware.markethub.utils.DateUtils;
 
 @Component
 @Scope(value="view")
@@ -23,7 +23,7 @@ public class ListaEnviosController extends GenericCrudController<Venda> implemen
 	private static final long serialVersionUID = -244605228849576075L;
 	
 	@Autowired
-	private EnvioDao envioDao;
+	private ShippingRepository shippingRepository;
 	
 	private List<Envio> enviosRealizados;
 
@@ -47,7 +47,7 @@ public class ListaEnviosController extends GenericCrudController<Venda> implemen
 	
 	public void listarEnvios(){
 		dtFim = DateUtils.setHoras(dtFim, 24);
-		enviosRealizados = envioDao.listarEnvios(dtInicio, dtFim);
+		enviosRealizados = shippingRepository.findByDataBetween(dtInicio, dtFim);
 	}
 	
 	public int getTotalRegistros(){

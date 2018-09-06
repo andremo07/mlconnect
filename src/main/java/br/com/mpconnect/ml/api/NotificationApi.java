@@ -20,8 +20,8 @@ import br.com.mpconnect.api.exception.custom.APIProviderException;
 import br.com.mpconnect.api.exception.custom.PreConditionFailedException;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
-import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.model.Venda;
+import br.com.trendsoftware.markethub.business.OrderBusiness;
 import br.com.trendsoftware.mlProvider.dto.Notification;
 import br.com.trendsoftware.mlProvider.dto.Topic;
 

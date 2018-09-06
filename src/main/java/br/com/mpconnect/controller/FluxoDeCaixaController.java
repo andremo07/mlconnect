@@ -13,15 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import br.com.mpconnect.bo.ContaBo;
-import br.com.mpconnect.bo.FluxoDeCaixaBo;
-import br.com.mpconnect.bo.SaldoBo;
-import br.com.mpconnect.dao.ContaBancariaDao;
-import br.com.mpconnect.dao.ContaPagarDao;
-import br.com.mpconnect.dao.ContaReceberDao;
-import br.com.mpconnect.manager.ContaBancariaManagerBo;
-import br.com.mpconnect.ml.api.enums.MesesEnum;
-import br.com.mpconnect.util.DateUtils;
+import br.com.mpconnect.model.MesesEnum;
+import br.com.trendsoftware.markethub.business.FluxoCaixaBusiness;
+import br.com.trendsoftware.markethub.dto.ContaBo;
+import br.com.trendsoftware.markethub.dto.FluxoDeCaixaBo;
+import br.com.trendsoftware.markethub.dto.SaldoBo;
+import br.com.trendsoftware.markethub.utils.DateUtils;
 
 @Component
 @Scope(value="view")
@@ -44,18 +41,9 @@ public class FluxoDeCaixaController {
 	private List<Double> saldosFinaisDeCaixa;
 
 	private List<FluxoDeCaixaBo> fluxoDeCaixas;
-
+		
 	@Autowired
-	public ContaPagarDao contaPagarDao;
-
-	@Autowired
-	public ContaReceberDao contaReceberDao;
-	
-	@Autowired
-	public ContaBancariaDao contaBancariaDao;
-
-	@Autowired
-	private ContaBancariaManagerBo contaManager;
+	public FluxoCaixaBusiness fluxoCaixaBusiness;
 
 	public FluxoDeCaixaController(){
 
@@ -78,11 +66,11 @@ public class FluxoDeCaixaController {
 		for(int i=0; i < mesesEnum.length;i++)
 			meses.add(mesesEnum[i].getValue());
 
-		recebimentos = contaReceberDao.obterRecebimentosAnuais(DateUtils.getAno(new Date()));
+		recebimentos = fluxoCaixaBusiness.obterRecebimentosAnuais(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeEntrada = populaFluxoDeCaixa(recebimentos, totaisRecebimentos,"Total das Entradas");
 		fluxoDeCaixas.add(fluxoDeEntrada);
 
-		pagamentos = contaPagarDao.obterDespesasAnuais(DateUtils.getAno(new Date()));
+		pagamentos = fluxoCaixaBusiness.obterDespesasAnuais(DateUtils.getAno(new Date()));
 		FluxoDeCaixaBo fluxoDeSaida = populaFluxoDeCaixa(pagamentos, totaisPagamentos,"Total das Saidas");
 		fluxoDeCaixas.add(fluxoDeSaida);
 
@@ -117,9 +105,9 @@ public class FluxoDeCaixaController {
 
 	private void calculaSaldoInicial(){
 		Date dtAtual = new Date();
-		double totalEmConta = contaBancariaDao.recuperaSaldoTotalEmConta();
-		double totalRecebido = contaReceberDao.obterTotalRecebimentosMes(DateUtils.getAno(dtAtual)-1);
-		double totalGasto = contaPagarDao.obterTotalDespesasMes(DateUtils.getAno(dtAtual)-1);
+		double totalEmConta = fluxoCaixaBusiness.obterSaldoTotalEmConta();
+		double totalRecebido = fluxoCaixaBusiness.obterTotalRecebimentosPorMes(DateUtils.getAno(dtAtual)-1);
+		double totalGasto = fluxoCaixaBusiness.obterTotalDespesasMes(DateUtils.getAno(dtAtual)-1);
 		BigDecimal bd = new BigDecimal(totalEmConta+(totalRecebido-totalGasto));
 		bd = bd.setScale(2, RoundingMode.HALF_UP);
 		SaldoBo saldoIncial = new SaldoBo(0,bd.doubleValue());

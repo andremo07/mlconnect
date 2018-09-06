@@ -12,21 +12,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import br.com.mpconnect.data.parser.MlParser;
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.exception.BusinessProviderException;
 import br.com.mpconnect.holder.MeliConfigurationHolder;
-import br.com.mpconnect.manager.FluxoDeCaixaManagerBo;
-import br.com.mpconnect.manager.OrderBusiness;
 import br.com.mpconnect.model.AcessoMl;
 import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Usuario;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
-import br.com.mpconnect.util.DateUtils;
-import br.com.mpconnect.util.ExceptionUtil;
+import br.com.trendsoftware.markethub.business.FluxoCaixaBusiness;
+import br.com.trendsoftware.markethub.business.OrderBusiness;
+import br.com.trendsoftware.markethub.data.parser.MlParser;
 import br.com.trendsoftware.markethub.repository.AccessRepository;
+import br.com.trendsoftware.markethub.utils.DateUtils;
+import br.com.trendsoftware.markethub.utils.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
 import br.com.trendsoftware.mlProvider.dataprovider.UserProvider;
 import br.com.trendsoftware.mlProvider.dto.Order;
@@ -45,7 +45,7 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 	private static final long serialVersionUID = -6462524421141281130L;
 
 	@Autowired
-	public FluxoDeCaixaManagerBo fluxoDeCaixaManager;
+	public FluxoCaixaBusiness fluxoCaixaBusiness;
 
 	@Autowired
 	private UserProvider userProvider;
@@ -71,7 +71,7 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 	public void save(Venda order) throws BusinessException {
 		Venda venda = saveOrder(order);
 		if(venda!=null)
-			fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(order);
+			fluxoCaixaBusiness.gerarFluxoDeCaixa(order);
 	}
 
 	public Venda searchPartnerOrder(String userId, String orderId) throws BusinessException {
@@ -143,7 +143,7 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 				marketHubOrder.setVendedor(vendedor);
 				marketHubOrder = saveOrder(marketHubOrder);
 				if(marketHubOrder!=null)
-					fluxoDeCaixaManager.gerarFluxoDeCaixaVendaMl(marketHubOrder);
+					fluxoCaixaBusiness.gerarFluxoDeCaixa(marketHubOrder);
 			}
 
 		} catch (ProviderException e) {
