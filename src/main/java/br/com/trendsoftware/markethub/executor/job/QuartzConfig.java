@@ -4,7 +4,8 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.quartz.Trigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -17,14 +18,14 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 @Configuration
 public class QuartzConfig {
 
-	private final Logger log = Logger.getLogger(this.getClass().getName());
+	private final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	private ApplicationContext applicationContext;
 
 	@PostConstruct
 	public void init() {
-		log.debug("QuartzConfig initialized.");
+		logger.debug("QuartzConfig initialized.");
 	}
 
 	@Bean

@@ -1,4 +1,4 @@
-package br.com.mpconnect.ml.api;
+package br.com.trendsoftware.markethub.api;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
@@ -9,7 +9,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ import br.com.trendsoftware.mlProvider.dto.Topic;
 @Path("/notification")
 public class NotificationApi
 {
-	final Logger logger = Logger.getLogger(this.getClass().getName());
+	final Logger logger = LogManager.getLogger(this.getClass());
 
 	@Autowired
 	@Qualifier("mlOrderBusiness")

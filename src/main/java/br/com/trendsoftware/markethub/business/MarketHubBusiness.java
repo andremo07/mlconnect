@@ -4,14 +4,15 @@ import java.util.Map;
 
 import javax.faces.context.FacesContext;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import br.com.mpconnect.model.Origem;
 import br.com.mpconnect.model.Usuario;
 
 public abstract class MarketHubBusiness
 {	
-	public final Logger logger = Logger.getLogger(this.getClass().getName());
+	public final Logger logger = LogManager.getLogger(this.getClass());
 	
 	public abstract Origem getChannel();
 	

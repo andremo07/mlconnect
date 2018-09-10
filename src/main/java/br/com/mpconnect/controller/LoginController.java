@@ -2,7 +2,8 @@ package br.com.mpconnect.controller;
 
 import java.io.Serializable;
 import java.util.Map;
-import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -10,7 +11,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -47,7 +47,7 @@ public class LoginController implements Serializable{
 	@Autowired
 	public UserProvider userProvider;
 			
-	final Logger logger = Logger.getLogger(this.getClass().getName());
+	final Logger logger = LogManager.getLogger(this.getClass());
 	
 	public LoginController(){
 

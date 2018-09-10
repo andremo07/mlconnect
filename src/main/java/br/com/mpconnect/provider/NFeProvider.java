@@ -25,7 +25,7 @@ import java.util.NoSuchElementException;
 import javax.annotation.PostConstruct;
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 

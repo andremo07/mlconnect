@@ -33,10 +33,6 @@
     </context-param>
 	
 	<listener>
-		<listener-class>br.com.mpconnect.listener.Log4JListener</listener-class>
-	</listener>
-	
-	<listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
         </listener-class>

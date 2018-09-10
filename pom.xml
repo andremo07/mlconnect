@@ -79,7 +79,7 @@
 						<directory>src/main/resources</directory>
 						<includes>
 							<include>application.properties</include>
-							<include>log4j.properties</include>
+							<include>log4j2.xml</include>
 						</includes>
 						<filtering>true</filtering>
 					</resource>
@@ -107,11 +107,6 @@
 		<repository>
 			<id>Maven Central Repository</id>
 			<url>	http://central.maven.org/maven2/</url>
-		</repository>
-
-		<repository>
-			<id>mercadopago</id>
-			<url>https://github.com/mercadopago/sdk-java/raw/master/releases</url>
 		</repository>
 
 		<repository>
@@ -279,36 +274,6 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>jsr250-api</artifactId>
 			<version>1.0</version>
-		</dependency>
-
-		<!-- REMOVER FUTURAMENTE -->
-		<dependency>
-			<groupId>com.mercadolibre</groupId>
-			<artifactId>sdk</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.ning</groupId>
-					<artifactId>async-http-client</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- REMOVER FUTURAMENTE -->
-		<dependency>
-			<groupId>com.mercadopago</groupId>
-			<artifactId>sdk</artifactId>
-			<version>0.3.4</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.sun.jersey</groupId>
-					<artifactId>jersey-client</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
