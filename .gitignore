@@ -33,3 +33,5 @@ dev\.xml
 *.log
 
 src/main/resources/tmp/
+
+src/main/resources/log4j2-test\.xml
