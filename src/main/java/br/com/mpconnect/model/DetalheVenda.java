@@ -19,7 +19,7 @@ public class DetalheVenda {
 	@GeneratedValue
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name="ANUNCIO_ID", nullable=false)
 	private Anuncio anuncio;
 

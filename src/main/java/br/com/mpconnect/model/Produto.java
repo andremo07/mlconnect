@@ -40,7 +40,7 @@ public class Produto implements Persistente{
 	@Column(name="UNIDADE_COMERCIAL")
 	private String unidadeComercial;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
 	@JoinTable(name = "ANUNCIO_PRODUTO", joinColumns = {
 			@JoinColumn(name = "PRODUTO_ID", nullable = false, updatable = false) },
 			inverseJoinColumns = { @JoinColumn(name = "ANUNCIO_ID",
