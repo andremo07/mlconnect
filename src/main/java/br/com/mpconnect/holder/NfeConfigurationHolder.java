@@ -93,7 +93,7 @@ public class NfeConfigurationHolder extends NFeConfig
 	
 	@Override
     public DFAmbiente getAmbiente() {
-        return DFAmbiente.HOMOLOGACAO;
+        return DFAmbiente.PRODUCAO;
     }
 	
 }
