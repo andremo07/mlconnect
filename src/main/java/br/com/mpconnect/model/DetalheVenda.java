@@ -29,6 +29,9 @@ public class DetalheVenda {
 	@Column(name="QUANTIDADE")
 	private Integer quantidade;
 	
+	@Column(name="VL_ITEM")
+	private Double valor;
+	
 	@Transient
 	private Produto produto;
 	
@@ -72,4 +75,11 @@ public class DetalheVenda {
 		this.produto = produto;
 	}
 
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}	
 }

@@ -1,5 +1,6 @@
 package br.com.trendsoftware.markethub.data.parser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +36,7 @@ public class B2WParser {
 		return pagamento;
 	}
 
-	public static DetalheVenda parseOrderItem(SkyHubOrderItem orderItem, Double valorTotalTransacao){
+	public static DetalheVenda parseOrderItem(SkyHubOrderItem orderItem){
 
 		DetalheVenda detalheVenda = new DetalheVenda();
 
@@ -45,19 +46,20 @@ public class B2WParser {
 		anuncio.setTitulo(orderItem.getName());
 		anuncio.setValor(orderItem.getOriginalPrice());
 
-		double comissao = valorTotalTransacao*0.16;
+		BigDecimal comissao = new BigDecimal(orderItem.getSpecialPrice()*0.16);
+		comissao = comissao.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 
 		Produto produto = new Produto();
 		produto.setSku(orderItem.getProductId());
 		produto.setNome(orderItem.getName());
 
 		detalheVenda.setProduto(produto);
-		detalheVenda.setTarifaVenda(comissao);
+		detalheVenda.setTarifaVenda(comissao.doubleValue());
 		detalheVenda.setAnuncio(anuncio);
+		detalheVenda.setValor(orderItem.getSpecialPrice());
 		detalheVenda.setQuantidade(orderItem.getQty().intValue());
 
 		return detalheVenda;
-
 	}
 
 	public static Cliente parseClient(SkyHubOrderCustomer buyer){
@@ -131,12 +133,12 @@ public class B2WParser {
 			pagamentos.add(pagamento);
 			valorTotalTransacao = valorTotalTransacao+payment.getValue();
 		}
-		
+
 		venda.setPagamentos(pagamentos);
 
 		List<DetalheVenda> detalhesVenda = new ArrayList<DetalheVenda>();
 		for(SkyHubOrderItem orderItem : order.getItems()){			
-			DetalheVenda detalheVenda = parseOrderItem(orderItem, valorTotalTransacao);
+			DetalheVenda detalheVenda = parseOrderItem(orderItem);
 			detalhesVenda.add(detalheVenda);	
 		}
 		venda.setDetalhesVenda(detalhesVenda);

@@ -55,7 +55,7 @@ public class MlParser {
 
 	}
 
-	public static DetalheVenda parseOrderItem(OrderItem orderItem, Double valorTotalTransacao){
+	public static DetalheVenda parseOrderItem(OrderItem orderItem){
 
 		DetalheVenda detalheVenda = new DetalheVenda();
 
@@ -71,6 +71,7 @@ public class MlParser {
 		detalheVenda.setProduto(produto);
 		detalheVenda.setTarifaVenda(comissao);
 		detalheVenda.setAnuncio(anuncio);
+		detalheVenda.setValor(orderItem.getUnitPrice());
 		detalheVenda.setQuantidade(orderItem.getQuantity().intValue());
 
 		return detalheVenda;
@@ -177,7 +178,7 @@ public class MlParser {
 
 		List<DetalheVenda> detalhesVenda = new ArrayList<DetalheVenda>();
 		for(OrderItem orderItem : order.getOrderItems()){			
-			DetalheVenda detalheVenda = parseOrderItem(orderItem, valorTotalTransacao);
+			DetalheVenda detalheVenda = parseOrderItem(orderItem);
 			detalhesVenda.add(detalheVenda);	
 		}
 		venda.setDetalhesVenda(detalhesVenda);
