@@ -85,6 +85,7 @@ import com.fincatto.documentofiscal.nfe400.utils.NFGeraChave;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 
 import br.com.mpconnect.holder.NfeConfigurationHolder;
+import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
@@ -195,7 +196,8 @@ public class NFeProvider {
 		nfeInfo.setIdentificacao(getNFNotaInfoIdentificacao(venda,userNfeConfig));
 		nfeInfo.setEmitente(getNFNotaInfoEmitente(venda));
 		nfeInfo.setDestinatario(getNFNotaInfoDestinatario(venda));
-		nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda,userNfeConfig)));
+		//nfeInfo.setItens(Collections.singletonList(getNFNotaInfoItem(venda,userNfeConfig)));
+		nfeInfo.setItens(getNFNotaInfoItem(venda,userNfeConfig));
 		nfeInfo.setTotal(getNFNotaInfoTotal(venda,userNfeConfig));
 		nfeInfo.setPagamentos(Collections.singletonList(getNFNotaInfoPagamento(venda)));
 		nfeInfo.setTransporte(getNFNotaInfoTransporte());
@@ -431,15 +433,24 @@ public class NFeProvider {
 		return endereco;
 	}
 
-	public NFNotaInfoItem getNFNotaInfoItem(Venda venda, NfeConfig userNfeConfig) {
-		
+	public List<NFNotaInfoItem> getNFNotaInfoItem(Venda venda, NfeConfig userNfeConfig) {
 		
 		final NFNotaInfoItem item = new NFNotaInfoItem();
-		item.setImposto(getNFNotaInfoItemImposto(venda, userNfeConfig));
-		item.setNumeroItem(Integer.valueOf(1));
-		item.setProduto(getNFNotaInfoItemProduto(venda));
+		List<NFNotaInfoItem> listItem = new ArrayList<NFNotaInfoItem>();
 		
-		return item;
+		int x = 0;
+		for (DetalheVenda dv : venda.getDetalhesVenda()) {
+
+			item.setImposto(getNFNotaInfoItemImposto(venda, userNfeConfig));
+			item.setNumeroItem(Integer.valueOf(1));
+			item.setProduto(getNFNotaInfoItemProduto(venda, x));
+			
+			listItem.add(item);
+			x++;
+		}
+		
+		
+		return listItem;
 	}
 
 	public NFNotaInfoItemImposto getNFNotaInfoItemImposto(Venda venda, NfeConfig userNfeConfig) {
@@ -517,7 +528,7 @@ public class NFeProvider {
 		return icmssn102;
 	}
 
-	public NFNotaInfoItemProduto getNFNotaInfoItemProduto(Venda venda) {
+	public NFNotaInfoItemProduto getNFNotaInfoItemProduto(Venda venda, int id) {
 		
 		final NFNotaInfoItemProduto produto = new NFNotaInfoItemProduto();
 
@@ -525,11 +536,11 @@ public class NFeProvider {
 			produto.setCfop("5104");
 		else
 			produto.setCfop("6104");
-		produto.setCodigo(venda.getDetalhesVenda().get(0).getProduto()!=null?venda.getDetalhesVenda().get(0).getProduto().getSku().trim():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl().trim());
+		produto.setCodigo(venda.getDetalhesVenda().get(id).getProduto()!=null?venda.getDetalhesVenda().get(id).getProduto().getSku().trim():venda.getDetalhesVenda().get(id).getAnuncio().getIdMl().trim());
 		produto.setCodigoDeBarras("");
 		produto.setCodigoDeBarrasTributavel("");
 		produto.setCampoeValorNota(NFProdutoCompoeValorNota.SIM);
-		produto.setDescricao(venda.getDetalhesVenda().get(0).getAnuncio().getTitulo());
+		produto.setDescricao(venda.getDetalhesVenda().get(id).getAnuncio().getTitulo());
 		// POPULAR NCM DOS PRODUTOS NA BASE DE DADOS
 		try{
 			produto.setNcm("39269090");	
@@ -539,22 +550,22 @@ public class NFeProvider {
 		catch(NoSuchElementException e){
 			produto.setNcm(null);
 		}
-		produto.setQuantidadeComercial(new BigDecimal(venda.getDetalhesVenda().get(0).getQuantidade()));
-		produto.setQuantidadeTributavel(new BigDecimal(venda.getDetalhesVenda().get(0).getQuantidade()));
+		produto.setQuantidadeComercial(new BigDecimal(venda.getDetalhesVenda().get(id).getQuantidade()));
+		produto.setQuantidadeTributavel(new BigDecimal(venda.getDetalhesVenda().get(id).getQuantidade()));
 		produto.setUnidadeComercial("UN");
 		produto.setUnidadeTributavel("UN");
 
-		produto.setValorDesconto(new BigDecimal(venda.getDetalhesVenda().get(0).getTarifaVenda()
+		produto.setValorDesconto(new BigDecimal(venda.getDetalhesVenda().get(id).getTarifaVenda()
 				+ venda.getEnvio().getCustoVendedor() + venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 
 		produto.setValorFrete(venda.getEnvio().getCustoComprador()==0?null:new BigDecimal(venda.getEnvio().getCustoComprador()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 		//produto.setValorOutrasDespesasAcessorias(new BigDecimal("999999999999.99"));
 		//produto.setValorSeguro(new BigDecimal("999999999999.99"));
 
-		produto.setValorTotalBruto(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
-		produto.setValorUnitario(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao() / venda.getDetalhesVenda().get(0).getQuantidade()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		produto.setValorTotalBruto(new BigDecimal(venda.getPagamentos().get(id).getValorTransacao()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		produto.setValorUnitario(new BigDecimal(venda.getPagamentos().get(id).getValorTransacao() / venda.getDetalhesVenda().get(id).getQuantidade()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 		//produto.setNomeclaturaValorAduaneiroEstatistica(Collections.singletonList("AZ0123"));
-		produto.setValorUnitarioTributavel(new BigDecimal(venda.getPagamentos().get(0).getValorTransacao() / venda.getDetalhesVenda().get(0).getQuantidade()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
+		produto.setValorUnitarioTributavel(new BigDecimal(venda.getPagamentos().get(id).getValorTransacao() / venda.getDetalhesVenda().get(id).getQuantidade()).setScale(2, BigDecimal.ROUND_HALF_EVEN));
 		
 		return produto;
 	}
