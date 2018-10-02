@@ -101,7 +101,7 @@ public class ContaPagarController extends GenericCrudController<ContaPagar> impl
 	public void visualizar(ContaPagar contaPagar)
 	{
 		Optional<ContaPagar> result = payingBillRepository.findById(contaPagar.getId());
-		contaPagar = (result.isPresent() ? result.get():null);
+		this.contaPagar = (result.isPresent() ? result.get():null);
 	}
 
 	public void baixar()
