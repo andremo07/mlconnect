@@ -111,7 +111,7 @@ public abstract class OrderBusiness extends MarketHubBusiness {
 
 				int index=0;
 				for(NFNotaProcessada notaProcessada: notasProcessadas){
-					orders.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
+					orders.get(index).setNrNfe(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota());
 					index++;
 				}
 
