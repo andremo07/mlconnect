@@ -12,10 +12,8 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -27,6 +25,7 @@ import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Service;
 
 import com.fincatto.documentofiscal.DFAmbiente;
@@ -86,11 +85,14 @@ import com.fincatto.documentofiscal.nfe400.parsers.DFParser;
 import com.fincatto.documentofiscal.nfe400.utils.NFGeraChave;
 import com.fincatto.documentofiscal.nfe400.webservices.WSFacade;
 
+import br.com.mpconnect.holder.B2wConfigurationHolder;
 import br.com.mpconnect.holder.NfeConfigurationHolder;
 import br.com.mpconnect.model.NfeConfig;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.provider.exception.NfeProviderException;
+import br.com.trendsoftware.b2wprovider.dataprovider.B2wOrderProvider;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubUserCredencials;
 import br.com.trendsoftware.restProvider.util.ExceptionUtil;
 
 @Service(value="nfeProvider")
@@ -116,7 +118,7 @@ public class NFeProvider {
 
 	public List<NFNotaProcessada> generateNFes(List<Venda> vendas, NfeConfig userNfeConfig) throws NfeProviderException{
 
-		getLogger().trace("Iniciando geração das NFes");
+//		getLogger().trace("Iniciando geração das NFes");
 
 		List<NFNota> notas = new ArrayList<NFNota>();
 
@@ -176,7 +178,7 @@ public class NFeProvider {
 				inputStreams.add(is);
 			}
 			
-			getLogger().trace("Geração das NFes finalizado");
+			//getLogger().trace("Geração das NFes finalizado");
 			
 			return inputStreams;
 			
@@ -189,7 +191,19 @@ public class NFeProvider {
 		}
 	}
 
+	public void faturaNotasB2w(List<NFNotaProcessada> notasProcessadas) {
 
+		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+
+		B2wOrderProvider b2wOrderProvider = (B2wOrderProvider) ctx.getBean("b2wOrderProvider");
+		
+		SkyHubUserCredencials userCredencials = new SkyHubUserCredencials(B2wConfigurationHolder.getInstance().getUserEmail(),B2wConfigurationHolder.getInstance().getApiKey(),B2wConfigurationHolder.getInstance().getAccountManagerKey());
+		
+		//b2wOrderProvider.invoiceOrder(userCredencials, )
+		//b2wOrderProvider.searchOrderById(userCredencials, "Submarino-350197814101");
+		
+	}
+	
 	public NFNotaInfo getNFeInfo(Venda venda, NfeConfig userNfeConfig) throws NfeProviderException{
 		
 		NFNotaInfo nfeInfo = new NFNotaInfo();
@@ -217,7 +231,7 @@ public class NFeProvider {
 			loteEnvio.setNotas(notas);
 			loteEnvio.setIndicadorProcessamento(NFLoteIndicadorProcessamento.PROCESSAMENTO_ASSINCRONO);
 			NFLoteEnvioRetorno loteEnvioRetorno = new WSFacade(config).enviaLoteAssinado(loteEnvio.toString(), DFModelo.NFE);
-			
+			//NFLoteEnvioRetornoDados loteEnvioRetorno = new WSFacade(config).enviaLote(loteEnvio);
 			return loteEnvioRetorno;
 			
 		} catch (KeyManagementException e) {
@@ -316,8 +330,11 @@ public class NFeProvider {
 		identificacao.setAmbiente(DFAmbiente.valueOfCodigo(userNfeConfig.getIndAmbiente()));
 		identificacao.setCodigoMunicipio(venda.getVendedor().getCodMunicipio().toString());
 		
-		identificacao.setDataHoraEmissao(ZonedDateTime.of(LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse("2018-06-07 10:10:10")), ZoneId.systemDefault()));
-        identificacao.setDataHoraSaidaOuEntrada(ZonedDateTime.of(LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse("2018-06-07 10:10:10")), ZoneId.systemDefault()));
+		Instant instant = Instant.now();
+		identificacao.setDataHoraEmissao(instant.atZone(ZoneId.of("America/Sao_Paulo")));
+				//ZonedDateTime.of(LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse(new DateTime().toString())), ZoneId.systemDefault()));
+        identificacao.setDataHoraSaidaOuEntrada(instant.atZone(ZoneId.of("America/Sao_Paulo")));
+        		//ZonedDateTime.of(LocalDateTime.from(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").parse(new DateTime().toString())), ZoneId.systemDefault()));
 		
 		//identificacao.setCodigoRandomico("45000050");
 		//identificacao.setDataHoraEmissao(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -395,8 +412,8 @@ public class NFeProvider {
 			destinatario.setCnpj(venda.getCliente().getNrDocumento());
 		//		destinatario.setRazaoSocial(venda.getCliente().getNome());
 		}
-		//destinatario.setRazaoSocial(venda.getCliente().getNome());
-		destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
+		destinatario.setRazaoSocial(venda.getCliente().getNome());
+		//destinatario.setRazaoSocial("NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL");
 		destinatario.setEndereco(getNFEnderecoDest(venda));
 
 
@@ -420,7 +437,8 @@ public class NFeProvider {
 		//endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
 		endereco.setCodigoPais("1058");
 		endereco.setDescricaoPais("Brasil");
-		endereco.setComplemento(venda.getEnvio().getComplemento());
+		if(venda.getEnvio().getComplemento().length()>0) 
+			endereco.setComplemento((venda.getEnvio().getComplemento().length()<=59)?venda.getEnvio().getComplemento():venda.getEnvio().getComplemento().substring(0, 58).trim());
 		endereco.setDescricaoMunicipio(venda.getEnvio().getMunicipio());
 		endereco.setLogradouro(venda.getEnvio().getLogradouro());
 		endereco.setNumero(venda.getEnvio().getNumero());
@@ -430,6 +448,7 @@ public class NFeProvider {
 	}
 
 	public NFNotaInfoItem getNFNotaInfoItem(Venda venda, NfeConfig userNfeConfig) {
+		
 		
 		final NFNotaInfoItem item = new NFNotaInfoItem();
 		item.setImposto(getNFNotaInfoItemImposto(venda, userNfeConfig));
@@ -522,7 +541,7 @@ public class NFeProvider {
 			produto.setCfop("5104");
 		else
 			produto.setCfop("6104");
-		produto.setCodigo(venda.getDetalhesVenda().get(0).getProduto()!=null?venda.getDetalhesVenda().get(0).getProduto().getSku():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl());
+		produto.setCodigo(venda.getDetalhesVenda().get(0).getProduto()!=null?venda.getDetalhesVenda().get(0).getProduto().getSku().trim():venda.getDetalhesVenda().get(0).getAnuncio().getIdMl().trim());
 		produto.setCodigoDeBarras("");
 		produto.setCodigoDeBarrasTributavel("");
 		produto.setCampoeValorNota(NFProdutoCompoeValorNota.SIM);
