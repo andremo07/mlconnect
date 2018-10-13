@@ -148,7 +148,7 @@ public abstract class OrderBusiness extends MarketHubBusiness {
 				adRepository.save(orderDetail.getAnuncio());
 			});
 
-			Cliente cliente = clientRepository.findByNrDocumento(order.getCliente().getNrDocumento());
+			Cliente cliente = clientRepository.findFirstByNrDocumento(order.getCliente().getNrDocumento());
 			if(cliente==null)
 				cliente = clientRepository.save(order.getCliente());			
 			order.setCliente(cliente);
