@@ -30,7 +30,7 @@ public class Teste_PlanilhaB2W {
 //		System.out.println();
 //		
 		
-		String fileName = "C:/Wanderson/TrendStore/itens_nillkin2.xlsx";	
+		String fileName = "C:/Wanderson/TrendStore/itens_amazfit_stratus.xlsx";	
 		List<SkyHubItem> itens = B2WItemSheetLoader.load(ExcelUtils.read(fileName));
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");

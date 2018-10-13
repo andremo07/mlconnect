@@ -33,11 +33,13 @@ public class Teste_NFE {
 		ShippingProvider shippingProvider = new ShippingProvider();
 
 		// Venda venda = orderBusiness.recuperarVenda("1601889869");
-		Venda venda1 = vendaDao.findById("350204795201").get();
-		Venda venda2 = vendaDao.findById("350204769503").get();
-		Venda venda3 = vendaDao.findById("267729344501").get();
-		Venda venda4 = vendaDao.findById("267729058001").get();
-		Venda venda5 = vendaDao.findById("267724450301").get();
+		
+		Venda venda1 = vendaDao.findById("350210845401").get();
+		Venda venda2 = vendaDao.findById("350209707301").get();
+		Venda venda3 = vendaDao.findById("267761303401").get();
+		Venda venda4 = vendaDao.findById("267759907001").get();
+		Venda venda5 = vendaDao.findById("267758534401").get();
+//		Venda venda6 = vendaDao.findById("267732304001").get();
 		// Venda venda6 = vendaDao.recuperaUm("350135911202");
 		// Venda venda7 = vendaDao.recuperaUm("350135654103");
 		// Venda venda8 = vendaDao.recuperaUm("350135604501");
@@ -65,13 +67,12 @@ public class Teste_NFE {
 
 		NfeConfig nfeConfig = nfeConfidDao.findById(1L).get();
 
-		List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(vendas, nfeConfig);
+		List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(vendas, nfeConfig, vendaDao);
 
-		int index = 0;
+		//int index = 0;
 		for (NFNotaProcessada notaProcessada : notasProcessadas) {
-			vendas.get(index)
-					.setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
-			index++;
+			//vendas.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
+			//index++;
 
 			System.out.println(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota() + " "
 					+ notaProcessada.getNota().getInfo().getChaveAcesso() + " "
@@ -81,7 +82,7 @@ public class Teste_NFE {
 
 		List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
 
-		//nfeProvider.faturaNotasB2w(notasProcessadas);
+		nfeProvider.faturaNotasB2w(vendas, ctx);
 		
 		nfeConfig.setNrNota(new Integer(Integer.valueOf(nfeConfig.getNrNota()) + notasProcessadas.size()).toString());
 		nfeConfig.setNrLote(new Integer(Integer.valueOf(nfeConfig.getNrLote()) + 1).toString());

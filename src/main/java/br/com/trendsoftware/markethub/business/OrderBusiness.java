@@ -107,7 +107,7 @@ public abstract class OrderBusiness extends MarketHubBusiness {
 
 			if(result.isPresent()){
 				NfeConfig userNfeConfig = result.get();
-				List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig);
+				List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig,orderRepository);
 
 				int index=0;
 				for(NFNotaProcessada notaProcessada: notasProcessadas){
