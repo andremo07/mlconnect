@@ -19,7 +19,7 @@ public class DetalheVenda {
 	@GeneratedValue
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="ANUNCIO_ID", nullable=false)
 	private Anuncio anuncio;
 
@@ -28,6 +28,9 @@ public class DetalheVenda {
 
 	@Column(name="QUANTIDADE")
 	private Integer quantidade;
+	
+	@Column(name="VL_ITEM")
+	private Double valor;
 	
 	@Transient
 	private Produto produto;
@@ -72,4 +75,11 @@ public class DetalheVenda {
 		this.produto = produto;
 	}
 
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor = valor;
+	}	
 }
