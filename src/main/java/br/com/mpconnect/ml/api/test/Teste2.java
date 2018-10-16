@@ -2,22 +2,17 @@ package br.com.mpconnect.ml.api.test;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import br.com.mpconnect.provider.NFeProvider;
+import com.google.gson.Gson;
+
+import br.com.mpconnect.holder.B2wConfigurationHolder;
+import br.com.trendsoftware.b2wprovider.dataprovider.B2wItemProvider;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubItemList;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubUserCredencials;
+import br.com.trendsoftware.restProvider.response.RestResponse;
 
 public class Teste2 {
 
 	public static void main(String[] args) throws Exception {
-
-//		 ClassPathXmlApplicationContext ctx = new
-//		 ClassPathXmlApplicationContext("spring.xml");
-//		
-//		 OrderRepository orderRepository = (OrderRepository)
-//		 ctx.getBean("orderRepository");
-//		
-//		 List<String> ids = new ArrayList<String>();
-//		 ids.add("350138563501");
-//		 List<Venda> vendas = orderRepository.findAllById(ids);
-//		 System.out.println();
 
 //		try {
 //			FileUtils.writeByteArrayToFile(new File("producao.cacerts"),
@@ -28,14 +23,23 @@ public class Teste2 {
 //			e.printStackTrace();
 //		}
 		
+//		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
+//		NFeProvider nfeProvider = (NFeProvider) ctx.getBean("nfeProvider");
+//		nfeProvider.testaServico();
+
+
+		Gson parser = null;
+		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
-
-		NFeProvider nfeProvider = (NFeProvider) ctx.getBean("nfeProvider");
+		SkyHubUserCredencials userCredencials = new SkyHubUserCredencials(B2wConfigurationHolder.getInstance().getUserEmail(), B2wConfigurationHolder.getInstance().getApiKey(), B2wConfigurationHolder.getInstance().getAccountManagerKey());
+		B2wItemProvider itemProvider = (B2wItemProvider) ctx.getBean("b2wItemProvider");
+		
+		RestResponse response = itemProvider.listProducts(userCredencials);
+		SkyHubItemList skyHubItemList = itemProvider.getParser().fromJson(response.getBody(), SkyHubItemList.class);
+		
+		System.out.println();
 		
 		
-		nfeProvider.testaServico();
-
-
 	}
 
 }

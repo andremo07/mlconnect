@@ -11,8 +11,10 @@ import br.com.trendsoftware.b2wprovider.dto.SkyHubUserCredencials;
 import br.com.trendsoftware.b2wprovider.util.B2WItemSheetLoader;
 import br.com.trendsoftware.markethub.utils.ExcelUtils;
 
-public class Teste_PlanilhaB2W {
 
+public class Teste_PlanilhaB2W {
+	
+	
 	public static void main(String[] args) throws Exception{
 
 //		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
@@ -43,6 +45,8 @@ public class Teste_PlanilhaB2W {
 			itemProvider.addItem(userCredencials, item);
 		
 		System.out.println();
+		
+		
 	}
 
 

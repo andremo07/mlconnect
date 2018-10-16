@@ -34,17 +34,19 @@ public class Teste_NFE {
 
 		// Venda venda = orderBusiness.recuperarVenda("1601889869");
 		
-		Venda venda1 = vendaDao.findById("350210845401").get();
-		Venda venda2 = vendaDao.findById("350209707301").get();
-		Venda venda3 = vendaDao.findById("267761303401").get();
-		Venda venda4 = vendaDao.findById("267759907001").get();
-		Venda venda5 = vendaDao.findById("267758534401").get();
-//		Venda venda6 = vendaDao.findById("267732304001").get();
-		// Venda venda6 = vendaDao.recuperaUm("350135911202");
-		// Venda venda7 = vendaDao.recuperaUm("350135654103");
-		// Venda venda8 = vendaDao.recuperaUm("350135604501");
-		// Venda venda9 = vendaDao.recuperaUm("267469344701");
-		// Venda venda10 = vendaDao.recuperaUm("350134941401");
+		Venda venda1 = vendaDao.findById("267760099501").get();
+		Venda venda2 = vendaDao.findById("267764959001").get();
+		Venda venda3 = vendaDao.findById("267767054701").get();
+		Venda venda4 = vendaDao.findById("267772306101").get();
+		Venda venda5 = vendaDao.findById("267773694102").get();
+		Venda venda6 = vendaDao.findById("267774236601").get();
+		Venda venda7 = vendaDao.findById("267775677001").get();
+		Venda venda8 = vendaDao.findById("267782378301").get();
+		Venda venda9 = vendaDao.findById("267791414101").get();
+		Venda venda10 = vendaDao.findById("350214451301").get();
+		Venda venda11 = vendaDao.findById("350214704701").get();
+		Venda venda12 = vendaDao.findById("350215751101").get();
+		Venda venda13 = vendaDao.findById("350217893201").get();
 
 		List<Venda> vendas = new ArrayList<Venda>();
 		vendas.add(venda1);
@@ -52,13 +54,14 @@ public class Teste_NFE {
 		vendas.add(venda3);
 		vendas.add(venda4);
 		vendas.add(venda5);
-		// vendas.add(venda6);
-		// vendas.add(venda7);
-		// vendas.add(venda8);
-		// vendas.add(venda9);
-		// vendas.add(venda10);
-		// vendas.add(venda2);
-		// vendas.add(venda3);
+		vendas.add(venda6);
+		vendas.add(venda7);
+		vendas.add(venda8);
+		vendas.add(venda9);
+		vendas.add(venda10);
+		vendas.add(venda11);
+		vendas.add(venda12);
+		vendas.add(venda13);
 
 		for (Venda order : vendas) {
 			Integer code = shippingProvider.searchMunicipyCodeByCep(order.getEnvio().getCep());
