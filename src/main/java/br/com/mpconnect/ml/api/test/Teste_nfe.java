@@ -32,6 +32,8 @@ public class Teste_NFE {
 		NfeRepository nfeConfidDao = (NfeRepository) ctx.getBean("nfeRepository");
 		ShippingProvider shippingProvider = new ShippingProvider();
 
+		// Venda venda = orderBusiness.recuperarVenda("1601889869");
+		
 		Venda venda1 = vendaDao.findById("267760099501").get();
 		Venda venda2 = vendaDao.findById("267764959001").get();
 		Venda venda3 = vendaDao.findById("267767054701").get();
@@ -68,13 +70,12 @@ public class Teste_NFE {
 
 		NfeConfig nfeConfig = nfeConfidDao.findById(1L).get();
 
-		List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(vendas, nfeConfig);
+		List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(vendas, nfeConfig, vendaDao);
 
-		int index = 0;
+		//int index = 0;
 		for (NFNotaProcessada notaProcessada : notasProcessadas) {
-			vendas.get(index)
-					.setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
-			index++;
+			//vendas.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
+			//index++;
 
 			System.out.println(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota() + " "
 					+ notaProcessada.getNota().getInfo().getChaveAcesso() + " "
@@ -84,6 +85,8 @@ public class Teste_NFE {
 
 		List<InputStream> inputStreams = nfeProvider.generateNFePdf(notasProcessadas);
 
+		nfeProvider.faturaNotasB2w(vendas, ctx);
+		
 		nfeConfig.setNrNota(new Integer(Integer.valueOf(nfeConfig.getNrNota()) + notasProcessadas.size()).toString());
 		nfeConfig.setNrLote(new Integer(Integer.valueOf(nfeConfig.getNrLote()) + 1).toString());
 		nfeConfidDao.save(nfeConfig);
