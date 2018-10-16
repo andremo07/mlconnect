@@ -107,11 +107,11 @@ public abstract class OrderBusiness extends MarketHubBusiness {
 
 			if(result.isPresent()){
 				NfeConfig userNfeConfig = result.get();
-				List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig);
+				List<NFNotaProcessada> notasProcessadas = nfeProvider.generateNFes(orders,userNfeConfig,orderRepository);
 
 				int index=0;
 				for(NFNotaProcessada notaProcessada: notasProcessadas){
-					orders.get(index).setNrNfe(Long.valueOf(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota()));
+					orders.get(index).setNrNfe(notaProcessada.getNota().getInfo().getIdentificacao().getNumeroNota());
 					index++;
 				}
 
@@ -148,7 +148,7 @@ public abstract class OrderBusiness extends MarketHubBusiness {
 				adRepository.save(orderDetail.getAnuncio());
 			});
 
-			Cliente cliente = clientRepository.findByNrDocumento(order.getCliente().getNrDocumento());
+			Cliente cliente = clientRepository.findFirstByNrDocumento(order.getCliente().getNrDocumento());
 			if(cliente==null)
 				cliente = clientRepository.save(order.getCliente());			
 			order.setCliente(cliente);
