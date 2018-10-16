@@ -6,6 +6,6 @@ import br.com.mpconnect.model.Cliente;
 
 public interface ClientRepository extends JpaRepository<Cliente, String> {
 
-	public Cliente findByNrDocumento(String nrDocumento);
+	public Cliente findFirstByNrDocumento(String nrDocumento);
 	
 }

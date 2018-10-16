@@ -48,7 +48,7 @@ public class NfeConfigurationHolder extends NFeConfig
 	public KeyStore getCadeiaCertificadosKeyStore() throws KeyStoreException {
 		if (this.keyStoreCadeia == null) {
             this.keyStoreCadeia = KeyStore.getInstance("JKS");
-            try (InputStream cadeia = getClass().getResourceAsStream("/nfe/certificado.jks")) {
+            try (InputStream cadeia = getClass().getResourceAsStream("/nfe/producao.cacerts")) {
                 this.keyStoreCadeia.load(cadeia, this.getCadeiaCertificadosSenha().toCharArray());
             } catch (CertificateException | NoSuchAlgorithmException | IOException e) {
                 this.keyStoreCadeia = null;
