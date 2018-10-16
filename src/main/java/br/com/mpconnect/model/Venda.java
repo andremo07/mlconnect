@@ -30,7 +30,7 @@ public class Venda implements Persistente{
 	private Date data;
 	
 	@Column(name="NR_NFE")
-	private Long nrNfe;
+	private String nrNfe;
 	
 	@Column(name="NR_SERIE_NFE")
 	private Long nrSerieNfe;
@@ -137,11 +137,11 @@ public class Venda implements Persistente{
 		this.origem = origem;
 	}
 
-	public Long getNrNfe() {
+	public String getNrNfe() {
 		return nrNfe;
 	}
 
-	public void setNrNfe(Long nrNfe) {
+	public void setNrNfe(String nrNfe) {
 		this.nrNfe = nrNfe;
 	}
 
