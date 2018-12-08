@@ -37,3 +37,5 @@ src/main/resources/tmp/
 src/main/resources/log4j2-test\.xml
 
 src/main/java/br/com/mpconnect/ml/api/test/Teste2\.java
+
+src/main/java/br/com/mpconnect/ml/api/test/Teste3\.java
