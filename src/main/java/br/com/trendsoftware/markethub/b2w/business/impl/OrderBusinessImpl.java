@@ -17,9 +17,11 @@ import br.com.trendsoftware.markethub.business.OrderBusiness;
 public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 
 	private static final long serialVersionUID = -6462524421141281130L;
+	
+	private String channelName;
 
 	public Origem getChannel(){
-		return Channel.B2W.getOrigem();
+		return Channel.lookup(getChannelName()).getOrigem();
 	}
 
 	@Override
@@ -35,5 +37,13 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 	@Override
 	public Venda searchPartnerOrder(String userId, String orderId) throws BusinessException {
 		return null;
+	}
+
+	public String getChannelName() {
+		return channelName;
+	}
+
+	public void setChannelName(String channelName) {
+		this.channelName = channelName;
 	}
 }

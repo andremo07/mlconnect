@@ -22,8 +22,9 @@ public class Origem implements Persistente{
 		
 	}
 	
-	public Origem(Long id) {
+	public Origem(Long id, String nome) {
 		this.id = id;
+		this.nome = nome;
 	}
 	
 	public Long getId() {

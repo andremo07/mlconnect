@@ -18,6 +18,7 @@ import br.com.trendsoftware.b2wprovider.dataprovider.B2wOrderProvider;
 import br.com.trendsoftware.b2wprovider.dto.OrderStatus;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrder;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubUserCredencials;
+import br.com.trendsoftware.markethub.b2w.business.impl.OrderBusinessImpl;
 import br.com.trendsoftware.markethub.business.OrderBusiness;
 import br.com.trendsoftware.markethub.data.parser.B2WParser;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
@@ -38,26 +39,38 @@ public class B2WQueueConsumerJob implements Job
 
 	final Logger logger = LogManager.getLogger(this.getClass());
 
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-
-		try {
+	public void execute(JobExecutionContext context) throws JobExecutionException
+	{
+		try 
+		{
 			b2wOrderProvider.setLogger(logger);
+			
 			SkyHubUserCredencials userCredencials = new SkyHubUserCredencials(B2wConfigurationHolder.getInstance().getUserEmail(),B2wConfigurationHolder.getInstance().getApiKey(),B2wConfigurationHolder.getInstance().getAccountManagerKey());			
-			RestResponse response = b2wOrderProvider.listQueueOrder(userCredencials);
+			
+			RestResponse response = b2wOrderProvider.listQueueOrder(userCredencials);		
+			
 			SkyHubOrder skyHubOrder = parser.fromJson(response.getBody(), SkyHubOrder.class);
-			if(skyHubOrder!=null){
-				if(skyHubOrder.getStatus().getCode().equals(OrderStatus.APPROVED.getName())){
+			
+			if(skyHubOrder!=null)
+			{
+				if(skyHubOrder.getStatus().getCode().equals(OrderStatus.APPROVED.getName()))
+				{
 					Venda marketHubOrder = B2WParser.parseOrder(skyHubOrder);
+					
+					((OrderBusinessImpl) orderBusiness).setChannelName(skyHubOrder.getCode().split("-")[0]);
 					orderBusiness.save(marketHubOrder);
+					
 					logger.debug("Aprovando pedido "+skyHubOrder.getCode());
 					System.out.println("Aprovando pedido "+skyHubOrder.getCode());
 				}
 				b2wOrderProvider.processQueueOrder(userCredencials,skyHubOrder.getCode());
 			}
-		} catch (ProviderException e) {
+		} catch (ProviderException e) 
+		{
 			logger.debug("Erro");
 			System.out.println("Erro!");
-		} catch (BusinessException e) {
+		} catch (BusinessException e) 
+		{
 			e.printStackTrace();
 		}
 	}

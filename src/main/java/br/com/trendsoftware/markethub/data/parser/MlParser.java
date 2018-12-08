@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.mpconnect.model.Anuncio;
+import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Pagamento;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
@@ -50,12 +50,13 @@ public class MlParser {
 		anuncio.setTitulo(item.getTitle());
 		anuncio.setTipo(item.getListingTypeId());
 		anuncio.setValor(item.getPrice());
+		anuncio.setOrigem(Channel.ML.getOrigem().getId());
 
 		return anuncio;
 
 	}
 
-	public static DetalheVenda parseOrderItem(OrderItem orderItem, Double valorTotalTransacao){
+	public static DetalheVenda parseOrderItem(OrderItem orderItem){
 
 		DetalheVenda detalheVenda = new DetalheVenda();
 
@@ -65,12 +66,10 @@ public class MlParser {
 
 		double comissao = orderItem.getSaleFee();
 
-		Produto produto = new Produto();
-		produto.setSku(item.getSellerCustomField());
-
-		detalheVenda.setProduto(produto);
+		detalheVenda.setProdutoSku(item.getSellerCustomField());
 		detalheVenda.setTarifaVenda(comissao);
 		detalheVenda.setAnuncio(anuncio);
+		detalheVenda.setValor(orderItem.getUnitPrice());
 		detalheVenda.setQuantidade(orderItem.getQuantity().intValue());
 
 		return detalheVenda;
@@ -177,7 +176,7 @@ public class MlParser {
 
 		List<DetalheVenda> detalhesVenda = new ArrayList<DetalheVenda>();
 		for(OrderItem orderItem : order.getOrderItems()){			
-			DetalheVenda detalheVenda = parseOrderItem(orderItem, valorTotalTransacao);
+			DetalheVenda detalheVenda = parseOrderItem(orderItem);
 			detalhesVenda.add(detalheVenda);	
 		}
 		venda.setDetalhesVenda(detalhesVenda);

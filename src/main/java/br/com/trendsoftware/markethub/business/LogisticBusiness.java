@@ -13,7 +13,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import br.com.mpconnect.exception.BusinessException;
 import br.com.mpconnect.model.DetalheVenda;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.Venda;
 import br.com.trendsoftware.markethub.utils.ExcelUtils;
 
@@ -37,14 +36,10 @@ public abstract class LogisticBusiness extends MarketHubBusiness {
 		{			
 			Venda venda = entry.getValue();
 			DetalheVenda dv = venda.getDetalhesVenda().get(0);
-			Produto produto = dv.getProduto();
-			if(produto==null||produto.getSku()==null){
-				produto=new Produto();
-				produto.setSku("");
-			}
+			
 			XSSFRow row = sheet.createRow((short)rowIndex+1);
 			excelUtils.criarCelula(row, entry.getKey(), 0, true);
-			excelUtils.criarCelula(row, produto.getSku(), 1, true);
+			excelUtils.criarCelula(row, dv.getProdutoSku(), 1, true);
 			excelUtils.criarCelula(row, dv.getQuantidade().toString(), 2, true);
 			rowIndex++;
 		}

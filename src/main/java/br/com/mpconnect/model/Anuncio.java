@@ -50,6 +50,9 @@ public class Anuncio implements Persistente{
 	
 	@Column(name="CATEGORIA")
 	private String categoria;
+	
+	@Column(name="ORIGEM_ID")
+	private Long origem;
 
 	public Long getId() {
 		return id;
@@ -121,6 +124,14 @@ public class Anuncio implements Persistente{
 
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
+	}
+
+	public Long getOrigem() {
+		return origem;
+	}
+
+	public void setOrigem(Long origem) {
+		this.origem = origem;
 	}
 
 	@Override
