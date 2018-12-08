@@ -6,11 +6,11 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.mpconnect.model.Anuncio;
+import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Pagamento;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
@@ -42,18 +42,15 @@ public class B2WParser {
 
 		Anuncio anuncio = new Anuncio();
 
-		anuncio.setIdMl(orderItem.getId());
+		anuncio.setIdMl(orderItem.getProductId());
 		anuncio.setTitulo(orderItem.getName());
 		anuncio.setValor(orderItem.getOriginalPrice());
+		anuncio.setOrigem(Channel.B2W.getOrigem().getId());
 
 		BigDecimal comissao = new BigDecimal(orderItem.getSpecialPrice()*0.16);
 		comissao = comissao.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-
-		Produto produto = new Produto();
-		produto.setSku(orderItem.getProductId());
-		produto.setNome(orderItem.getName());
-
-		detalheVenda.setProduto(produto);
+		
+		detalheVenda.setProdutoSku(orderItem.getId());
 		detalheVenda.setTarifaVenda(comissao.doubleValue());
 		detalheVenda.setAnuncio(anuncio);
 		detalheVenda.setValor(orderItem.getSpecialPrice());

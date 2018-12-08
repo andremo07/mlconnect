@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import br.com.mpconnect.model.Anuncio;
+import br.com.mpconnect.model.Channel;
 import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Pagamento;
-import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
@@ -50,6 +50,7 @@ public class MlParser {
 		anuncio.setTitulo(item.getTitle());
 		anuncio.setTipo(item.getListingTypeId());
 		anuncio.setValor(item.getPrice());
+		anuncio.setOrigem(Channel.ML.getOrigem().getId());
 
 		return anuncio;
 
@@ -65,10 +66,7 @@ public class MlParser {
 
 		double comissao = orderItem.getSaleFee();
 
-		Produto produto = new Produto();
-		produto.setSku(item.getSellerCustomField());
-
-		detalheVenda.setProduto(produto);
+		detalheVenda.setProdutoSku(item.getSellerCustomField());
 		detalheVenda.setTarifaVenda(comissao);
 		detalheVenda.setAnuncio(anuncio);
 		detalheVenda.setValor(orderItem.getUnitPrice());

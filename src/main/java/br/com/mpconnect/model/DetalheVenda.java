@@ -32,8 +32,8 @@ public class DetalheVenda {
 	@Column(name="VL_ITEM")
 	private Double valor;
 	
-	@Transient
-	private Produto produto;
+	@Column(name="PRODUTO_SKU")
+	private String produtoSku;
 	
 	public Long getId() {
 		return id;
@@ -67,12 +67,12 @@ public class DetalheVenda {
 		this.quantidade = quantidade;
 	}
 
-	public Produto getProduto() {
-		return produto;
+	public String getProdutoSku() {
+		return produtoSku;
 	}
 
-	public void setProduto(Produto produto) {
-		this.produto = produto;
+	public void setProdutoSku(String produtoSku) {
+		this.produtoSku = produtoSku;
 	}
 
 	public Double getValor() {
