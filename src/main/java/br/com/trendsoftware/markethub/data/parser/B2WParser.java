@@ -42,7 +42,7 @@ public class B2WParser {
 
 		Anuncio anuncio = new Anuncio();
 
-		anuncio.setIdMl(orderItem.getProductId());
+		anuncio.setIdMl(orderItem.getId());
 		anuncio.setTitulo(orderItem.getName());
 		anuncio.setValor(orderItem.getOriginalPrice());
 
