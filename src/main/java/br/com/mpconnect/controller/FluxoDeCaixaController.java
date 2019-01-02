@@ -74,7 +74,12 @@ public class FluxoDeCaixaController {
 		FluxoDeCaixaBo fluxoDeSaida = populaFluxoDeCaixa(pagamentos, totaisPagamentos,"Total das Saidas");
 		fluxoDeCaixas.add(fluxoDeSaida);
 
-		calculaSaldoInicial();
+		SaldoBo saldoIncial=null;
+		for(int ano = 2018; ano<=DateUtils.getAno(new Date());ano++)
+			saldoIncial=calculaSaldoInicialAno(saldoIncial,ano);
+		
+		saldos.add(saldoIncial);
+
 		calculaResultadoOperacional();
 		calculaSaldoFinalDeCaixa();
 	}
@@ -103,15 +108,19 @@ public class FluxoDeCaixaController {
 		return fluxoDeCaixa;
 	}
 
-	private void calculaSaldoInicial(){
-		Date dtAtual = new Date();
-		double totalEmConta = fluxoCaixaBusiness.obterSaldoTotalEmConta();
-		double totalRecebido = fluxoCaixaBusiness.obterTotalRecebimentosPorMes(DateUtils.getAno(dtAtual)-1);
-		double totalGasto = fluxoCaixaBusiness.obterTotalDespesasMes(DateUtils.getAno(dtAtual)-1);
+	private SaldoBo calculaSaldoInicialAno(SaldoBo saldoInicial, Integer ano)
+	{
+		double totalEmConta=0.0;
+		if(saldoInicial==null)
+			totalEmConta = fluxoCaixaBusiness.obterSaldoTotalEmConta();
+		else
+			totalEmConta = saldoInicial.getValor();
+		double totalRecebido = fluxoCaixaBusiness.obterTotalRecebimentosPorMes(ano-1);
+		double totalGasto = fluxoCaixaBusiness.obterTotalDespesasMes(ano-1);
 		BigDecimal bd = new BigDecimal(totalEmConta+(totalRecebido-totalGasto));
 		bd = bd.setScale(2, RoundingMode.HALF_UP);
 		SaldoBo saldoIncial = new SaldoBo(0,bd.doubleValue());
-		saldos.add(saldoIncial);
+		return saldoIncial;
 	}
 
 	private void calculaResultadoOperacional(){
