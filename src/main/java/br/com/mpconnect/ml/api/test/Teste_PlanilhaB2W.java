@@ -17,9 +17,9 @@ public class Teste_PlanilhaB2W {
 	
 	public static void main(String[] args) throws Exception{
 
-<<<<<<< HEAD:src/main/java/br/com/mpconnect/ml/api/test/Teste.java
+
 		String fileName = "C:/Wanderson/TrendStore/itens_b2w.xlsx";	
-=======
+
 //		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");
 //
 //		B2wOrderProvider b2wOrderProvider = (B2wOrderProvider) ctx.getBean("b2wOrderProvider");
@@ -35,8 +35,8 @@ public class Teste_PlanilhaB2W {
 //		System.out.println();
 //		
 		
-		String fileName = "C:/Wanderson/TrendStore/itens_amazfit_stratus.xlsx";	
->>>>>>> dev:src/main/java/br/com/mpconnect/ml/api/test/Teste_PlanilhaB2W.java
+		//String fileName = "C:/Wanderson/TrendStore/itens_amazfit_stratus.xlsx";	
+
 		List<SkyHubItem> itens = B2WItemSheetLoader.load(ExcelUtils.read(fileName));
 		
 		ClassPathXmlApplicationContext ctx = new ClassPathXmlApplicationContext("spring.xml");

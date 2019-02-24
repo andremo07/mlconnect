@@ -704,7 +704,7 @@ public class NFeProvider {
 		transportador.setEnderecoComplemento("AV MARTE,489 ANDAR TERREO PARTE B");
 		transportador.setInscricaoEstadual("ISENTO");
 		transportador.setNomeMunicipio("Sao Paulo");
-		transportador.setRazaoSocial("Mercado Envios Serviï¿½os de Logï¿½stica Ltda");
+		transportador.setRazaoSocial("Mercado Envios Serviços de Logística Ltda");
 		transportador.setUf(DFUnidadeFederativa.SP);
 		
 		return transportador;
@@ -713,7 +713,7 @@ public class NFeProvider {
 	public NFNotaInfoVolume getNFNotaInfoVolume() {
 		
 		final NFNotaInfoVolume volume = new NFNotaInfoVolume();
-		volume.setEspecieVolumesTransportados("Caixa de papelï¿½o");
+		volume.setEspecieVolumesTransportados("Caixa de papelão");
 		volume.setPesoBruto(new BigDecimal("0.50"));
 		volume.setPesoLiquido(new BigDecimal("0.30"));
 		volume.setQuantidadeVolumesTransportados(new BigInteger("1"));
@@ -757,7 +757,7 @@ public class NFeProvider {
 	public NFNotaInfoInformacoesAdicionais getNFNotaInfoInformacoesAdicionais() {
 		
 		final NFNotaInfoInformacoesAdicionais infoAdicionais = new NFNotaInfoInformacoesAdicionais();
-		infoAdicionais.setInformacoesComplementaresInteresseContribuinte("I - DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL; II - Nï¿½O GERA DIREITO A CRï¿½DITO FISCAL DE ICMS, DE ISS E DE IPI.");
+		infoAdicionais.setInformacoesComplementaresInteresseContribuinte("I - DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL; II - NÃO GERA DIREITO A CRÉDITO FISCAL DE ICMS, DE ISS E DE IPI.");
 
 		return infoAdicionais;
 	}
