@@ -25,6 +25,7 @@ import br.com.trendsoftware.markethub.business.FluxoCaixaBusiness;
 import br.com.trendsoftware.markethub.business.OrderBusiness;
 import br.com.trendsoftware.markethub.data.parser.MlParser;
 import br.com.trendsoftware.markethub.repository.AccessRepository;
+import br.com.trendsoftware.markethub.repository.UserRepository;
 import br.com.trendsoftware.markethub.utils.DateUtils;
 import br.com.trendsoftware.markethub.utils.ExceptionUtil;
 import br.com.trendsoftware.mlProvider.dataprovider.OrderProvider;
@@ -52,9 +53,12 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 
 	@Autowired
 	private OrderProvider orderProvider;
-	
+
 	@Autowired
 	private AccessRepository accessRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@PostConstruct
 	public void init(){
@@ -79,7 +83,7 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 		try 
 		{
 			Optional<AcessoMl> result = accessRepository.findById(MeliConfigurationHolder.getInstance().getClientId());
-			
+
 			AcessoMl acessoML = result.get();
 
 			//MUDAR PARA BUSCA NA TABELA PELA COLUNA USER_ID
@@ -153,6 +157,37 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 		}
 	}
 
+	@Transactional
+	public void loadOrdersByDateTest(Date fromDate, Date toDate) throws BusinessException{
+
+		getLogger().debug("carregando vendas recentes");
+
+		try {
+
+			AcessoMl acessoMl = accessRepository.findByClientId(MeliConfigurationHolder.getInstance().getClientId());
+
+			Response tokenResponse = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
+			UserCredencials token = (UserCredencials) tokenResponse.getData();
+
+			int offset = 0;
+			Response response = orderProvider.listOrdersByDate("146216892", fromDate, toDate, OrderStatus.PAID, offset, 10, token.getAccessToken());
+			OrderList orderList = (OrderList) response.getData();
+
+			List<Order> mlOrders = new ArrayList<Order>();
+
+			while(orderList.getPaging().getTotal() > mlOrders.size()){
+				mlOrders.addAll(orderList.getOrders());				
+				offset=offset+10;
+				response = orderProvider.listOrdersByDate("146216892", fromDate, toDate, OrderStatus.PAID, offset,10, token.getAccessToken());
+				orderList = (OrderList) response.getData();
+			}
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("msisdn: %s - message: %s", e.getCode(), e.getCodeMessage());
+			throw new BusinessProviderException(exception);
+		}
+	}
+
 	public List<Venda> listOrdersByShippingStatus(ShippingStatus shippingStatus, ShippingSubStatus shippingSubStatus) throws BusinessException{
 
 		getLogger().debug("carregando vendas com etiquetas para imprimir");
@@ -180,7 +215,7 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 				response = orderProvider.listOrdersByDate(userId, DateUtils.adicionaDias(new Date(), -5), DateUtils.adicionaDias(new Date(), 1), OrderStatus.PAID, offset, 10, accessToken);
 				orderList = (OrderList) response.getData();
 			}
-			
+
 			response = userProvider.getUserInfo(accessToken);
 			User user = (User) response.getData();
 

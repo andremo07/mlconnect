@@ -2,14 +2,11 @@ package br.com.mpconnect.model;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -40,11 +37,7 @@ public class Produto implements Persistente{
 	@Column(name="UNIDADE_COMERCIAL")
 	private String unidadeComercial;
 	
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-	@JoinTable(name = "ANUNCIO_PRODUTO", joinColumns = {
-			@JoinColumn(name = "PRODUTO_ID", nullable = false, updatable = false) },
-			inverseJoinColumns = { @JoinColumn(name = "ANUNCIO_ID",
-					nullable = false, updatable = false) })
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy="produtos")
 	private Set<Anuncio> anuncios;
 
 	public Long getId() {

@@ -14,11 +14,14 @@ import br.com.mpconnect.model.Pagamento;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubCategory;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubItem;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrder;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrderAddress;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrderCustomer;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrderItem;
 import br.com.trendsoftware.b2wprovider.dto.SkyHubOrderPayment;
+import br.com.trendsoftware.b2wprovider.dto.SkyHubVariation;
 import br.com.trendsoftware.markethub.utils.DateUtils;
 import br.com.trendsoftware.mlProvider.dto.Seller;
 
@@ -34,6 +37,44 @@ public class B2WParser {
 		pagamento.setNumeroParcelas(payment.getParcels());
 
 		return pagamento;
+	}
+	
+	public static Anuncio parseAd(SkyHubItem item)
+	{
+		Anuncio anuncio = new Anuncio();
+
+		anuncio.setIdMl(item.getSku());
+		anuncio.setTitulo(item.getName());
+		anuncio.setValor(item.getPrice());
+		anuncio.setOrigem(Channel.B2W.getOrigem().getId());
+		anuncio.setDescricao(item.getDescription());
+		anuncio.setStatus(item.getStatus());
+		
+		String caterory="";
+		for (SkyHubCategory skyHubCategory : item.getCategories())
+			caterory = caterory.concat(skyHubCategory.getName()).concat(";");
+		anuncio.setCategoria(caterory);
+				
+		return anuncio;
+	}
+	
+	public static Anuncio parseAd(SkyHubItem item, String sku)
+	{
+		Anuncio anuncio = new Anuncio();
+
+		anuncio.setIdMl(sku);
+		anuncio.setTitulo(item.getName());
+		anuncio.setValor(item.getPrice());
+		anuncio.setOrigem(Channel.B2W.getOrigem().getId());
+		anuncio.setDescricao(item.getDescription());
+		anuncio.setStatus(item.getStatus());
+		
+		String caterory="";
+		for (SkyHubCategory skyHubCategory : item.getCategories())
+			caterory = caterory.concat(skyHubCategory.getName()).concat(";");
+		anuncio.setCategoria(caterory);
+				
+		return anuncio;
 	}
 
 	public static DetalheVenda parseOrderItem(SkyHubOrderItem orderItem){
