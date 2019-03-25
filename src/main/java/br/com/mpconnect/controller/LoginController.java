@@ -67,12 +67,12 @@ public class LoginController implements Serializable{
 			if(usuario!=null)
 			{			
 				AcessoMl acessoMl = accessRepository.findByClientId(MeliConfigurationHolder.getInstance().getClientId());
-				
+				//Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), "TG-5c9902b39b69e60006fb589d-146216892","http://localhost:8080/mlconnect/login.xhtml");
 				Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
 				UserCredencials token = (UserCredencials) response.getData(); 
 				acessoMl.setAccessToken(token.getAccessToken());
 				acessoMl.setRefreshToken(token.getRefreshToken());
-				
+				accessRepository.saveAndFlush(acessoMl);
 				response = userProvider.getUserInfo(token.getAccessToken());
 				User user = (User) response.getData();
 				acessoMl.setIdMl(user.getId());
