@@ -3,7 +3,9 @@ package br.com.trendsoftware.markethub.data.parser;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import br.com.mpconnect.model.Anuncio;
 import br.com.mpconnect.model.Channel;
@@ -11,6 +13,7 @@ import br.com.mpconnect.model.Cliente;
 import br.com.mpconnect.model.DetalheVenda;
 import br.com.mpconnect.model.Envio;
 import br.com.mpconnect.model.Pagamento;
+import br.com.mpconnect.model.Produto;
 import br.com.mpconnect.model.TipoPessoaEnum;
 import br.com.mpconnect.model.Venda;
 import br.com.mpconnect.model.Vendedor;
@@ -39,6 +42,26 @@ public class B2WParser {
 		return pagamento;
 	}
 	
+	public static Produto parseProduct(SkyHubItem item)
+	{
+		Produto produto = new Produto();
+		produto.setNome(item.getName());
+		produto.setCodBarras(item.getEan()!=null ? new Long(item.getEan()):null);
+		produto.setSku(item.getSku());
+		produto.setQuantidadeDisponivel(item.getQty().intValue());		
+		return produto;
+	}
+	
+	public static Produto parseProduct(SkyHubItem item, SkyHubVariation variation)
+	{
+		Produto produto = new Produto();
+		produto.setNome(item.getName());
+		produto.setCodBarras(variation.getEan()!=null ? new Long(variation.getEan()):null);
+		produto.setSku(variation.getSku());
+		produto.setQuantidadeDisponivel(variation.getQty().intValue());		
+		return produto;
+	}
+	
 	public static Anuncio parseAd(SkyHubItem item)
 	{
 		Anuncio anuncio = new Anuncio();
@@ -54,7 +77,23 @@ public class B2WParser {
 		for (SkyHubCategory skyHubCategory : item.getCategories())
 			caterory = caterory.concat(skyHubCategory.getName()).concat(";");
 		anuncio.setCategoria(caterory);
+		
+		Set<Produto> produtos = new HashSet<Produto>();
+	
+		if(item.getVariations()==null || item.getVariations().isEmpty())
+		{
+			Produto produto = parseProduct(item);
+			produtos.add(produto);
+		}
+		else
+			for(SkyHubVariation variation: item.getVariations())
+			{
+				Produto produto = parseProduct(item,variation);
+				produtos.add(produto);
+			}
 				
+		anuncio.setProdutos(produtos);
+		
 		return anuncio;
 	}
 	

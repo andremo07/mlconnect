@@ -8,4 +8,6 @@ public interface AdRepository extends JpaRepository<Anuncio, Long> {
 
 	public Anuncio findByIdMl(String partnerId);
 	
+	public Anuncio findByIdMlAndOrigem(String partnerId, Long origemId);
+	
 }
