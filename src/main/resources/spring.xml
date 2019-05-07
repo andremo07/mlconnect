@@ -52,7 +52,7 @@
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-		<property name="url" value="jdbc:mysql://144.217.91.108:3306/trendERP_db2" />
+		<property name="url" value="jdbc:mysql://144.217.91.108:3306/trendERP_db" />
 		<property name="username" value="wcontaifer" />
 		<property name="password" value="wcm@1234" />
 	</bean>

@@ -9,22 +9,25 @@
 	<title>Login Page</title>
 </h:head>
 <div align="center">
-<h:body style="font-size: 11px">
-	<h:form>
-		<p:panel style="margin-bottom:20px;">
-			<p:panelGrid columns="2">
-				<f:facet name="header">
-					<h:outputText value="Login" />
-				</f:facet>
-				<h:outputText value="Usuario: " />
-				<p:inputText value="#{loginController.user}" />
-				<h:outputText value="Senha: " />
-				<p:inputText value="#{loginController.senha}"  />
-			</p:panelGrid>
-			<br/>
-			<p:commandButton value="Entrar" action="#{loginController.login}"/>
-		</p:panel>
-	</h:form>
-</h:body>
+	<h:body style="font-size: 11px">
+		<f:metadata>
+			<f:viewParam name="code" value="#{loginController.code}" />
+		</f:metadata>
+		<h:form>
+			<p:panel style="margin-bottom:20px;">
+				<p:panelGrid columns="2">
+					<f:facet name="header">
+						<h:outputText value="Login" />
+					</f:facet>
+					<h:outputText value="Usuario: " />
+					<p:inputText value="#{loginController.user}" />
+					<h:outputText value="Senha: " />
+					<p:inputText value="#{loginController.senha}" />
+				</p:panelGrid>
+				<br />
+				<p:commandButton value="Entrar" action="#{loginController.login}" />
+			</p:panel>
+		</h:form>
+	</h:body>
 </div>
 </html>

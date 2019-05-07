@@ -2,8 +2,6 @@ package br.com.mpconnect.controller;
 
 import java.io.Serializable;
 import java.util.Map;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -11,9 +9,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.FacesContext;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import br.com.mpconnect.holder.MeliConfigurationHolder;
 import br.com.mpconnect.model.AcessoMl;
@@ -37,22 +38,23 @@ public class LoginController implements Serializable{
 	private static final long serialVersionUID = -4099469083045992073L;
 	private String user;
 	private String senha;
+	private String code;
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Resource
 	public AccessRepository accessRepository ;
-	
+
 	@Autowired
 	public UserProvider userProvider;
-			
+
 	final Logger logger = LogManager.getLogger(this.getClass());
-	
+
 	public LoginController(){
 
 	}
-	
+
 	@PostConstruct
 	public void init(){
 		getUserProvider().setLogger(logger);
@@ -61,14 +63,22 @@ public class LoginController implements Serializable{
 	public String login(){
 
 		try {
-			
+
 			Usuario usuario = userRepository.findByLoginAndSenha(user, senha);
 
 			if(usuario!=null)
 			{			
 				AcessoMl acessoMl = accessRepository.findByClientId(MeliConfigurationHolder.getInstance().getClientId());
-				//Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), "TG-5c9902b39b69e60006fb589d-146216892","http://localhost:8080/mlconnect/login.xhtml");
-				Response response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
+				Response response = null;
+				
+				   String value = FacesContext.getCurrentInstance().
+							getExternalContext().getRequestParameterMap().get("code");
+				
+				if(StringUtils.isEmpty(code))
+					response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId().toString(), MeliConfigurationHolder.getInstance().getClientSecret(), acessoMl.getRefreshToken());
+				else
+					response = userProvider.login(MeliConfigurationHolder.getInstance().getClientId(), MeliConfigurationHolder.getInstance().getClientSecret(), code,"http://localhost:8080/mlconnect/login.xhtml");
+				
 				UserCredencials token = (UserCredencials) response.getData(); 
 				acessoMl.setAccessToken(token.getAccessToken());
 				acessoMl.setRefreshToken(token.getRefreshToken());
@@ -86,8 +96,10 @@ public class LoginController implements Serializable{
 				}
 				return "paginas/paginaInicial?faces-redirect=true";
 			}
-		
+
 		} catch (ProviderException e) {
+			if(e.getCode().contentEquals("400"))
+				return "index?faces-redirect=false";	
 			addMessage(FacesMessage.SEVERITY_INFO,"Ocorreu um erro!", "Erro Mercado Livre");
 		}
 
@@ -95,12 +107,12 @@ public class LoginController implements Serializable{
 		return "";
 	}
 
-    public void addMessage(Severity type, String summary, String detail) {
-        FacesMessage message = new FacesMessage(type, summary, detail);
-        FacesContext.getCurrentInstance().addMessage(null, message);
-        FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
-    }
-	
+	public void addMessage(Severity type, String summary, String detail) {
+		FacesMessage message = new FacesMessage(type, summary, detail);
+		FacesContext.getCurrentInstance().addMessage(null, message);
+		FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(true);
+	}
+
 	public String getUser() {
 		return user;
 	}
@@ -116,5 +128,13 @@ public class LoginController implements Serializable{
 
 	public UserProvider getUserProvider() {
 		return userProvider;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 }
