@@ -459,7 +459,7 @@ public class NFeProvider {
 		//endereco.setCodigoPais(venda.getEnvio().getCodPais().toString());
 		endereco.setCodigoPais("1058");
 		endereco.setDescricaoPais("Brasil");
-		if(venda.getEnvio().getComplemento().length()>0) 
+		if(venda.getEnvio().getComplemento()!=null) 
 			endereco.setComplemento((venda.getEnvio().getComplemento().length()<=59)?venda.getEnvio().getComplemento():venda.getEnvio().getComplemento().substring(0, 58).trim());
 		endereco.setDescricaoMunicipio(venda.getEnvio().getMunicipio());
 		endereco.setLogradouro(venda.getEnvio().getLogradouro());
