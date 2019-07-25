@@ -109,6 +109,29 @@ public class OrderBusinessImpl extends OrderBusiness implements Serializable {
 			throw new BusinessProviderException(exception);
 		}
 	}
+	
+	public Venda searchPartnerOrderTest(String orderId) throws BusinessException {
+
+		try 
+		{
+			Usuario usuario = getSessionUserLogin();
+
+			String userId = usuario.getAcessoMercadoLivre().getIdMl();
+			String accessToken = usuario.getAcessoMercadoLivre().getAccessToken();
+
+			Response response = orderProvider.searchOrderById(userId,orderId, accessToken);
+			Order mlOrder = (Order) response.getData();
+
+			Venda order = MlParser.parseOrder(mlOrder);
+
+			return order;
+
+		} catch (ProviderException e) {
+			getLogger().error(ExceptionUtil.getStackTrace(e));
+			String exception = String.format("");
+			throw new BusinessProviderException(exception);
+		}
+	}
 
 	@Transactional
 	public void loadOrdersByDate(Date fromDate, Date toDate) throws BusinessException{
