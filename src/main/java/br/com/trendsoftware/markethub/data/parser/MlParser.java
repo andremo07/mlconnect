@@ -66,7 +66,7 @@ public class MlParser {
 
 		double comissao = orderItem.getSaleFee();
 
-		detalheVenda.setProdutoSku(item.getSellerCustomField());
+		detalheVenda.setProdutoSku(item.getSellerSku());
 		detalheVenda.setTarifaVenda(comissao);
 		detalheVenda.setAnuncio(anuncio);
 		detalheVenda.setValor(orderItem.getUnitPrice());
