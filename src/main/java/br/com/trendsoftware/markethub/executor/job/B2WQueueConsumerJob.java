@@ -24,7 +24,7 @@ import br.com.trendsoftware.markethub.data.parser.B2WParser;
 import br.com.trendsoftware.restProvider.exception.ProviderException;
 import br.com.trendsoftware.restProvider.response.RestResponse;
 
-@Service
+//@Service
 public class B2WQueueConsumerJob implements Job
 {
 	@Autowired
