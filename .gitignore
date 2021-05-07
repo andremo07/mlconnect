@@ -16,3 +16,7 @@ applicationContext.xml
 
 #target path
 /target
+
+\@log.path\@/
+
+nfe.pdf
