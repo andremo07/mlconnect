@@ -80,7 +80,6 @@ public class MlParser {
 
 		Cliente cliente = new Cliente();
 		cliente.setNome(buyer.getFirstName()+" "+buyer.getLastName());
-		cliente.setNrDocumento(buyer.getBillingInfo().getDocNumber()!=null?buyer.getBillingInfo().getDocNumber().toString():null);
 		cliente.setApelido(buyer.getNickname());
 		cliente.setIdMl(buyer.getId().toString());
 		cliente.setEmail(buyer.getEmail());
@@ -91,7 +90,10 @@ public class MlParser {
 					cliente.setTelefone(buyer.getPhone().getAreaCode().trim()+" "+buyer.getPhone().getNumber().trim());
 				else
 					cliente.setTelefone(buyer.getPhone().getNumber().trim());
-		if(buyer.getBillingInfo().getDocNumber()!=null)
+		if(buyer.getBillingInfo()!=null && buyer.getBillingInfo().getDocNumber()!=null) {
+			
+			cliente.setNrDocumento(buyer.getBillingInfo().getDocNumber()!=null?buyer.getBillingInfo().getDocNumber().toString():null);
+
 			if(buyer.getBillingInfo().getDocNumber().toString().length()>11){
 				cliente.setTipo(TipoPessoaEnum.JURIDICA.getValue());
 				cliente.setTipoContribuinteIcms(9);
@@ -99,11 +101,8 @@ public class MlParser {
 			else{
 				cliente.setTipo(TipoPessoaEnum.FISICA.getValue());
 				cliente.setTipoContribuinteIcms(9);
-			}
-		else{
-			cliente.setTipo(TipoPessoaEnum.FISICA.getValue());
-			cliente.setTipoContribuinteIcms(9);
-		}	
+			}	
+		}
 
 		return cliente;
 	}
